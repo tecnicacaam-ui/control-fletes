@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FleteControl v10.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+.pac-container{background:#1a1e28!important;border:1px solid #2e3545!important;border-top:none!important;border-radius:0 0 8px 8px!important;box-shadow:0 8px 24px rgba(0,0,0,.7)!important;font-family:"DM Sans",sans-serif!important;z-index:10000!important}
+.pac-item{background:#1a1e28!important;color:#e8eaf0!important;border-top:1px solid #252933!important;padding:8px 12px!important;font-size:13px!important;cursor:pointer!important;line-height:1.5!important}
+.pac-item:hover,.pac-item-selected{background:#252933!important}
+.pac-item-query{color:#f0c040!important}
+.pac-matched{color:#f0c040!important}
+.pac-icon,.hdpi .pac-icon{filter:invert(1) brightness(.5)!important}
+:root{
+  --bg:#0c0e12;--sf:#13161c;--s2:#1a1e28;--s3:#1f2430;
+  --b1:#252933;--b2:#2e3545;
+  --ac:#f0c040;--a2:#3ecfb2;--a3:#8b7cf6;--a4:#f07840;
+  --dg:#f05060;--tx:#e8eaf0;--mu:#6b7280;
+  --fh:"Syne",sans-serif;--fm:"DM Mono",monospace;--fb:"DM Sans",sans-serif;
+  --r:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:14px;min-height:100vh;overflow-x:hidden}
+/* Header */
+.hdr{background:var(--sf);border-bottom:1px solid var(--b1);padding:11px 22px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.logo{font-family:var(--fh);font-weight:800;font-size:19px;letter-spacing:-.5px}
+.logo span{color:var(--ac)}
+.vtag{font-family:var(--fm);font-size:10px;color:var(--mu);background:var(--s2);border:1px solid var(--b1);padding:3px 7px;border-radius:4px}
+.hspc{flex:1}
+.apik{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:6px 10px}
+.apik label{font-family:var(--fm);font-size:10px;color:var(--mu);white-space:nowrap}
+.apik input{background:var(--bg);border:1px solid var(--b1);border-radius:5px;color:var(--tx);font-family:var(--fm);font-size:11px;padding:5px 9px;outline:none;width:185px;transition:border-color .2s}
+.apik input:focus{border-color:var(--ac)}
+.apidot{width:7px;height:7px;border-radius:50%;background:var(--mu);flex-shrink:0}
+.apidot.ok{background:var(--a2);box-shadow:0 0 7px var(--a2)}
+.apidot.err{background:var(--dg)}
+.apidot.load{background:var(--ac);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+/* Sync status */
+.sync-dot{font-family:var(--fm);font-size:10px;color:var(--mu);display:flex;align-items:center;gap:5px;flex-shrink:0}
+.sync-dot span{width:6px;height:6px;border-radius:50%;background:var(--mu)}
+.sync-dot.ok span{background:var(--a2)}
+.sync-dot.err span{background:var(--dg)}
+.sync-dot.saving span{background:var(--ac);animation:blink 1s infinite}
+/* Grid */
+.mgrid{display:grid;grid-template-columns:1fr 344px;height:calc(100vh - 55px);overflow:hidden}
+.apanel{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--b1)}
+.tabs{display:flex;background:var(--sf);border-bottom:1px solid var(--b1);padding:0 14px;gap:2px;overflow-x:auto;flex-shrink:0}
+.tbtn{font-family:var(--fh);font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--mu);background:none;border:none;border-bottom:2px solid transparent;padding:13px 11px 11px;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap}
+.tbtn.on{color:var(--ac);border-bottom-color:var(--ac)}
+.tbtn:hover:not(.on){color:var(--tx)}
+.tpane{display:none;flex:1;overflow-y:auto;padding:18px 20px;flex-direction:column;gap:14px}
+.tpane.on{display:flex}
+/* Cards */
+.card{background:var(--sf);border:1px solid var(--b1);border-radius:var(--r);padding:16px 18px}
+.ctitle{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mu);margin-bottom:12px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg2 .full{grid-column:1/-1}
+.fgrp{display:flex;flex-direction:column;gap:5px}
+label{font-family:var(--fm);font-size:11px;color:var(--mu);letter-spacing:.5px}
+input,select{background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--tx);font-family:var(--fb);font-size:14px;padding:8px 11px;outline:none;transition:border-color .2s;width:100%}
+input:focus,select:focus{border-color:var(--ac)}
+select option{background:var(--s2)}
+.crow{display:flex;gap:8px;align-items:stretch}
+.crow select{flex:1}
+/* Buttons */
+.btn{font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:.5px;border:none;border-radius:7px;padding:10px 14px;cursor:pointer;transition:opacity .15s,transform .1s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0}
+.btn:hover{opacity:.84}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.bp{background:var(--ac);color:#0c0e12}
+.bd{background:var(--dg);color:#fff}
+.bg{background:var(--s2);color:var(--tx);border:1px solid var(--b1)}
+.bpu{background:var(--a3);color:#fff}
+.bt{background:var(--a2);color:#050e0b}
+.borg{background:var(--a4);color:#fff}
+.bsm{padding:6px 11px;font-size:11px}
+.bxs{padding:4px 8px;font-size:10px}
+/* Tariff mode switch */
+.tmode-wrap{display:flex;flex-direction:column;gap:6px}
+.tmode-toggle{display:flex;background:var(--s2);border:1px solid var(--b1);border-radius:8px;overflow:hidden;flex-shrink:0}
+.tmode-btn{flex:1;padding:8px 10px;font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:none;background:transparent;color:var(--mu);cursor:pointer;transition:background .15s,color .15s}
+.tmode-btn.on{background:var(--ac);color:#0c0e12}
+.tariff-field{display:flex;flex-direction:column;gap:5px}
+/* Client dropdown */
+.csw{position:relative}
+.cdd{position:absolute;top:calc(100%+3px);left:0;right:0;background:var(--sf);border:1px solid var(--b2);border-radius:8px;z-index:7000;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.55);display:none}
+.cdd.open{display:block}
+.cop{padding:9px 11px;cursor:pointer;border-bottom:1px solid var(--b1);display:flex;flex-direction:column;gap:2px}
+.cop:last-child{border-bottom:none}
+.cop:hover{background:var(--s2)}
+.cop-n{font-size:13px;color:var(--tx);font-weight:500}
+.cop-a{font-family:var(--fm);font-size:10px;color:var(--mu)}
+.cop-e{padding:10px 11px;font-size:12px;color:var(--mu);font-family:var(--fm)}
+/* Stops */
+.scon{display:flex;flex-direction:column;gap:9px}
+.srow{background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:11px 13px;transition:border-color .2s;position:relative}
+.srow:hover{border-color:var(--b2)}
+.srow.prio-high{border-left:3px solid var(--a4)}
+.srow.out-of-zone{border-left:3px solid var(--dg)}
+.srow.delay-risk{border-left:3px solid var(--dg)!important;background:#1a0a0c}
+.sr-header{display:grid;grid-template-columns:20px 1fr auto auto auto;gap:6px;align-items:center;margin-bottom:8px}
+.snum{font-family:var(--fm);font-size:11px;color:var(--mu);text-align:center}
+.prio-sel{font-family:var(--fm);font-size:10px;padding:4px 7px;border-radius:6px;border:1px solid var(--b1);background:var(--s2);color:var(--mu);cursor:pointer;width:auto;min-width:90px}
+.prio-sel.high{border-color:var(--a4);color:var(--a4);background:rgba(240,120,64,.12)}
+.srmbtn{background:none;border:1px solid var(--b1);border-radius:5px;color:var(--mu);width:26px;height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:background .15s,color .15s;flex-shrink:0}
+.srmbtn:hover{background:var(--dg);border-color:var(--dg);color:#fff}
+/* Up/Down reorder buttons */
+.sorder-btns{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.sobtn{background:none;border:1px solid var(--b1);border-radius:4px;color:var(--mu);width:22px;height:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:8px;line-height:1;transition:background .15s,color .15s,border-color .15s;padding:0}
+.sobtn:hover{background:var(--ac);border-color:var(--ac);color:#0c0e12}
+.sobtn:disabled{opacity:.2;cursor:default}
+.sobtn:disabled:hover{background:none;border-color:var(--b1);color:var(--mu)}
+.sr-body{display:flex;flex-direction:column;gap:7px}
+.sr-timewin{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sr-timewin label{font-size:10px;color:var(--mu);white-space:nowrap}
+.sr-timewin input[type=time]{width:82px;font-size:12px;padding:5px 7px}
+.tw-badge{font-family:var(--fm);font-size:10px;padding:3px 8px;border-radius:5px;background:#102a24;color:var(--a2);border:1px solid #153a30;white-space:nowrap}
+.tw-badge.warn{background:#2a1008;color:var(--a4);border-color:#3a2010}
+.tw-badge.danger{background:#2a0808;color:var(--dg);border-color:#3a1010;animation:flash .8s infinite}
+@keyframes flash{0%,100%{opacity:1}50%{opacity:.5}}
+/* OOZ */
+.ooz-alert{background:#1a0a0c;border:1px solid rgba(240,80,96,.35);border-radius:8px;padding:10px 13px;display:none;flex-direction:column;gap:8px;margin-top:2px}
+.ooz-alert.show{display:flex}
+.ooz-lbl{font-family:var(--fm);font-size:10px;color:var(--dg);letter-spacing:.5px}
+.ooz-msg{font-size:12px;color:#e8b0b5;line-height:1.5}
+.ooz-field-wrap{display:flex;gap:7px;align-items:center}
+.ooz-field-wrap input{flex:1;font-size:12px;padding:7px 10px;border:1px solid rgba(240,80,96,.4);background:#120508}
+.ooz-field-wrap input:focus{border-color:var(--dg)}
+/* ETA panel */
+.eta-panel{background:#0f1420;border:1px solid var(--b2);border-radius:var(--r);padding:14px 16px;display:none;flex-direction:column;gap:8px}
+.eta-panel.show{display:flex}
+.eta-panel-ttl{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.eta-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:7px;font-size:12px}
+.eta-ok{background:#0a1a14;border:1px solid #1a3528}
+.eta-warn{background:#1a0e08;border:1px solid #3a2010}
+.eta-err{background:#1a080a;border:1px solid #3a1015}
+.eta-ico{font-size:16px;flex-shrink:0}
+.eta-txt{flex:1}
+.eta-client{font-weight:600;color:var(--tx)}
+.eta-detail{color:var(--mu);font-family:var(--fm);font-size:10px;margin-top:2px}
+/* Route estimate */
+.rte{background:var(--s2);border:1px solid var(--b2);border-left:3px solid var(--a2);border-radius:var(--r);padding:14px 16px;display:none;margin-top:12px}
+.rte.vis{display:block}
+.rte-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.rte-ttl{font-family:var(--fm);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mu)}
+.opt-badge{font-family:var(--fm);font-size:10px;background:#102a24;color:var(--a2);border:1px solid #153a30;padding:2px 8px;border-radius:4px}
+.rleg{display:flex;align-items:flex-start;gap:9px;font-size:12px;padding:4px 0;border-bottom:1px solid #1c2030}
+.rleg:last-child{border-bottom:none}
+.rleg-ic{font-size:13px;flex-shrink:0;width:20px;text-align:center}
+.rleg-info{flex:1;color:var(--tx);line-height:1.4}
+.rleg-info small{color:var(--mu);font-size:10px}
+.rleg-meta{font-family:var(--fm);font-size:10px;color:var(--a2);white-space:nowrap;text-align:right}
+.rleg-warn{font-family:var(--fm);font-size:10px;margin-top:2px;padding:2px 6px;border-radius:4px;display:inline-block}
+.rleg-warn.w{color:var(--a4);background:rgba(240,120,64,.1)}
+.rleg-warn.e{color:var(--dg);background:rgba(240,80,96,.12)}
+.rtot{margin-top:10px;padding-top:10px;border-top:1px solid var(--b1);display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rtot-item{text-align:center}
+.rtot-lbl{font-family:var(--fm);font-size:10px;color:var(--mu);text-transform:uppercase;margin-bottom:3px}
+.rtot-val{font-family:var(--fh);font-size:18px;font-weight:800;color:var(--ac)}
+/* Historial */
+.hfilt{background:var(--sf);border:1px solid var(--b1);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.hfilt-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.fchip{font-family:var(--fm);font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--b1);background:var(--s2);color:var(--mu);cursor:pointer;transition:all .2s}
+.fchip.on{background:var(--ac);color:#0c0e12;border-color:var(--ac)}
+.fdate{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fdate input{width:130px;font-size:12px;padding:6px 10px}
+.htbox{background:linear-gradient(135deg,#1a2030 0%,#13161c 100%);border:1px solid var(--b2);border-left:3px solid var(--ac);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.htlbl{font-family:var(--fm);font-size:10px;color:var(--mu);letter-spacing:1px;text-transform:uppercase}
+.htval{font-family:var(--fh);font-size:26px;font-weight:800;color:var(--ac)}
+.htsub{font-family:var(--fm);font-size:11px;color:var(--mu);margin-top:2px}
+/* Table */
+.twrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-family:var(--fm);font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--mu);text-align:left;padding:9px 11px;border-bottom:1px solid var(--b1);white-space:nowrap}
+td{padding:9px 11px;border-bottom:1px solid #1c2030;color:var(--tx);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--s2)}
+.badge{font-family:var(--fm);font-size:10px;padding:3px 7px;border-radius:4px;letter-spacing:.5px;white-space:nowrap}
+.bpend{background:#2a2510;color:var(--ac);border:1px solid #3a3510}
+.bact{background:#102a24;color:var(--a2);border:1px solid #153a30}
+.bret{background:#1a1030;color:var(--a3);border:1px solid #2a2040}
+.bdone{background:#1a2032;color:#7090e0;border:1px solid #2a3050}
+.bdisc{background:#2a1018;color:var(--dg);border:1px solid #3a1820}
+.cv{font-family:var(--fm);font-weight:500;color:var(--ac)}
+.cd{font-family:var(--fm);font-size:10px;color:var(--mu);line-height:1.7;margin-top:2px}
+.cvc{color:var(--a2)}
+.cwc{color:var(--a3)}
+.erow td{text-align:center;color:var(--mu);font-family:var(--fm);font-size:12px;padding:28px}
+/* Clients */
+.csbar{display:flex;gap:8px;align-items:center}
+.csbar input{flex:1}
+.cgrid{display:flex;flex-direction:column;gap:6px}
+.ccard{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:10px 13px;display:flex;align-items:center;gap:11px;transition:border-color .2s}
+.ccard:hover{border-color:var(--b2)}
+.cico{width:32px;height:32px;border-radius:50%;background:var(--b1);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.cinf{flex:1;min-width:0}
+.cname{font-family:var(--fh);font-weight:700;font-size:13px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.caddr{font-family:var(--fm);font-size:10px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cacts{display:flex;gap:5px;flex-shrink:0}
+/* Map */
+#mapbox{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden;position:relative;height:310px;flex-shrink:0}
+#themap{width:100%;height:100%}
+.mholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--mu);pointer-events:none}
+.mholder svg{opacity:.3}
+.mholder p{font-family:var(--fm);font-size:12px;text-align:center;line-height:1.7}
+.mlog{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:11px 13px;flex-shrink:0}
+.mlog-t{font-family:var(--fm);font-size:9px;letter-spacing:1px;color:var(--mu);text-transform:uppercase;margin-bottom:7px}
+#mlogc{font-family:var(--fm);font-size:11px;color:var(--mu);line-height:1.9;max-height:100px;overflow-y:auto}
+/* Phone */
+.dcol{background:var(--sf);overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:20px 15px;gap:15px}
+.dttl{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mu);align-self:flex-start}
+.pfr{width:274px;background:#080a0e;border-radius:36px;border:6px solid #1e2430;box-shadow:0 0 0 1px #2a3040,0 20px 60px rgba(0,0,0,.8),inset 0 0 0 1px #0e1118;overflow:hidden}
+.pnotch{width:80px;height:18px;background:#080a0e;border-radius:0 0 12px 12px;margin:0 auto}
+/* Fixed-height phone screen — inner content scrolls, action buttons stay visible */
+.pscr{background:linear-gradient(160deg,#0f1420 0%,#0a0c10 100%);padding:10px 13px 0;height:590px;display:flex;flex-direction:column;overflow:hidden}
+/* The active trip div scrolls independently */
+#ptrip{overflow-y:auto;overflow-x:hidden;flex:1;padding-bottom:14px}
+#ptrip::-webkit-scrollbar{width:3px}
+#ptrip::-webkit-scrollbar-track{background:transparent}
+#ptrip::-webkit-scrollbar-thumb{background:#2e3545;border-radius:3px}
+/* action buttons pinned at bottom — pull out of scroll flow */
+.pacts{display:flex;flex-direction:column;gap:7px;padding:8px 0 10px;background:linear-gradient(to bottom,transparent 0%,#0a0c10 30%);position:sticky;bottom:0;flex-shrink:0}
+.pstat{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.ptim{font-family:var(--fm);font-size:13px;font-weight:500;color:var(--tx)}
+.papp{font-family:var(--fh);font-size:15px;font-weight:800;color:var(--tx);margin-bottom:10px;text-align:center}
+.papp span{color:var(--ac)}
+.pnone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--mu);text-align:center}
+.pnone p{font-size:12px;line-height:1.6}
+/* Phone trip */
+.ptcard{background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:11px;margin-bottom:8px}
+.ptlbl{font-family:var(--fm);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--mu);margin-bottom:5px}
+.ptdrv{font-family:var(--fh);font-size:13px;font-weight:700;margin-bottom:8px;color:var(--tx)}
+/* Return status banner */
+.retorno-banner{background:linear-gradient(135deg,#1a1035 0%,#0f0a20 100%);border:1px solid var(--a3);border-radius:10px;padding:10px 12px;margin-bottom:8px;text-align:center}
+.retorno-banner .rb-lbl{font-family:var(--fm);font-size:9px;letter-spacing:1px;color:var(--a3);text-transform:uppercase;margin-bottom:3px}
+.retorno-banner .rb-val{font-family:var(--fh);font-size:16px;font-weight:800;color:var(--tx)}
+.retorno-banner .rb-eta{font-family:var(--fm);font-size:10px;color:var(--mu);margin-top:3px}
+/* Phone stops */
+.pstops{display:flex;flex-direction:column;gap:3px}
+.pstop{display:flex;align-items:flex-start;gap:7px;padding:5px 6px;border-radius:8px;transition:background .2s;border:1px solid transparent}
+.pstop.cur{background:#1a2030;border-color:var(--b2)}
+.pstop.don{opacity:.38}
+.pstop.delay-risk{background:#1a0a0c!important;border-color:rgba(240,80,96,.5)!important}
+.psdotc{display:flex;flex-direction:column;align-items:center;padding-top:3px}
+.psdot{width:9px;height:9px;border-radius:50%;background:var(--b1);flex-shrink:0}
+.psdot.done{background:var(--a2)}
+.psdot.cur{background:var(--ac);box-shadow:0 0 7px var(--ac)}
+.psdot.ret{background:var(--a3);box-shadow:0 0 7px var(--a3)}
+.psdot.risk{background:var(--dg);box-shadow:0 0 7px var(--dg);animation:blink 1s infinite}
+.psline{width:1px;flex:1;min-height:10px;background:var(--b1);margin:2px 0}
+.psinf{flex:1;min-width:0}
+.psnum{font-family:var(--fm);font-size:9px;color:var(--mu)}
+.pscl{font-size:11px;font-weight:600;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.psad{font-size:10px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.ps-tw{font-family:var(--fm);font-size:9px;margin-top:3px;padding:2px 6px;border-radius:4px;display:inline-block;letter-spacing:.3px}
+.ps-tw.ok{background:#102a24;color:var(--a2);border:1px solid #1a3a2a}
+.ps-tw.warn{background:#2a1a08;color:var(--a4);border:1px solid #3a2a10}
+.ps-tw.risk{background:#2a0808;color:var(--dg);border:1px solid #3a1010;animation:flash .8s infinite}
+/* Current stop card */
+.pcurcard{background:#111830;border:1px solid var(--b2);border-radius:10px;padding:10px 12px;margin-bottom:8px;border-left:3px solid var(--ac)}
+.pcurcard.risk{border-left-color:var(--dg);background:#150808}
+.pcurcard.retorno{border-left-color:var(--a3);background:#110a1a}
+.pcurlbl{font-family:var(--fm);font-size:9px;letter-spacing:1px;color:var(--a2);text-transform:uppercase;margin-bottom:4px}
+.pcurname{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--tx)}
+.pcuraddr{font-size:11px;color:var(--mu);margin-top:2px}
+.pcurprog{font-family:var(--fm);font-size:10px;color:var(--mu);margin-top:4px}
+.pcurtw{font-family:var(--fm);font-size:10px;margin-top:5px;padding:3px 8px;border-radius:5px;display:inline-block}
+.pcurtw.ok{background:#102a24;color:var(--a2)}
+.pcurtw.warn{background:#2a1a08;color:var(--a4)}
+.pcurtw.risk{background:#2a0808;color:var(--dg);animation:flash .8s infinite}
+.tslog{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:7px 10px;font-family:var(--fm);font-size:10px;color:var(--mu);line-height:1.8;margin-bottom:8px}
+.tsr{display:flex;justify-content:space-between;gap:6px}
+.tsv{color:var(--a2)}
+.wtimer{background:#1a1230;border:1px solid var(--a3);border-radius:7px;padding:6px 10px;font-family:var(--fm);color:var(--a3);text-align:center;display:none;margin-bottom:8px}
+.wt-l{font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase}
+.wt-v{font-size:20px;font-weight:500;letter-spacing:2px}
+/* .pacts defined above with sticky positioning */
+.pbtn{width:100%;padding:12px;border-radius:11px;border:none;font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:7px}
+.pbtn:hover:not(:disabled){opacity:.84}
+.pbtn:active:not(:disabled){transform:scale(.97)}
+.pbtn:disabled{opacity:.28;cursor:not-allowed}
+.pb-st{background:var(--a2);color:#050e0b}
+.pb-ar{background:var(--ac);color:#0c0e12}
+.pb-nx{background:var(--a3);color:#fff}
+.pb-ret{background:#6030c0;color:#fff}
+.pb-en{background:var(--dg);color:#fff}
+/* Modals */
+.mover{position:fixed;inset:0;background:rgba(0,0,0,.76);backdrop-filter:blur(4px);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.mover.open{display:flex}
+.mdl{background:var(--sf);border:1px solid var(--b1);border-radius:14px;padding:24px;width:500px;max-width:100%;max-height:90vh;overflow-y:auto}
+.mdl-ttl{font-family:var(--fh);font-size:17px;font-weight:800;margin-bottom:14px}
+.mdl-body{color:var(--mu);line-height:1.7;margin-bottom:18px;font-size:14px}
+.mdl-body strong{color:var(--tx)}
+.mdl-ft{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.flist{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.fitem{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:9px 12px}
+.fitem-ico{font-size:16px;width:28px;height:28px;background:var(--b1);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fitem-inf{flex:1;min-width:0}
+.fitem-n{font-family:var(--fh);font-weight:700;font-size:13px;color:var(--tx)}
+.fitem-p{font-family:var(--fm);font-size:10px;color:var(--mu)}
+.fadd{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:12px}
+.divd{border:none;border-top:1px solid var(--b1);margin:13px 0}
+.srow3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.scard{background:var(--sf);border:1px solid var(--b1);border-radius:var(--r);padding:12px;text-align:center}
+.scl{font-family:var(--fm);font-size:10px;color:var(--mu);margin-bottom:4px}
+.scv{font-family:var(--fh);font-size:24px;font-weight:800}
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--sf);border:1px solid var(--b1);border-left:3px solid var(--ac);border-radius:8px;padding:11px 20px;font-family:var(--fm);font-size:12px;color:var(--tx);opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:9999;white-space:nowrap}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--b1);border-radius:3px}
+@media(max-width:900px){.mgrid{grid-template-columns:1fr;height:auto}.dcol{border-top:1px solid var(--b1)}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="logo">Flete<span>Control</span></div>
+  <div class="vtag">v10.1</div>
+  <div class="hspc"></div>
+  <div class="sync-dot" id="syncdot"><span></span><span id="synclbl">offline</span></div>
+  <div class="apik">
+    <label>MAPS API KEY</label>
+    <input type="text" id="apikey" placeholder="Pega tu clave aqui..." autocomplete="off">
+    <div class="apidot" id="apidot"></div>
+    <button class="btn bsm bg" onclick="saveApiKey()">Activar</button>
+  </div>
+</header>
+<div class="mgrid">
+<section class="apanel">
+  <nav class="tabs">
+    <button class="tbtn on" onclick="swTab('tn',this)">+ Nuevo Viaje</button>
+    <button class="tbtn"   onclick="swTab('th',this)">&#9776; Historial</button>
+    <button class="tbtn"   onclick="swTab('tc',this)">&#128101; Clientes</button>
+    <button class="tbtn"   onclick="swTab('tm',this)" id="tbmapa">&#9711; Mapa</button>
+  </nav>
+  <!-- NUEVO VIAJE -->
+  <div id="tn" class="tpane on">
+    <div class="card">
+      <div class="ctitle">Crear Viaje</div>
+      <div class="fg2">
+        <div class="fgrp full">
+          <label>CAMION / CHOFER</label>
+          <div class="crow"><select id="fch"></select><button class="btn bsm bpu" onclick="openFlota()">+ Gestionar</button></div>
+        </div>
+        <!-- Tariff mode: single row with toggle + field -->
+        <div class="fgrp full tmode-wrap">
+          <label>MODALIDAD DE LIQUIDACION</label>
+          <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+            <div class="tmode-toggle">
+              <button class="tmode-btn on" id="tbhora" onclick="setTmode('hora')">&#128336; Por Hora</button>
+              <button class="tmode-btn"    id="tbkm"   onclick="setTmode('km')">&#128648; Por Km</button>
+            </div>
+            <div class="tariff-field" style="flex:1;min-width:120px">
+              <label id="tlbl">TARIFA / HORA ($)</label>
+              <input id="ftar" type="number" placeholder="50000" min="0" step="1000" value="50000">
+            </div>
+          </div>
+        </div>
+        <div class="fgrp full">
+          <label>ORIGEN</label>
+          <input id="for" type="text" placeholder="Deposito / punto de partida..." autocomplete="off">
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
+          <label style="font-size:12px">PARADAS / DESTINOS</label>
+          <button class="btn bt bxs" onclick="addStop()">+ Agregar Parada</button>
+        </div>
+        <div class="scon" id="scon"></div>
+      </div>
+      <div class="eta-panel" id="etapanel">
+        <div class="eta-panel-ttl" style="color:var(--a4)">&#9888; Alertas de Franja Horaria</div>
+        <div id="etalist"></div>
+      </div>
+      <div class="rte" id="rte">
+        <div class="rte-hdr">
+          <div class="rte-ttl">Estimacion Google Maps (trafico real)</div>
+          <span class="opt-badge" id="optbadge" style="display:none">Ruta Inteligente</span>
+        </div>
+        <div id="rlegs"></div>
+        <div class="rtot">
+          <div class="rtot-item"><div class="rtot-lbl">Tiempo</div><div class="rtot-val" id="rtime">--</div></div>
+          <div class="rtot-item"><div class="rtot-lbl">Distancia</div><div class="rtot-val" id="rdist" style="color:var(--a2)">--</div></div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn bg bsm" id="bcalc" onclick="calcRoute(null)" style="display:none">&#9711; Calcular Ruta</button>
+        <button class="btn bp" onclick="crearViaje()" style="flex:1">&#9654; Asignar Viaje</button>
+      </div>
+    </div>
+    <div class="srow3">
+      <div class="scard"><div class="scl">EN CURSO</div><div class="scv" id="st-act" style="color:var(--a2)">0</div></div>
+      <div class="scard"><div class="scl">COMPLETADOS</div><div class="scv" id="st-don" style="color:#7090e0">0</div></div>
+      <div class="scard"><div class="scl">DISCREPANCIAS</div><div class="scv" id="st-dis" style="color:var(--dg)">0</div></div>
+    </div>
+  </div>
+  <!-- HISTORIAL -->
+  <div id="th" class="tpane">
+    <div class="hfilt">
+      <div class="hfilt-row">
+        <span class="fchip on" data-f="week"   onclick="setFilter(this)">Semanal</span>
+        <span class="fchip"   data-f="two"    onclick="setFilter(this)">Quincenal</span>
+        <span class="fchip"   data-f="month"  onclick="setFilter(this)">Mensual</span>
+        <span class="fchip"   data-f="all"    onclick="setFilter(this)">Todo</span>
+        <span class="fchip"   data-f="custom" onclick="setFilter(this)">Rango</span>
+      </div>
+      <div class="fdate" id="fdaterow" style="display:none">
+        <label>Desde</label><input type="date" id="fdfrom" onchange="renderTable()">
+        <label>Hasta</label><input type="date" id="fdto"   onchange="renderTable()">
+      </div>
+    </div>
+    <div class="htbox">
+      <div>
+        <div class="htlbl">Total Gastos en Fletes</div>
+        <div class="htval" id="htv">$0,00</div>
+        <div class="htsub" id="htsub">0 viajes en el periodo</div>
+      </div>
+      <div style="font-size:32px;opacity:.3">&#128666;</div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="twrap">
+        <table>
+          <thead><tr><th>#</th><th>Chofer</th><th>Paradas</th><th>Inicio</th><th>Fin</th>
+            <th>Tiempo</th><th>Km</th><th>Modalidad</th><th>Costo</th><th>Estado</th><th>Acc.</th></tr></thead>
+          <tbody id="ttbody"><tr class="erow"><td colspan="11">Sin viajes.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- CLIENTES -->
+  <div id="tc" class="tpane">
+    <div class="csbar">
+      <input type="text" id="csrch" placeholder="Buscar cliente o direccion..." oninput="renderClients()">
+      <button class="btn bsm bpu" onclick="openAddClient()">+ Agregar</button>
+    </div>
+    <div id="ccnt" style="font-family:var(--fm);font-size:10px;color:var(--mu)"></div>
+    <div class="cgrid" id="cgrid"></div>
+  </div>
+  <!-- MAPA -->
+  <div id="tm" class="tpane">
+    <div id="mapbox">
+      <div id="themap"></div>
+      <div class="mholder" id="mholder">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+          <circle cx="12" cy="9" r="2.5"/>
+        </svg>
+        <p>Ingresa la API Key y presiona <strong style="color:var(--ac)">Activar</strong></p>
+      </div>
+    </div>
+    <div class="mlog"><div class="mlog-t">Log</div><div id="mlogc">Sin actividad...</div></div>
+  </div>
+</section>
+<!-- PHONE -->
+<aside class="dcol">
+  <div class="dttl">Celular del Chofer</div>
+  <div class="pfr">
+    <div class="pnotch"></div>
+    <div class="pscr">
+      <div class="pstat">
+        <div class="ptim" id="pclock">--:--</div>
+        <span style="font-size:11px;color:var(--tx)">WiFi &#128267;</span>
+      </div>
+      <div class="papp">Flete<span>Control</span></div>
+      <div id="pnone" class="pnone">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35">
+          <rect x="1" y="3" width="15" height="13" rx="1"/>
+          <path d="M16 8h4l3 4v4h-7V8z"/>
+          <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+        <p>Sin viaje asignado.<br>Espera la asignacion.</p>
+      </div>
+      <div id="ptrip" style="display:none;flex-direction:column;flex:1">
+        <div class="ptcard">
+          <div class="ptlbl">Viaje activo</div>
+          <div class="ptdrv" id="pdrv">--</div>
+          <div class="pstops" id="pstops"></div>
+        </div>
+        <div id="retorno-banner" class="retorno-banner" style="display:none">
+          <div class="rb-lbl">&#127981; En retorno a base</div>
+          <div class="rb-val" id="rb-dest">Deposito</div>
+          <div class="rb-eta" id="rb-eta">Calculando ETA...</div>
+        </div>
+        <div class="pcurcard" id="pcurcard" style="display:none">
+          <div class="pcurlbl">Parada actual</div>
+          <div class="pcurname" id="pcurname">--</div>
+          <div class="pcuraddr" id="pcuraddr">--</div>
+          <div class="pcurprog" id="pcurprog">--</div>
+          <div class="pcurtw" id="pcurtw" style="display:none">--</div>
+        </div>
+        <div class="tslog">
+          <div class="tsr"><span>Inicio viaje</span><span class="tsv" id="ts0">--</span></div>
+          <div id="tsextra"></div>
+          <div class="tsr"><span>Retorno inicio</span><span class="tsv" id="tsret">--</span></div>
+          <div class="tsr"><span>Llegada base</span><span class="tsv" id="tsend">--</span></div>
+        </div>
+        <div class="wtimer" id="wtimer">
+          <div class="wt-l">&#9203; Esperando en destino</div>
+          <div class="wt-v" id="wtime">00:00</div>
+        </div>
+        <div class="pacts" id="pacts"></div>
+      </div>
+    </div>
+  </div>
+</aside>
+</div>
+<!-- MODALS -->
+<div class="mover" id="mflota">
+  <div class="mdl">
+    <div class="mdl-ttl" style="color:var(--a3)">Gestion de Flota</div>
+    <div class="flist" id="flist"></div>
+    <hr class="divd">
+    <div style="font-family:var(--fm);font-size:10px;color:var(--mu);margin-bottom:10px">AGREGAR CHOFER</div>
+    <div class="fadd">
+      <div class="fgrp"><label>NOMBRE</label><input id="fn" type="text" placeholder="Juan Perez"></div>
+      <div class="fgrp"><label>CAMION / PATENTE</label><input id="fc" type="text" placeholder="AB 123 CD"></div>
+      <button class="btn bpu" onclick="addChofer()" style="height:38px;align-self:end">+ Agregar</button>
+    </div>
+    <div class="mdl-ft" style="margin-top:16px"><button class="btn bg bsm" onclick="closeMdl('mflota')">Cerrar</button></div>
+  </div>
+</div>
+<div class="mover" id="maddcl">
+  <div class="mdl" style="width:440px">
+    <div class="mdl-ttl" style="color:var(--a2)">Agregar Cliente</div>
+    <div class="fgrp" style="margin-bottom:12px"><label>NOMBRE / RAZON SOCIAL</label><input id="ncn" type="text" placeholder="Empresa S.R.L."></div>
+    <div class="fgrp"><label>DIRECCION</label><input id="nca" type="text" placeholder="Av. Corrientes 1234, CABA" autocomplete="off"></div>
+    <div class="mdl-ft" style="margin-top:16px">
+      <button class="btn bg bsm" onclick="closeMdl('maddcl')">Cancelar</button>
+      <button class="btn bt bsm" onclick="confirmAddClient()">Guardar</button>
+    </div>
+  </div>
+</div>
+<div class="mover" id="mdisc">
+  <div class="mdl">
+    <div class="mdl-ttl" style="color:var(--dg)">Reportar Discrepancia</div>
+    <div class="mdl-body" id="mdiscbody"></div>
+    <div class="mdl-ft">
+      <button class="btn bg bsm" onclick="closeMdl('mdisc')">Cancelar</button>
+      <button class="btn bd bsm" onclick="confirmDisc()">Confirmar</button>
+    </div>
+  </div>
+</div>
+<div class="mover" id="mdel">
+  <div class="mdl" style="width:400px">
+    <div class="mdl-ttl" style="color:var(--dg)">Borrar Viaje</div>
+    <div class="mdl-body" id="mdelbody"></div>
+    <div class="mdl-ft">
+      <button class="btn bg bsm" onclick="closeMdl('mdel')">Cancelar</button>
+      <button class="btn bd bsm" onclick="confirmDel()">Si, eliminar</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+const CLIENTES_DB=[{"n":"ELECTRO-FRIG S.R.L.","a":"Av. Eva Perón 3536/40, MORON, BUENOS AIRES"},{"n":"CLIMATIZACION POLAR S.A","a":"ESQUIU 996, CORDOBA, CORDOBA"},{"n":"LOGISTICA LA SERENISIMA SA","a":"Teresa Mastellone 3367, GENERAL RODRIGUEZ, BUENOS AIRES"},{"n":"CORTES ROBERTO","a":"AV LOS QUILMES 1158, BERNAL OESTE  (TECNOSISTEN SRL.), BUENOS AIRES"},{"n":"EFIN S.R.L.","a":"AV. BRIG. GRAL. JUAN MANUEL DE ROSAS 7018, ISIDRO CASANOVA, BUENOS AIRES"},{"n":"MARTINEZ GUSTAVO PATRICIO","a":"RAMIREZ 0, CORONEL CHARLONE, BUENOS AIRES"},{"n":"HAMBURGUESAS BELTRAN SRL","a":"BV CRISTOBAL BERRITELLA 7181, BARRIO LOS BOULEVARES, CORDOBA"},{"n":"PANINO S.A","a":"PEDRAZA MANUELA 1633"},{"n":"ARNEG ARGENTINA S.A.","a":"Av. 25 de Mayo 2330"},{"n":"REFRIGERACION LOPE DE VEGA SRL","a":"ALCARAZ 5476"},{"n":"CENCOSUD S A","a":"PARANA 3617"},{"n":"ESTABLECIMIENTO LOS CALVOS SRL","a":"AV.JUAN B.ALBERDI 5401"},{"n":"EPTA ARGENTINA S.A.","a":"OVIDIO LAGOS 6753"},{"n":"OLIVA PROAZZI WALTER","a":"AV. HIPOLITO IRIGOYEN 2152"},{"n":"BLASCO ALDO OSCAR","a":"PICHIHUINCA 514 Piso:0 Dpto:0"},{"n":"GRUPO VILLA S. R. L.","a":"NUESTRA SEÑORA DE LUJAN 377"},{"n":"FRIGOTEC SRL","a":"AV. GAONA 10413"},{"n":"ARCE Y ASOCIADOS S.A.","a":"Vicente Lopez 3495, VILLA BALLESTER, BUENOS AIRES"},{"n":"MGI REFRIGERACION ZERO SA","a":"PRESIDENTE PERON 3773, EL PALOMAR, BUENOS AIRES"},{"n":"MATEOS CARLOS MARIANO RODRIGO","a":"LOBOS ELEODORO DR.371 PB.DTO:A, C.A.B.A.., BUENOS AIRES"},{"n":"HELIOTHERM SRL","a":"RANCHOS 1694, CASTELAR, BUENOS AIRES"},{"n":"USMAN EQUIPAMIENTOS SRL","a":"OVIDIO LAGOS 7402, ROSARIO SUD, SANTA FE"},{"n":"REFRIGERACION NORTE S.R.L.","a":"SANTIAGO DEL ESTERO 1203, TUCUMAN, TUCUMAN"},{"n":"MECAN S.R.L.","a":"TRES ARROYOS 5785, WILDE- AVELLANEDA, BUENOS AIRES"},{"n":"ESPINOZA DANILO ADOLFO","a":"MZ 51 C 05 BARRIO 150 VDAS 5, GOYA, CORRIENTES"},{"n":"LANZA REFRIGERACION S.R.L.","a":"RAMOS MEJIA 1720, VILLA MARIA, CORDOBA"},{"n":"LIHUE INGENIERIA S.A.","a":"JUAN ZUFRIATEGUI 4665, VILLA MARTELLI, BUENOS AIRES"},{"n":"GONZALEZ ISMAEL ALBERTO","a":"105 72, AVELLANEDA, SANTA FE"},{"n":"CASSERA LUIS ALBERTO","a":"LABARDEN 4059, CASEROS, BUENOS AIRES"},{"n":"SERVICIOS TERMOMECANICOS INTEG","a":"AVENIDA BLAS PARERA 5755, SANTA FE, SANTA FE"},{"n":"GIACONE JUAN PABLO","a":"BUENOS AIRES 39, OLIVEROS, SANTA FE"},{"n":"FIORITI GARABAN S.R.L","a":"DARREGUEIRA 666, BAHIA BLANCA, BUENOS AIRES"},{"n":"CORDERO JOSE LUIS","a":"25 DE MAYO 266, PUNTA ALTA, BUENOS AIRES"},{"n":"ICEFERAS SRL","a":"GALLARDO 741, CABA, C.A.B.A."},{"n":"DAIMAX S.A","a":"VILLARROEL 5969, VILLA BALLESTER, BUENOS AIRES"},{"n":"BOGADO MARCELO RAUL","a":"ESTRADA 2250, SANTA FE, SANTA FE"},{"n":"REFRIMIG SRL","a":"CARLOS VILLATE 4083, MUNRO, BUENOS AIRES"},{"n":"SALERNO MATIAS EZEQUIEL","a":"CORRIENTES 2843, ROSARIO SUD, SANTA FE"},{"n":"IMS S.A","a":"TRES SARGENTOS 1491, MARTINEZ, BUENOS AIRES"},{"n":"MARTINEZ ROMINA PAOLA","a":"MATHEU 142, SAN SALVADOR DE JUJU, JUJUY"},{"n":"T.D.A.  ANODIZADO S.A.","a":"DR.RICARDO BALBIN 3102, SAN MARTIN, BUENOS AIRES"},{"n":"CLIMA Y ENERGIAS","a":"GUALEGUAYCHU 1329, C.A.B.A."},{"n":"INGERPRO S.A.","a":"MCAL. SUCRE 2437 PISO 6, CAPITAL FEDERAL, C.A.B.A."},{"n":"DIAZ JAVIER ALEJANDRO","a":"73 761, LA PLATA SUDESTE CALLE 50 AMBAS VEREDAS, BUENOS AIRES"},{"n":"LACTEOS PUYEHUE S R L","a":"AVENIDA CARRANZA 357, VILLA NUEVA, CORDOBA"},{"n":"RELD S.A.C.I.F.I.A.","a":"AV. CHICLANA 3174, C.A.B.A, BUENOS AIRES"},{"n":"RUVAC S.R.L","a":"TERRADA 2562, C.A.B.A., C.A.B.A."},{"n":"LA CATALINA S.R.L.","a":"HUMAHUACA 2514, LANUS, BUENOS AIRES"},{"n":"REACOM S.A.","a":"MIRANDA 4033, Capital Federal, C.A.B.A."},{"n":"LUCCIARINI ADRIAN HUGO","a":"ALMAFUERTE 5157, REMEDIOS DE ESCALADA, BUENOS AIRES"},{"n":"ALVIDOS S.R.L.","a":"SARMIENTO 211 Piso:1 Dpto:B, AVELLANEDA, BUENOS AIRES"},{"n":"DISTRIBUIDORA DE INSUMOS Y MAT","a":"893 4223, SAN FRANCISCO SOLANO, BUENOS AIRES"},{"n":"GARCIA LUCAS DANIEL","a":"AVDA ALMAFUERTE 3634, PARANA, PARANA-ENTRE RI"},{"n":"COIAZZET LUIS MATIAS","a":"RUTA 26 KM.5 0, SAN JOSE, ENTRE RIOS"},{"n":"SUPERMERCADOS EL ABASTECEDOR S","a":"BRANDSEN 2242, ITUZAINGO, BUENOS AIRES"},{"n":"FADEL  SA","a":"SARMIENTO 27, COLON, SANTA FE"},{"n":"HETZER REFRIGERACION S.A.","a":"Av.25 de Mayo 3775, SANTA FE, SANTA FE"},{"n":"CORREA THOMAS AXEL","a":"AV MOSCONI 949, LOMAS DEL MIRADOR, BUENOS AIRES"},{"n":"LATTE S.R.L","a":"MONSEÑOR BUFANO 736, SAN JUSTO, BUENOS AIRES"},{"n":"LA BOUTIQUE DEL MAR SA","a":"JULIAN ALVAREZ 2507, CABA, C.A.B.A."},{"n":"COMERCIAL DASDASUR SRL","a":"OLAZABAL 3738, LANUS, BUENOS AIRES"},{"n":"DISTRIBUIDORA FLORIDA S.R.L.","a":"ESMERALDA 4646, MUNRO, BUENOS AIRES"},{"n":"SANTA RITA S.R.L","a":"JUNIN 2107, SAN FERNANDO, BUENOS AIRES"},{"n":"RAFU LUIS ADRIAN","a":"110 4960, SAN MARTIN, BUENOS AIRES"},{"n":"AGRELO CARLOS ALBERTO","a":"FLORENCIO VARELA 1060, AVELLANEDA, BUENOS AIRES"},{"n":"LOPEZ LUIS ORLANDO","a":"SUIPACHA 210, SAN MIGUEL DE TUCUMA, TUCUMAN"},{"n":"FRIGORIFICO DANMAT S.R.L.","a":"MISTRAL GABRIELA 3433 Piso:2 D, C.A.B.A."},{"n":"MARTINI DARIO OSCAR","a":"CHARCAS 3837 Piso:3 Dpto:A, C.A.B.A."},{"n":"LABADIE REFRIGERACION S.R.L","a":"OCAMPO 1225, ENTRE RIOS Y MITRE, SANTA FE"},{"n":"VALENTI Y CIA S.R.L","a":"AV. GALES 74 PISO:6, PUERTO MADRYN, CHUBUT"},{"n":"GARCIA SERGIO","a":"JOSE MARIA PAZ 3364, SAN MIGUEL, BUENOS AIRES"},{"n":"ARSAMA S.A","a":"MARTIN MIGUENZ 7534, VILLA BOSCH, BUENOS AIRES"},{"n":"DOSAN INVERSIONES SRL","a":"JUJUY 999 ESQ. ZABALA, SALTA, SALTA"},{"n":"ALGAÑARAZ NELLY FERNANDA","a":"GDOR BUITRAGO 235, PALPALA, BUENOS AIRES"},{"n":"MAPUESA S.R.L.","a":"PARAGUAY 610 Piso:10 Dpto:1, CABA, C.A.B.A."},{"n":"HELADOS LOS LEONES S.R.L.","a":"LOS TULIPANES 240, CIUDAD EVITA, BUENOS AIRES"},{"n":"GELATIERI S.A.","a":"ANCHORENA TOMAS MANU 672 P.3 A, C.A.B.A., BUENOS AIRES"},{"n":"QUESOS REGIONALES S R L","a":"ZONA RURAL 0, POZO DEL MOLLE, CORDOBA"},{"n":"FRIGORIFICO PELAYO S.R.L","a":"CARHUE 2668, CABA, C.A.B.A."},{"n":"JUAN MANUEL MUSSO","a":"SUCRE 1931, LOMAS DE ZAMORA, BUENOS AIRES"},{"n":"ACQUA COMERCIAL S.A","a":"CHASCOMUS 6031, C.A.B.A., BUENOS AIRES"},{"n":"RABETINI FACUNDO GASTON","a":"SAN JOSE 997, MUÑIZ, BUENOS AIRES"},{"n":"NORRY HIJOS S.R.L.","a":"LOS CEIBOS 1085, YERBA BUENA, TUCUMAN"},{"n":"ORLANDO ALFREDO RUBEN","a":"CARABOBO 1046, CAPITAL FEDERAL, BUENOS AIRES"},{"n":"CAGNOLI S.A","a":"SECCION CHACRAS 43, TANDIL, BUENOS AIRES"},{"n":"CORREA LUCAS IVAN","a":"AV. MOSCONI 949, LOMAS DEL MIRADOR, BUENOS AIRES"},{"n":"MELERO ROBERTO LEANDRO CARLOS","a":"CLUB EL PASO S/N 0 -Bº, SANTO TOME, SANTA FE"},{"n":"STEFANELLI JOSE","a":"H. Yrigoyen 5672, Ezpeleta, BUENOS AIRES"},{"n":"GALLARDO RIVAS JULIO CESAR","a":"Ecuador 367 piso 10 dpto b, Capital Federal, BUENOS AIRES"},{"n":"RIO ARRIBA INDUSTRIAL S. R. L.","a":"SANTA FE 1357, ROSARIO NORTE, SANTA FE"},{"n":"INDUSTRIAS FRIGORIFICAS NORTE","a":"RN 34 KM 1134 PQUE.INDUSTRIAL, SALTA, SALTA"},{"n":"RANDO-MAZZETTI SRL","a":"BOSCH 1344, MAR DEL PLATA SUR, BUENOS AIRES"},{"n":"M DODERO CIA GRAL DE SERVICIOS","a":"PALACIOS ALFREDO 1339, CIUDAD AUTONOMA BS A, BUENOS AIRES"},{"n":"MAZZOCCA DUILIO ALEJANDRO","a":"AVENIDA HIPOLITO YRIGOYEN 2062, TRELEW, CHUBUT"},{"n":"GEMLAC S.A.","a":"DONATO ALAVAREZ 1654, QUILMES, BUENOS AIRES"},{"n":"FRIGORIFICO CARDENAS S.R.L","a":"AV. CORONEL CARDENAS 1918, C.A.B.A., BUENOS AIRES"},{"n":"LACTEOS DE POBLET S.A","a":"RUTA PROVINCIAL 36 Y 630, LA PLATA, BUENOS AIRES"},{"n":"ENCINA PABLO FABIAN","a":"ALBARELLOS 3615, ISIDRO CASANOVA, BUENOS AIRES"},{"n":"CARNAT S.A.","a":"ZAMUDIO 4686 Piso:5 Dpto:C, C.A.B.A."},{"n":"LABORATORIOS RICHET S A","a":"TERRERO 1251, C.A.B.A."},{"n":"ACP GROUP S.A.","a":"PICO 3090, CABA, C.A.B.A."},{"n":"BALBOA JUAN","a":"CNO VILLA POSE KM 1-1/2 0, CIUDAD DE CORDOBA SU, CORDOBA"},{"n":"DE MARCO JUAN CARLOS","a":"ACEVEDO 3420, LOMAS DEL MIRADOR, BUENOS AIRES"},{"n":"MKM DISTRIBUIDORA S.R.L.","a":"jose valentin gomez 151, MORON, BUENOS AIRES"},{"n":"MANTENIMIENTO ABSOLUTO S.R.L.","a":"O' HIGGINS 1069, HURLINGHAM, BUENOS AIRES"},{"n":"MATTIEVICH S A","a":"RUTA NACIONAL N 33 KM 740 0, CASILDA, SANTA FE"},{"n":"AVILOPZAN S.R.L.","a":"CHASSAING 2565, GREGORIO DE LAFERRERE, BUENOS AIRES"},{"n":"EL SOL DE BELLA VISTA S.R.L.","a":"Quirno 198, BELLA VISTA, BUENOS AIRES"},{"n":"SUCCI HERNAN RAUL","a":"MALDONADO 634 PISO:1 DPTO:a, BAHIA BLANCA, BUENOS AIRES"},{"n":"KUWA CEOS SA","a":"RUFINO FAL 3413, OLAVARRIA, BUENOS AIRES"},{"n":"TROPICAL ARGENTINA SRL","a":"DEL MAR  0 ESQ: DE LA PALA, MERCADO CENTRAL BS A, BUENOS AIRES"},{"n":"PROBANZA ESTEBAN MARTIN","a":"BURGOS 763, AZUL, BUENOS AIRES"},{"n":"CASTELLI MIRIAM ROSANA","a":"VICENTE LOPEZ 3064, OLAVARRIA, BUENOS AIRES"},{"n":"COOPERATIVA TELEFONICA DE VIVI","a":"BERUTI 1381, DEL VISO, BUENOS AIRES"},{"n":"RUBIO GERARDO AGUSTIN","a":"CHASCOMUS 1224, MONTE CHINGOLO, BUENOS AIRES"},{"n":"SOCIEDAD CARNICA S.A.","a":"AV. BOCAYA 1019 PISO 1 DPTO:A, CABA, C.A.B.A."},{"n":"FRIG. RICARDO BOVAY E HIJOS SA","a":"DIRECTORIO 6028, CAPITAL FEDERAL, C.A.B.A."},{"n":"MIRANDA RICARDO EDUARDO","a":"INDEPENDENCIA 518  Dpto:2, SAN SALVADOR DE JUJU, JUJUY"},{"n":"VILLALBA PABLO","a":"ZEQUEIRA 4280, GREGORIO DE LAFERRER, BUENOS AIRES"},{"n":"COOPERATIVA OBRERA LIMITADA DE","a":"PARAGUAY 445, BAHIA BLANCA, BUENOS AIRES"},{"n":"REFRIGERACION PERRI  Y ASOCIAD","a":"CASEROS 2678, SAN ANDRES, BUENOS AIRES"},{"n":"QUALITY MATTERS","a":"SEGADE 253, CORONEL BRANDSEN, BUENOS AIRES"},{"n":"EL RODEO S.A.S.","a":"AV. ALMIRANTE BROWN 267, SAN SALVADOR DE JUJUY, JUJUY"},{"n":"CABLES DE ACERO RESIFLEX S.A.","a":"OLAVARRIA 1123, C.A.B.A."},{"n":"MEATEX S. A.","a":"RUTA NACIONAL N 33 KM 740 0, CASILDA, SANTA FE"},{"n":"SABORES DE CAÑUELAS S.R.L.","a":"FREIRE 2028, CAÑUELAS, BUENOS AIRES"},{"n":"CARRERA JULIO CESAR","a":"LAS DELICIAS 1127, RIO CUARTO, CORDOBA"},{"n":"FLEXAR SOCIEDAD DE RESPONSABIL","a":"SANTA MARTA 1456, VILLA MAIPU, BUENOS AIRES"},{"n":"PERONE LEANDRO","a":"CALIXTO CALDERON 321, CHIVILCOY, BUENOS AIRES- INT"},{"n":"CLIMIDEA SRL","a":"H. IRIGOYEN 8028, BANFIELD - SUC 183, BUENOS AIRES"},{"n":"BO MARIA ALEJANDRA","a":"PEDRO LEON GALLO 735, SAN MIGUEL DEL TUCUM, TUCUMAN"},{"n":"RESILIX S.R.L","a":"AVENIDA ITALIA 1405, FORMOSA CAPITAL, FORMOSA"},{"n":"TICIEM S.A.","a":"EL NENE 1890, CAPITAL FEDERAL, C.A.B.A."},{"n":"FRALI S.A","a":"LAVALLE 1118 PISO:2 DPTO:D, CABA, C.A.B.A."},{"n":"SCHLEGEL MANUEL","a":"LIBERTAD 510, GENERAL GUEMES, SALTA"},{"n":"ABC S.A","a":"AV.JUJUY 570, C.A.B.A., C.A.B.A."},{"n":"ERNESTO RODRIGUEZ E HIJOS S.A","a":"PIERES 1635, CIUDAD AUTONOMA, C.A.B.A."},{"n":"SUCESION DE TAVAUT JOSE GERMAN","a":"belgrano 3299, C.A.B.A."},{"n":"SALVATIERRA JUAN ALEJANDRO","a":"AV ATAHUALPA 1827, LA REJA, BUENOS AIRES"},{"n":"UNIVERSIDAD DE BUENOS AIRES","a":"VIAMONTE 444, C.A.B.A."},{"n":"RAUL HORACIO DELETRAZ S A","a":"SARMIENTO 1413, SAN MIGUEL, BUENOS AIRES"},{"n":"BIANFRAN S.R.L.","a":"CROVARA 3540, TABLADA, BUENOS AIRES"},{"n":"PFOH GUILLERMO FRANCISCO","a":"CHARLONE 615, BAHIA BLANCA, BUENOS AIRES"},{"n":"G. H.- S.R.L.","a":"RUTA PROV 2. KM 24 1/2 PARAJE LA TOMA, SAN ANTONIO, JUJUY"},{"n":"C.H.L. DISTRIBUCIONES S.R.L.","a":"AVENIDA KIRCHNER 7435 Piso:0 D, FORMOSA, FORMOSA"},{"n":"WILHELEM MARCOS RODOLFO","a":"Av. José P. Casella 1460, Pigüé, BUENOS AIRES"},{"n":"RODRIGUEZ MARIA VALENTINA","a":"ENTRE RIOS 143 ESQ TUCUMÁN, PICHANAL, SALTA"},{"n":"I-FLOW S.A","a":"LAVOISIER 494, Ingeniero Pablo Nogués, BUENOS AIRES"},{"n":"INGENIERIA MG-ZERO S.R.L","a":"LA PLATA 701, EL PALOMAR, BUENOS AIRES"},{"n":"FRIGORIFICO SAN FRANCISCO SA","a":"RUTA NACIONAL 158 KM 8 1/2, MONTE REDONDO, CORDOBA"},{"n":"SCHEINER MARTIN","a":"AV.ALMAFUERTE 450, PARANA, ENTRE RIOS"},{"n":"DITAS S.A","a":"DEAN FUNES 1535, VILLA MADERO, BUENOS AIRES"},{"n":"REDONA S.A.","a":"JOVELLANOS MELCHOR G 276, CABA, C.A.B.A."},{"n":"SCHVINDT HORACIO GERMAN","a":"ASTURIAS 5468, TABLADA, BUENOS AIRES"},{"n":"YEMI YAIR MATIAS","a":"SAN JOSE 1044  Dpto:A, MUÑIZ, BUENOS AIRES"},{"n":"RYC  S R L","a":"ARENAL CONCEPCION 2978 Piso:PB, CABA, BUENOS AIRES"},{"n":"ALMACEN DE FRIO S.R.L.","a":"San Salvador de Jujuy 1405, BUENOS AIRES"},{"n":"VARGAS CASTRO SILVIA SUSANA","a":"PJE VALLEJO 4467, SAN MIGUEL DE TUCUMAN, TUCUMAN"},{"n":"OPERACION BROTHERS S.R.L.","a":"AV. TRIUNVIRATO 3819, CABA, C.A.B.A."},{"n":"COLD SRL","a":"AV JUAN PERON 1280, Bº VILLA LOURDES, FORMOSA"},{"n":"SANCHEZ HERRERA RICARDO JAVIER","a":"CAMACUA 3222 Piso:PH, VILLA LUZURIAGA, BUENOS AIRES"},{"n":"GIUFFO OMAR ALBERTO","a":"FRENCH 187, CORONEL BRANDSEN, BUENOS AIRES"},{"n":"LOMBARDI MAURICIO JOAQUIN","a":"Vicente Mendieta 626, Monte Caseros, CORRIENTES"},{"n":"CASSISI JOSE HUMBERTO","a":"Calle 513 1733 e/12 y 13, LA PLATA RINGUE, BUENOS AIRES"},{"n":"BURINI JORGE ALESIO","a":"DR FERNANDO RUIZ 3333, ROSARIO SUD, SANTA FE"},{"n":"FRIGORIFICO EL BIERZO S.A.","a":"Bragado 6759, Capital Federal, BUENOS AIRES"},{"n":"CRUZ DANIEL EDUARDO","a":"GORRITI 915     M:8, SAN SALVADOR DE JUJUY, JUJUY"},{"n":"TISOCCO RUBEN DARIO","a":"BV SAN LORENZO OESTE 740, ENTRE RIOS, ENTRE RIOS"},{"n":"GONZALEZ VIRGINIA NELLY","a":"AV. MAIPU 2957, OLIVOS, BUENOS AIRES"},{"n":"BACCARINI S. R. L.","a":"RUTA 16 0, LAGO PUELO, CHUBUT"},{"n":"COMESTIBLES BUENOS AIRES","a":"EVA PERON 9263, LOMA HERMOSA, BUENOS AIRES"},{"n":"CORDOBA EDUARDO","a":"SENGUEL 6376, GONZALEZ CATAN, BUENOS AIRES"},{"n":"LUCCIARINI ADRIAN","a":"Almafuerte 5157, R. De Escalada Óeste, BUENOS AIRES"},{"n":"CRESPO JULIO","a":"Groussag 880, El Talar, BUENOS AIRES"},{"n":"LARDAPIDE RODOLFO","a":"Lavalle 3842, Olavarría, BUENOS AIRES"},{"n":"RANDO-MAZZETTI SRL EN FORMACIO","a":"BOSCH 1344, MAR DEL PLATA, BUENOS AIRES"},{"n":"FRIMAQ SRL","a":"OBRIEN 1879, PASO DEL REY, BUENOS AIRES"},{"n":"ARIAS WALTER","a":"Moreno 543, LOBOS, BUENOS AIRES"},{"n":"FARRASANO","a":"Constituyentes 1508, Villa Madero, BUENOS AIRES"},{"n":"GEIST RAUL","a":"SAN LUIS 2640, BENAVIDEZ, BUENOS AIRES"},{"n":"AIMONE","a":"JOSE E. RODO 6105, CABA, CAPITAL FEDERAL"},{"n":"TEMPING / NEOMAX SRL","a":"CALLE 198 Nº1676, JOSE LEON SUAREZ, BUENOS AIRES"},{"n":"XARDO SA","a":"RODO JOSE ENRIQUE 6044, CABA, CAPITAL FEDERAL"},{"n":"COMERCIAL EL MORO SRL","a":"ZUVIRIA 2036, SALTA"},{"n":"REFRIGERACION ALPA S.A","a":"Sinclair nº5681, ISIDRO CASANOVA, BUENOS AIRES"},{"n":"REDONDO SOLARI FERNANDO","a":"AV HIPOLITO YRIGOYEN 19272, LONGCHAMPS, BUENOS AIRES"},{"n":"EFIN S.R.L","a":"CONDARCO 6073, ISIDRO CASANOVA, BUENOS AIRES"},{"n":"JOSE LUIZ MAGAÑA SIERRA","a":"HERTZ 1242, RAFAEL CASTILLO, BUENOS AIRES"}];
+
+/* ═══ CONFIG ════════════════════════════════════════════ */
+const GMKEY  = 'AIzaSyAnJX-gQMv0RErEXTQH2ZWHSXwJtiH_a1Q';
+const REGION = 'AR';
+const CENTER = {lat:-34.6037,lng:-58.3816};
+// ↓ Replace with your deployed Apps Script URL
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytMH0u1S0ueQaBg7K8Blun0O56G3L_QnhxkD9aWtvQHSXEEgm-zuVvobmDS22BbGpqbg/exec';
+
+const SK = {
+  trips:'fc10_trips', nextId:'fc10_nid',
+  choferes:'fc10_chof', nextCId:'fc10_ncid',
+  custom:'fc10_cust', active:'fc10_active', apikey:'fc10_apikey',
+  tmode:'fc10_tmode',
+};
+
+/* ═══ OOZ KEYWORDS ══════════════════════════════════════ */
+const OOZ_KW = ['CORDOBA','SANTA FE','TUCUMAN','MENDOZA','SALTA','JUJUY',
+  'ENTRE RIOS','CORRIENTES','MISIONES','CHACO','FORMOSA','SANTIAGO DEL ESTERO',
+  'LA RIOJA','SAN JUAN','SAN LUIS','CATAMARCA','LA PAMPA','NEUQUEN','RIO NEGRO',
+  'CHUBUT','SANTA CRUZ','TIERRA DEL FUEGO','ROSARIO','MAR DEL PLATA',
+  'BAHIA BLANCA','OLAVARRIA','TANDIL','PUNTA ALTA','AZUL','CHIVILCOY',
+  'CASILDA','VILLA MARIA','VILLA NUEVA','RIO CUARTO','TRELEW','PUERTO MADRYN',
+  'PICHANAL','GENERAL GUEMES','MONTE CASEROS','GOYA','LAGO PUELO',
+  'YERBA BUENA','SAN SALVADOR DE JUJUY','SAN MIGUEL DE TUCUMAN','EXTERIOR'];
+function isOOZ(a){ if(!a)return false; const u=a.toUpperCase(); return OOZ_KW.some(k=>u.includes(k)); }
+
+/* ═══ STATE ═════════════════════════════════════════════ */
+let trips    = JSON.parse(localStorage.getItem(SK.trips)    || '[]');
+let nextId   = parseInt(localStorage.getItem(SK.nextId)     || '1');
+let choferes = JSON.parse(localStorage.getItem(SK.choferes) || 'null') ||
+  [{id:1,nombre:'Juan Perez',camion:'Camion 01'},{id:2,nombre:'Carlos Gomez',camion:'Camion 02'},
+   {id:3,nombre:'Roberto Silva',camion:'Camion 03'},{id:4,nombre:'Diego Lopez',camion:'Camion 04'}];
+let nextCId  = parseInt(localStorage.getItem(SK.nextCId)    || String(choferes.length+1));
+let customCl = JSON.parse(localStorage.getItem(SK.custom)   || '[]');
+let AT = null;
+let discTgt=null, delTgt=null, stopCtr=0, filterMode='week';
+let tmode = localStorage.getItem(SK.tmode) || 'hora';  // 'hora' | 'km'
+let gmap=null, gdirs=null, gdirR=null, gGeoc=null;
+let origAC=null, stopACs={}, oozACs={};
+let waitTick=null, retornoRouteSec=null, retornoRouteMt=null;
+let _lastLegData=[];
+
+/* ═══ SYNC / SHEETS ══════════════════════════════════════
+   Every write goes to localStorage immediately (offline-first),
+   then async to Google Sheets. Reads always from localStorage.
+═══════════════════════════════════════════════════════ */
+const hasSheets = () => SCRIPT_URL && SCRIPT_URL !== 'AQUI_VA_TU_LINK_DE_DEPLOY';
+
+function setSyncStatus(s){ // 'ok'|'saving'|'err'|'offline'
+  const el=document.getElementById('syncdot');
+  const lbl=document.getElementById('synclbl');
+  el.className='sync-dot '+(s==='ok'?'ok':s==='saving'?'saving':s==='err'?'err':'');
+  lbl.textContent=s==='ok'?'sincronizado':s==='saving'?'guardando...':s==='err'?'error sync':'local';
+}
+
+async function sheetPost(body){
+  if(!hasSheets()){ setSyncStatus('offline'); return null; }
+  setSyncStatus('saving');
+  try{
+    const r = await fetch(SCRIPT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    const d = await r.json();
+    setSyncStatus(d.ok?'ok':'err');
+    return d;
+  }catch(e){ setSyncStatus('err'); return null; }
+}
+
+async function sheetGet(params){
+  if(!hasSheets()) return null;
+  const qs = new URLSearchParams(params).toString();
+  try{
+    const r = await fetch(SCRIPT_URL+'?'+qs);
+    return await r.json();
+  }catch(e){ return null; }
+}
+
+/* ═══ CLOCK ═════════════════════════════════════════════ */
+function tick(){ document.getElementById('pclock').textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); }
+setInterval(tick,1000); tick();
+
+/* ═══ TABS ══════════════════════════════════════════════ */
+function swTab(id,btn){
+  document.querySelectorAll('.tpane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  (btn||event.currentTarget).classList.add('on');
+  if(id==='tc') renderClients();
+  if(id==='th') renderTable();
+}
+
+/* ═══ TARIFF MODE ════════════════════════════════════════ */
+function setTmode(mode){
+  tmode=mode;
+  localStorage.setItem(SK.tmode,mode);
+  document.getElementById('tbhora').classList.toggle('on',mode==='hora');
+  document.getElementById('tbkm').classList.toggle('on',mode==='km');
+  if(mode==='hora'){
+    document.getElementById('tlbl').textContent='TARIFA / HORA ($)';
+    document.getElementById('ftar').placeholder='50000';
+    document.getElementById('ftar').value=document.getElementById('ftar').value||'50000';
+  } else {
+    document.getElementById('tlbl').textContent='TARIFA / KM ($)';
+    document.getElementById('ftar').placeholder='300';
+    document.getElementById('ftar').value=document.getElementById('ftar').value||'300';
+  }
+}
+// Init tmode on load
+window.addEventListener('DOMContentLoaded',()=>{
+  setTmode(tmode);
+  const k=localStorage.getItem(SK.apikey)||GMKEY;
+  document.getElementById('apikey').value=k;
+  loadMaps(k);
+  restoreAT();
+  if(hasSheets()) setSyncStatus('ok'); else setSyncStatus('offline');
+});
+
+/* ═══ MAPS ═══════════════════════════════════════════════ */
+function saveApiKey(){
+  const k=document.getElementById('apikey').value.trim();
+  if(!k){toast('Ingresa una API Key.');return;}
+  localStorage.setItem(SK.apikey,k); loadMaps(k);
+}
+function loadMaps(key){
+  const old=document.getElementById('gmscript'); if(old)old.remove();
+  gmap=null;gdirs=null;gdirR=null;gGeoc=null;origAC=null;stopACs={};oozACs={};
+  const dot=document.getElementById('apidot'); dot.className='apidot load';
+  window._mcb=function(){
+    try{
+      gmap=new google.maps.Map(document.getElementById('themap'),{
+        center:CENTER,zoom:11,mapTypeControl:false,streetViewControl:false,fullscreenControl:false,
+        styles:[
+          {elementType:'geometry',stylers:[{color:'#13161c'}]},
+          {elementType:'labels.text.stroke',stylers:[{color:'#13161c'}]},
+          {elementType:'labels.text.fill',stylers:[{color:'#8a92a6'}]},
+          {featureType:'road',elementType:'geometry',stylers:[{color:'#252933'}]},
+          {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#2e3545'}]},
+          {featureType:'water',elementType:'geometry',stylers:[{color:'#0c1420'}]},
+          {featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},
+          {featureType:'transit',elementType:'geometry',stylers:[{color:'#1f2430'}]},
+        ]
+      });
+      gGeoc=new google.maps.Geocoder();
+      gdirs=new google.maps.DirectionsService();
+      gdirR=new google.maps.DirectionsRenderer({map:gmap,polylineOptions:{strokeColor:'#f0c040',strokeWeight:4,strokeOpacity:.85}});
+      document.getElementById('mholder').style.display='none';
+      document.getElementById('bcalc').style.display='';
+      dot.className='apidot ok';
+      attachAC('for',null,ac=>origAC=ac);
+      document.querySelectorAll('#scon .srow').forEach(r=>{ attachStopAC(r.dataset.idx); attachOOZac(r.dataset.idx); });
+      toast('Google Maps conectado.');
+      mlog('Google Maps + Places listo.');
+    }catch(e){dot.className='apidot err';toast('Error Maps: '+e.message);}
+  };
+  window._merr=function(){document.getElementById('apidot').className='apidot err';toast('API Key invalida.');};
+  const s=document.createElement('script');
+  s.id='gmscript';
+  s.src='https://maps.googleapis.com/maps/api/js?key='+key+'&libraries=places&region='+REGION+'&language=es&callback=_mcb';
+  s.async=true;s.defer=true;s.onerror=window._merr;
+  document.head.appendChild(s);
+}
+
+/* ═══ AUTOCOMPLETE ═══════════════════════════════════════ */
+const AC_OPTS={componentRestrictions:{country:REGION},fields:['formatted_address','geometry','name']};
+function attachAC(inputId,existing,setRef){
+  const inp=document.getElementById(inputId); if(!inp||!window.google)return;
+  if(existing) google.maps.event.clearInstanceListeners(existing);
+  const ac=new google.maps.places.Autocomplete(inp,AC_OPTS);
+  ac.addListener('place_changed',()=>{ const p=ac.getPlace(); inp.value=p.formatted_address||p.name||''; updCalcBtn(); });
+  if(setRef)setRef(ac); return ac;
+}
+function attachStopAC(idx){
+  const inp=document.getElementById('sa-'+idx); if(!inp||!window.google||!google.maps.places)return;
+  if(stopACs[idx])google.maps.event.clearInstanceListeners(stopACs[idx]);
+  const ac=new google.maps.places.Autocomplete(inp,AC_OPTS);
+  ac.addListener('place_changed',()=>{ const p=ac.getPlace(); const v=p.formatted_address||p.name||''; inp.value=v; checkOOZ(idx,v); updCalcBtn(); });
+  stopACs[idx]=ac;
+}
+function attachOOZac(idx){
+  const inp=document.getElementById('ooz-inp-'+idx); if(!inp||!window.google||!google.maps.places)return;
+  if(oozACs[idx])google.maps.event.clearInstanceListeners(oozACs[idx]);
+  const ac=new google.maps.places.Autocomplete(inp,AC_OPTS);
+  ac.addListener('place_changed',()=>{ const p=ac.getPlace(); inp.value=p.formatted_address||p.name||''; });
+  oozACs[idx]=ac;
+}
+
+/* ═══ OOZ ════════════════════════════════════════════════ */
+function checkOOZ(idx,addr){
+  const row=document.querySelector('.srow[data-idx="'+idx+'"]'); if(!row)return;
+  const al=document.getElementById('ooz-'+idx); if(!al)return;
+  if(isOOZ(addr)){ row.classList.add('out-of-zone'); al.classList.add('show'); if(window.google&&google.maps.places)attachOOZac(idx); }
+  else { row.classList.remove('out-of-zone'); al.classList.remove('show'); }
+}
+function applyOOZ(idx){
+  const row=document.querySelector('.srow[data-idx="'+idx+'"]');
+  const oi=document.getElementById('ooz-inp-'+idx);
+  const ai=document.getElementById('sa-'+idx);
+  if(!oi||!ai)return;
+  if(!oi.value.trim()){toast('Ingresa la direccion del transporte.');return;}
+  ai.value=oi.value.trim();
+  row.classList.remove('out-of-zone');
+  document.getElementById('ooz-'+idx).classList.remove('show');
+  toast('Destino cambiado a transporte local.');
+  updCalcBtn();
+}
+
+/* ═══ PRIORITY ═══════════════════════════════════════════ */
+function onPrioChange(sel){ const row=sel.closest('.srow'); if(sel.value==='high'){row.classList.add('prio-high');sel.classList.add('high');}else{row.classList.remove('prio-high');sel.classList.remove('high');} }
+
+/* ═══ CLIENT DROPDOWN ═══════════════════════════════════ */
+function allCl(){return[...CLIENTES_DB,...customCl];}
+function buildCOpts(q,ddId,tgt){
+  const ql=q.toLowerCase().trim();
+  const all=allCl();
+  const hits=ql?all.filter(c=>c.n.toLowerCase().includes(ql)||c.a.toLowerCase().includes(ql)):all.slice(0,12);
+  if(!hits.length)return'<div class="cop-e">Sin resultados</div>';
+  return hits.slice(0,10).map(c=>{
+    const gi=all.indexOf(c);
+    return'<div class="cop" data-gi="'+gi+'" data-dd="'+ddId+'" data-tgt="'+tgt+'" onmousedown="pickCl(event)">'+
+      '<span class="cop-n">'+hl(c.n,ql)+'</span><span class="cop-a">'+hl(c.a,ql)+'</span></div>';
+  }).join('');
+}
+function hl(s,q){ if(!q)return s; const i=s.toLowerCase().indexOf(q); if(i<0)return s; return s.slice(0,i)+'<mark style="background:rgba(240,192,64,.18);color:var(--ac);border-radius:2px">'+s.slice(i,i+q.length)+'</mark>'+s.slice(i+q.length); }
+function pickCl(ev){
+  ev.preventDefault();
+  const el=ev.currentTarget; const c=allCl()[parseInt(el.dataset.gi)]; if(!c)return;
+  const tgt=el.dataset.tgt;
+  if(tgt==='orig'){ document.getElementById('for').value=c.a; }
+  else{ const ni=document.getElementById('sc-'+tgt),ai=document.getElementById('sa-'+tgt); if(ni)ni.value=c.n; if(ai){ai.value=c.a;checkOOZ(tgt,c.a);} updCalcBtn(); }
+  document.getElementById(el.dataset.dd).classList.remove('open');
+}
+function openCD(iid,did,tgt){ const dd=document.getElementById(did);if(!dd)return;dd.innerHTML=buildCOpts(document.getElementById(iid).value,did,tgt);dd.classList.add('open'); }
+function closeCD(did){ setTimeout(()=>{const d=document.getElementById(did);if(d)d.classList.remove('open');},220); }
+function filterCD(iid,did,tgt){ const dd=document.getElementById(did);if(!dd)return;dd.innerHTML=buildCOpts(document.getElementById(iid).value,did,tgt);if(dd.innerHTML)dd.classList.add('open'); }
+
+/* ═══ CLIENTS TAB ════════════════════════════════════════ */
+function renderClients(){
+  const q=(document.getElementById('csrch').value||'').toLowerCase().trim();
+  const all=allCl();
+  const hits=q?all.filter(c=>c.n.toLowerCase().includes(q)||c.a.toLowerCase().includes(q)):all;
+  document.getElementById('ccnt').textContent=hits.length+' cliente'+(hits.length!==1?'s':'')+' encontrado'+(hits.length!==1?'s':'');
+  const g=document.getElementById('cgrid');
+  if(!hits.length){g.innerHTML='<div style="color:var(--mu);font-family:var(--fm);font-size:12px;padding:20px;text-align:center">Sin resultados.</div>';return;}
+  g.innerHTML=hits.map(c=>{
+    const gi=all.indexOf(c); const isC=customCl.some(cc=>cc.n===c.n&&cc.a===c.a);
+    return'<div class="ccard"><div class="cico">&#127970;</div>'+
+      '<div class="cinf"><div class="cname">'+c.n+'</div><div class="caddr">'+c.a+'</div></div>'+
+      '<div class="cacts"><button class="btn bg bxs" data-gi="'+gi+'" onclick="useClient(this)">+ Usar</button>'+
+      (isC?'<button class="btn bd bxs" data-gi="'+gi+'" onclick="delCust(this)">&#10005;</button>':'')+
+      '</div></div>';
+  }).join('');
+}
+function useClient(btn){ const c=allCl()[parseInt(btn.dataset.gi)];if(!c)return; swTab('tn',document.querySelectorAll('.tbtn')[0]); addStop(c.n,c.a); toast(c.n+' agregado como parada.'); }
+function openAddClient(){ document.getElementById('ncn').value='';document.getElementById('nca').value='';document.getElementById('maddcl').classList.add('open'); }
+function confirmAddClient(){
+  const n=document.getElementById('ncn').value.trim(), a=document.getElementById('nca').value.trim();
+  if(!n||!a){toast('Completa nombre y direccion.');return;}
+  const entry={n,a};
+  customCl.push(entry);
+  localStorage.setItem(SK.custom,JSON.stringify(customCl));
+  sheetPost({action:'saveCliente',data:{n,a}});
+  renderClients(); closeMdl('maddcl'); toast('"'+n+'" guardado.');
+}
+function delCust(btn){
+  const c=allCl()[parseInt(btn.dataset.gi)];if(!c)return;
+  customCl=customCl.filter(cc=>!(cc.n===c.n&&cc.a===c.a));
+  localStorage.setItem(SK.custom,JSON.stringify(customCl));
+  sheetPost({action:'deleteCliente',id:c._id||c.n});
+  renderClients(); toast('Cliente eliminado.');
+}
+
+/* ═══ SMART SORT ═════════════════════════════════════════ */
+function parseTW(t){ if(!t)return Infinity; const p=t.split(':'); return parseInt(p[0])*60+parseInt(p[1]); }
+function smartSort(stops){
+  const high=stops.filter(s=>s.prio==='high');
+  const norm=stops.filter(s=>s.prio!=='high');
+  const byTW=a=>a.slice().sort((x,y)=>{ const tx=parseTW(x.twTo),ty=parseTW(y.twTo); return tx!==ty?tx-ty:parseTW(x.twFrom)-parseTW(y.twFrom); });
+  return [...byTW(high),...byTW(norm)];
+}
+
+/* ═══ STOPS ══════════════════════════════════════════════ */
+function addStop(defName,defAddr){
+  const idx=stopCtr++; const c=document.getElementById('scon');
+  const d=document.createElement('div'); d.className='srow'; d.dataset.idx=idx;
+  d.innerHTML=
+    '<div class="sr-header">'+
+      '<div class="snum">?</div>'+
+      '<div class="csw" style="position:relative">'+
+        '<input id="sc-'+idx+'" type="text" placeholder="Cliente / Descripcion..." autocomplete="off"'+
+          ' oninput="filterCD(\'sc-'+idx+'\',\'cd-'+idx+'\',\''+idx+'\')"'+
+          ' onfocus="openCD(\'sc-'+idx+'\',\'cd-'+idx+'\',\''+idx+'\')"'+
+          ' onblur="closeCD(\'cd-'+idx+'\')">'+
+        '<div class="cdd" id="cd-'+idx+'"></div></div>'+
+      '<select class="prio-sel" id="sp-'+idx+'" onchange="onPrioChange(this)">'+
+        '<option value="normal">Normal</option><option value="high">&#9888; Alta</option></select>'+
+      '<div class="sorder-btns">'+
+        '<button class="sobtn" onclick="moveStop(this,-1)" title="Subir parada">&#9650;</button>'+
+        '<button class="sobtn" onclick="moveStop(this,1)"  title="Bajar parada">&#9660;</button>'+
+      '</div>'+
+      '<button class="srmbtn" onclick="removeStop(this)">&#10005;</button>'+
+    '</div>'+
+    '<div class="sr-body">'+
+      '<input id="sa-'+idx+'" type="text" placeholder="Direccion de la parada..." autocomplete="off"'+
+        ' oninput="updCalcBtn();checkOOZ('+idx+',this.value)">'+
+      '<div class="sr-timewin">'+
+        '<label>&#128336; Franja:</label>'+
+        '<input type="time" id="tw-f-'+idx+'"><label>a</label>'+
+        '<input type="time" id="tw-t-'+idx+'">'+
+        '<label style="color:var(--mu);font-size:9px">(opcional)</label></div>'+
+      '<div class="ooz-alert" id="ooz-'+idx+'">'+
+        '<div class="ooz-lbl">&#9888; FUERA DE ZONA DE COBERTURA DIRECTA</div>'+
+        '<div class="ooz-msg">Esta direccion esta en el interior. Ingresa la direccion del transporte/expreso en CABA o GBA.</div>'+
+        '<div class="ooz-field-wrap">'+
+          '<input type="text" id="ooz-inp-'+idx+'" placeholder="Ej: Transban - Corrientes 1234, CABA" autocomplete="off">'+
+          '<button class="btn borg bxs" onclick="applyOOZ('+idx+')">Aplicar</button></div></div>'+
+    '</div>';
+  c.appendChild(d);
+  if(defName)document.getElementById('sc-'+idx).value=defName;
+  if(defAddr){document.getElementById('sa-'+idx).value=defAddr;checkOOZ(idx,defAddr);}
+  renumStops();
+  updateArrowStates();
+  if(window.google&&google.maps&&google.maps.places){attachStopAC(idx);attachOOZac(idx);}
+  updCalcBtn();
+  if(!defName)setTimeout(()=>{const el=document.getElementById('sc-'+idx);if(el)el.focus();},50);
+}
+function removeStop(btn){btn.closest('.srow').remove();renumStops();updateArrowStates();clearRte();updCalcBtn();}
+
+/* Move a stop row up (-1) or down (+1), then redraw route if Maps available */
+function moveStop(btn, dir){
+  const row = btn.closest('.srow');
+  const container = document.getElementById('scon');
+  const rows = Array.from(container.querySelectorAll('.srow'));
+  const i = rows.indexOf(row);
+  const target = i + dir;
+  if(target < 0 || target >= rows.length) return;
+  // DOM swap
+  if(dir === -1){
+    container.insertBefore(row, rows[target]);
+  } else {
+    container.insertBefore(rows[target], row);
+  }
+  renumStops();
+  updateArrowStates();
+  clearRte();
+  updCalcBtn();
+  // Auto-recalculate route if Maps is active and we have enough data
+  if(gdirs){
+    const orig = document.getElementById('for').value.trim();
+    const stops = getStops();
+    if(orig && stops.some(s=>s.addr)){
+      calcRoute(null);  // null cb = just draw, don't create trip
+    }
+  }
+}
+
+/* Disable ▲ on first row and ▼ on last row */
+function updateArrowStates(){
+  const rows = Array.from(document.querySelectorAll('#scon .srow'));
+  rows.forEach((row, i) => {
+    const [up, dn] = row.querySelectorAll('.sobtn');
+    if(up)  up.disabled  = (i === 0);
+    if(dn)  dn.disabled  = (i === rows.length - 1);
+  });
+}
+function renumStops(){document.querySelectorAll('#scon .srow').forEach((r,i)=>r.querySelector('.snum').textContent=i+1);}
+function getStops(){
+  return Array.from(document.querySelectorAll('#scon .srow')).map(r=>{
+    const i=r.dataset.idx;
+    return{addr:(document.getElementById('sa-'+i)||{value:''}).value.trim(),
+           client:(document.getElementById('sc-'+i)||{value:''}).value.trim(),
+           prio:(document.getElementById('sp-'+i)||{value:'normal'}).value,
+           twFrom:(document.getElementById('tw-f-'+i)||{value:''}).value,
+           twTo:(document.getElementById('tw-t-'+i)||{value:''}).value};
+  });
+}
+function updCalcBtn(){ const b=document.getElementById('bcalc');if(!gdirs){b.style.display='none';return;} const o=document.getElementById('for').value.trim(); b.style.display=(o&&getStops().some(s=>s.addr))?'':'none'; }
+
+/* ═══ ROUTE CALCULATION ══════════════════════════════════ */
+function calcRoute(cb){
+  if(!gdirs){toast('Activa la API Key.');return;}
+  const orig=document.getElementById('for').value.trim();
+  const rawStops=getStops().filter(s=>s.addr);
+  if(!orig||!rawStops.length){toast('Ingresa origen y al menos una parada.');return;}
+  const sorted=smartSort(rawStops);
+  const dest=sorted[sorted.length-1].addr;
+  const wps=sorted.slice(0,-1).map(s=>({location:s.addr,stopover:true}));
+  const canOpt=sorted.filter(s=>s.prio!=='high').length>1;
+  mlog('Calculando ruta (prio+horario+trafico)...');
+  gdirs.route({
+    origin:orig,destination:dest,waypoints:wps,
+    optimizeWaypoints:canOpt,
+    travelMode:google.maps.TravelMode.DRIVING,region:REGION,
+    drivingOptions:{departureTime:new Date(),trafficModel:google.maps.TrafficModel.BEST_GUESS}
+  },(res,st)=>{
+    if(st!=='OK'){toast('Error ruta: '+st);mlog('Directions error: '+st);if(cb)cb(null);return;}
+    gdirR.setDirections(res);
+    const rt=res.routes[0],ord=rt.waypoint_order,legs=rt.legs;
+    const canOpt2=wps.length>0&&ord&&ord.length>0;
+    const finalStops=[{addr:orig,client:'Origen',prio:'normal',twFrom:'',twTo:''}];
+    if(canOpt2&&ord.length){ const mid=sorted.slice(0,-1); ord.forEach(i=>finalStops.push(mid[i])); finalStops.push(sorted[sorted.length-1]); }
+    else sorted.forEach(s=>finalStops.push(s));
+    let cumSec=0,cumMt=0;
+    _lastLegData=legs.map((leg,i)=>{
+      const dur=(leg.duration_in_traffic||leg.duration); cumSec+=dur.value; cumMt+=leg.distance.value;
+      return{sec:cumSec,mt:cumMt,stop:finalStops[i+1],durText:dur.text,distText:leg.distance.text};
+    });
+    checkETAAlerts(_lastLegData);
+    const html=legs.map((leg,i)=>{
+      const fr=finalStops[i]?(finalStops[i].client||finalStops[i].addr):'';
+      const to=finalStops[i+1]?(finalStops[i+1].client||finalStops[i+1].addr):'';
+      const dur=(leg.duration_in_traffic||leg.duration);
+      const isHP=finalStops[i+1]&&finalStops[i+1].prio==='high';
+      const eta=new Date(Date.now()+_lastLegData[i].sec*1000).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+      const warn=getTWWarn(finalStops[i+1],_lastLegData[i].sec);
+      return'<div class="rleg"><div class="rleg-ic">'+(i===0?'&#128307;':(i===legs.length-1?'&#127937;':'&#128205;'))+'</div>'+
+        '<div class="rleg-info">'+(isHP?'<span style="color:var(--a4);font-size:10px">&#9888;ALTA&bull;</span> ':'')+
+        fr+' &rarr; '+to+'<br><small>ETA '+eta+' &bull; '+leg.start_address.split(',').slice(0,2).join(',')+'</small>'+
+        (warn.type?'<div class="rleg-warn '+(warn.type==='err'?'e':'w')+'">'+warn.msg+'</div>':'')+
+        '</div><div class="rleg-meta">'+dur.text+'<br>'+leg.distance.text+'</div></div>';
+    }).join('');
+    document.getElementById('rlegs').innerHTML=html;
+    document.getElementById('rtime').textContent=fmtDur(cumSec);
+    document.getElementById('rdist').textContent=(cumMt/1000).toFixed(1)+' km';
+    document.getElementById('optbadge').style.display=canOpt2?'':'none';
+    document.getElementById('rte').classList.add('vis');
+    swTab('tm',document.getElementById('tbmapa'));
+    setTimeout(()=>{ const b=new google.maps.LatLngBounds(); legs.forEach(l=>{b.extend(l.start_location);b.extend(l.end_location);}); gmap.fitBounds(b,40); },200);
+    window._rSec=cumSec; window._rMt=cumMt;
+    mlog('Ruta: '+legs.length+' tramos - '+fmtDur(cumSec)+' - '+(cumMt/1000).toFixed(1)+' km'+(canOpt2?' [optimizada]':''));
+    if(cb) cb({sec:cumSec,mt:cumMt,ord:finalStops,opt:canOpt2});
+  });
+}
+
+/* ═══ ETA + TIME WINDOW ══════════════════════════════════ */
+function getTWWarn(stop,cumSec){
+  if(!stop)return{type:'',msg:''};
+  const eta=new Date(Date.now()+cumSec*1000); const em=eta.getHours()*60+eta.getMinutes();
+  const twTo=parseTW(stop.twTo),twFrom=parseTW(stop.twFrom);
+  if(twTo!==Infinity&&em>twTo){ const d=em-twTo,h=Math.floor(d/60),m=d%60; return{type:'err',msg:'&#9888; ETA supera franja por '+(h?h+'h ':'')+m+'min (limite: '+stop.twTo+')'}; }
+  if(twFrom!==Infinity&&em<twFrom) return{type:'warn',msg:'&#9432; ETA antes de apertura ('+stop.twFrom+')'};
+  return{type:'',msg:''};
+}
+function checkETAAlerts(legData){
+  const panel=document.getElementById('etapanel'),list=document.getElementById('etalist');
+  const al=legData.map(ld=>({w:getTWWarn(ld.stop,ld.sec),stop:ld.stop})).filter(x=>x.w.type);
+  if(!al.length){panel.classList.remove('show');return;}
+  panel.classList.add('show');
+  list.innerHTML=al.map(a=>'<div class="eta-item '+(a.w.type==='err'?'eta-err':'eta-warn')+'">'+
+    '<div class="eta-ico">'+(a.w.type==='err'?'&#128683;':'&#9203;')+'</div>'+
+    '<div class="eta-txt"><div class="eta-client">'+(a.stop?a.stop.client||a.stop.addr:'')+'</div>'+
+    '<div class="eta-detail">'+a.w.msg+'</div></div></div>').join('');
+}
+function clearRte(){
+  document.getElementById('rte').classList.remove('vis');
+  document.getElementById('rlegs').innerHTML='';
+  document.getElementById('rtime').textContent='--';
+  document.getElementById('rdist').textContent='--';
+  document.getElementById('optbadge').style.display='none';
+  document.getElementById('etapanel').classList.remove('show');
+  document.getElementById('etalist').innerHTML='';
+  window._rSec=null;window._rMt=null;_lastLegData=[];
+}
+
+/* ═══ CHOFERES ═══════════════════════════════════════════ */
+function renderChofSel(){
+  const s=document.getElementById('fch'),cv=s.value;
+  s.innerHTML='<option value="">-- Selecciona --</option>'+
+    choferes.map(c=>'<option value="'+c.id+'" '+(String(c.id)===cv?'selected':'')+'>'+c.nombre+' - '+c.camion+'</option>').join('');
+}
+function openFlota(){renderFList();document.getElementById('mflota').classList.add('open');}
+function renderFList(){
+  const el=document.getElementById('flist');
+  if(!choferes.length){el.innerHTML='<div style="color:var(--mu);text-align:center;padding:10px">Sin choferes.</div>';return;}
+  el.innerHTML=choferes.map(c=>'<div class="fitem"><div class="fitem-ico">&#128666;</div>'+
+    '<div class="fitem-inf"><div class="fitem-n">'+c.nombre+'</div><div class="fitem-p">'+c.camion+'</div></div>'+
+    '<button class="btn bd bxs" data-id="'+c.id+'" onclick="delChofer(parseInt(this.dataset.id))">&#10005;</button></div>').join('');
+}
+function addChofer(){
+  const n=document.getElementById('fn').value.trim(),c2=document.getElementById('fc').value.trim();
+  if(!n||!c2){toast('Completa nombre y camion.');return;}
+  const entry={id:nextCId++,nombre:n,camion:c2};
+  choferes.push(entry); saveCh(); renderFList(); renderChofSel();
+  sheetPost({action:'saveChofer',data:entry});
+  document.getElementById('fn').value=''; document.getElementById('fc').value='';
+  toast(n+' agregado.');
+}
+function delChofer(id){
+  if(AT&&AT._choferId===id){toast('Chofer con viaje activo.');return;}
+  choferes=choferes.filter(c=>c.id!==id); saveCh(); renderFList(); renderChofSel();
+  sheetPost({action:'deleteChofer',id});
+  toast('Chofer eliminado.');
+}
+
+/* ═══ TRIP CREATION ══════════════════════════════════════ */
+function crearViaje(){
+  const cid=parseInt(document.getElementById('fch').value);
+  const orig=document.getElementById('for').value.trim();
+  const tar=parseFloat(document.getElementById('ftar').value);
+  const stops=getStops();
+  const ch=choferes.find(c=>c.id===cid);
+  if(!ch){toast('Selecciona un chofer.');return;}
+  if(!orig){toast('Ingresa el origen.');return;}
+  if(!stops.length||!stops[0].addr){toast('Agrega al menos una parada.');return;}
+  if(isNaN(tar)||tar<=0){toast('Tarifa invalida.');return;}
+  if(AT){toast('Hay un viaje activo. Finalizalo primero.');return;}
+  if(gdirs){toast('Calculando ruta...');calcRoute(r=>_finish(cid,orig,tar,stops,ch,r));}
+  else _finish(cid,orig,tar,stops,ch,null);
+}
+
+function _finish(cid,orig,tar,stops,ch,rr){
+  // ── SYNC ORDER: use smartSort+Google optimized order ──────────────
+  const orderedStops=(rr&&rr.ord&&rr.ord.length>1)
+    ? rr.ord.slice(1).filter(s=>s.addr)
+    : smartSort(stops.filter(s=>s.addr));
+
+  const trip={
+    id:nextId++, _choferId:cid,
+    chofer:ch.nombre+' - '+ch.camion,
+    origen:orig,
+    stops:orderedStops,           // ← ALWAYS optimized order (v9/v10 fix)
+    modalidad:tmode,              // 'hora' | 'km'
+    tarifa:tar,
+    estSec:rr?rr.sec:null,
+    estMt:rr?rr.mt:null,
+    estado:'pendiente',
+    tsCreado:new Date().toISOString(),
+    tsStart:null, tsLlegadaUltima:null, tsRetornoInicio:null, tsEnd:null,
+    stopLog:[],
+    horasTotal:null, kmTotal:null, costoTotal:null,
+    discrepancia:false,
+  };
+  trips.push(trip);
+  AT={...trip, curStop:0, waitStart:null, stopLog:[], _retorno:false};
+  AT._legData=_lastLegData.map(ld=>({sec:ld.sec,mt:ld.mt}));
+  saveAll();
+  // Sync to Sheets
+  sheetPost({action:'saveViaje', data:buildSheetViaje(trip)});
+  renderTable(); renderPhone(); updStats();
+  mlog('Viaje #'+trip.id+' -> '+ch.nombre+' - '+orderedStops.length+' parada(s) [orden optimizado]'+(rr?' '+fmtDur(rr.sec):''));
+  document.getElementById('fch').value='';
+  document.getElementById('for').value='';
+  document.getElementById('ftar').value='50000';
+  document.getElementById('scon').innerHTML='';
+  stopCtr=0; stopACs={}; oozACs={}; clearRte();
+  toast('Viaje #'+trip.id+' asignado'+(rr?' - ruta dibujada':'')+'.'); 
+}
+
+function buildSheetViaje(t){
+  return{
+    id:t.id, chofer:t.chofer, choferId:t._choferId, origen:t.origen,
+    paradas_json:JSON.stringify(t.stops||[]),
+    modalidad:t.modalidad, tarifa:t.tarifa,
+    estado:t.estado,
+    ts_creado:t.tsCreado, ts_inicio:t.tsStart||'',
+    ts_llegada_ultima:t.tsLlegadaUltima||'', ts_retorno_inicio:t.tsRetornoInicio||'',
+    ts_fin:t.tsEnd||'',
+    horas_total:t.horasTotal||'', km_total:t.kmTotal||'', costo_total:t.costoTotal||'',
+    stop_log_json:JSON.stringify(t.stopLog||[]),
+    est_seg:t.estSec||'', est_km:t.estMt?(t.estMt/1000).toFixed(2):'',
+    discrepancia:t.discrepancia||false, notas:''
+  };
+}
+
+/* ═══ DRIVER ACTIONS — with return-to-base flow ══════════ */
+/*
+  Estado flow:
+  pendiente → en_curso → [all stops] → (last stop arrived)
+    → en_retorno (timer keeps running)
+    → completado (llegada a base)
+
+  Buttons:
+  [Iniciar Viaje]
+  [Llegue a Parada N] → wait timer starts
+  [Continuar a Parada N+1]  (if not last)
+  [🏁 Iniciar Retorno a Base]  (after last stop wait, was "Finalizar")
+  [🛑 Finalizar Viaje (Llegada a Base)]  (after return)
+*/
+function driverBtn(action){
+  if(!AT)return;
+  const now=new Date(),iso=now.toISOString();
+  const fmt=now.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+  if(action==='start'){
+    AT.tsStart=iso; AT.estado='en_curso';
+    mlog('['+fmt+'] Inicio viaje desde "'+AT.origen+'"'); toast('Viaje iniciado.');
+
+  } else if(action==='arrive'){
+    if(!AT.stopLog[AT.curStop])AT.stopLog[AT.curStop]={};
+    AT.stopLog[AT.curStop].arriveTs=iso; AT.waitStart=iso;
+    const cur=AT.stops[AT.curStop];
+    mlog('['+fmt+'] Llego a parada '+(AT.curStop+1)+': "'+(cur.client||cur.addr)+'"');
+    toast('Llegada registrada - cronometrando espera...'); startWaitTimer();
+
+  } else if(action==='next'){
+    if(!AT.stopLog[AT.curStop])AT.stopLog[AT.curStop]={};
+    AT.stopLog[AT.curStop].leaveTs=iso;
+    AT.stopLog[AT.curStop].waitSec=AT.waitStart?(now-new Date(AT.waitStart))/1000:0;
+    AT.waitStart=null; stopWaitTimer(); AT.curStop++;
+    const cur=AT.stops[AT.curStop];
+    mlog('['+fmt+'] Rumbo a parada '+(AT.curStop+1)+': "'+(cur.client||cur.addr)+'"');
+    toast('Rumbo a parada '+(AT.curStop+1)+'...');
+
+  } else if(action==='retorno'){
+    // Close last stop wait, start return journey
+    if(!AT.stopLog[AT.curStop])AT.stopLog[AT.curStop]={};
+    AT.stopLog[AT.curStop].leaveTs=iso;
+    AT.stopLog[AT.curStop].waitSec=AT.waitStart?(now-new Date(AT.waitStart))/1000:0;
+    AT.waitStart=null; stopWaitTimer();
+    AT.tsLlegadaUltima=iso;
+    AT.tsRetornoInicio=iso;
+    AT._retorno=true;
+    AT.estado='en_retorno';
+    mlog('['+fmt+'] Iniciando retorno a base desde "'+AT.stops[AT.curStop].addr+'"');
+    toast('Retorno a base iniciado. Timer sigue corriendo.');
+    // Draw return route on map
+    drawRetornoRoute(AT.stops[AT.curStop].addr, AT.origen);
+
+  } else if(action==='llegada_base'){
+    // Final step: arrived at base
+    AT.tsEnd=iso; AT.estado='completado';
+    stopWaitTimer();
+    // Compute totals
+    const totalMs=now-new Date(AT.tsStart);
+    const totalWaitSec=AT.stopLog.reduce((a,s)=>a+(s.waitSec||0),0);
+    AT.horasTotal=totalMs/3600000;  // full hours including return
+    // KM: use Google route km (estMt) + return km if available
+    AT.kmTotal = ((AT.estMt||0) + (retornoRouteMt||0)) / 1000;
+    // Cost calculation
+    if(AT.modalidad==='km'){
+      AT.costoTotal=AT.kmTotal*AT.tarifa;
+    } else {
+      AT.costoTotal=AT.horasTotal*AT.tarifa;
+    }
+    const idx=trips.findIndex(t=>t.id===AT.id);
+    if(idx!==-1)trips[idx]={...AT};
+    saveAll();
+    // Push to Sheets
+    sheetPost({action:'updateViaje', data:buildSheetViaje(trips[idx>=0?idx:0])});
+    mlog('['+fmt+'] Viaje #'+AT.id+' COMPLETADO');
+    mlog('  Tiempo total: '+fmtHs(AT.horasTotal));
+    mlog('  KM totales: '+AT.kmTotal.toFixed(1)+' km');
+    mlog('  Modalidad: '+AT.modalidad+' | Tarifa: $'+AT.tarifa);
+    mlog('  TOTAL: $'+fmtP(AT.costoTotal));
+    toast('Viaje finalizado. Total: $'+fmtP(AT.costoTotal));
+    AT=null; retornoRouteSec=null; retornoRouteMt=null;
+    saveAll(); renderTable(); renderPhone(); updStats();
+    return;
+  }
+
+  const idx=trips.findIndex(t=>t.id===AT.id);
+  if(idx!==-1)trips[idx]={...AT};
+  saveAll(); renderTable(); renderPhone();
+  // Sync partial updates to Sheets
+  sheetPost({action:'patchViaje', id:AT?AT.id:trips[idx].id, fields:{
+    estado:(AT||trips[idx]).estado,
+    ts_inicio:(AT||trips[idx]).tsStart||'',
+    ts_retorno_inicio:(AT||trips[idx]).tsRetornoInicio||'',
+    stop_log_json:JSON.stringify((AT||trips[idx]).stopLog||[])
+  }});
+}
+
+/* ═══ DRAW RETORNO ROUTE ═════════════════════════════════ */
+function drawRetornoRoute(fromAddr, toAddr){
+  if(!gdirs) return;
+  gdirs.route({
+    origin:fromAddr, destination:toAddr,
+    travelMode:google.maps.TravelMode.DRIVING, region:REGION,
+    drivingOptions:{departureTime:new Date(),trafficModel:google.maps.TrafficModel.BEST_GUESS}
+  },(res,st)=>{
+    if(st!=='OK'){mlog('Retorno route error: '+st);return;}
+    // Draw with purple polyline
+    const retRenderer=new google.maps.DirectionsRenderer({
+      map:gmap,
+      polylineOptions:{strokeColor:'#8b7cf6',strokeWeight:4,strokeOpacity:.7,strokeDasharray:[]},
+      suppressMarkers:true
+    });
+    retRenderer.setDirections(res);
+    const leg=res.routes[0].legs[0];
+    const dur=(leg.duration_in_traffic||leg.duration);
+    retornoRouteSec=dur.value;
+    retornoRouteMt=leg.distance.value;
+    const eta=new Date(Date.now()+dur.value*1000).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('rb-eta').textContent='ETA base: '+eta+' ('+dur.text+' · '+leg.distance.text+')';
+    mlog('Retorno: '+dur.text+' · '+leg.distance.text);
+    swTab('tm',document.getElementById('tbmapa'));
+  });
+}
+
+/* ═══ WAIT TIMER ═════════════════════════════════════════ */
+function startWaitTimer(){
+  document.getElementById('wtimer').style.display='block';
+  if(waitTick)clearInterval(waitTick);
+  function t2(){ if(!AT||!AT.waitStart){clearInterval(waitTick);return;} const s=Math.floor((Date.now()-new Date(AT.waitStart))/1000); document.getElementById('wtime').textContent=pad(Math.floor(s/60))+':'+pad(s%60); }
+  t2(); waitTick=setInterval(t2,1000);
+}
+function stopWaitTimer(){ clearInterval(waitTick);waitTick=null;document.getElementById('wtimer').style.display='none';document.getElementById('wtime').textContent='00:00'; }
+function pad(n){return String(n).padStart(2,'0');}
+
+/* ═══ PHONE RENDER ═══════════════════════════════════════ */
+function renderPhone(){
+  const pnone=document.getElementById('pnone'),ptrip=document.getElementById('ptrip');
+  if(!AT){pnone.style.display='flex';ptrip.style.display='none';stopWaitTimer();return;}
+  pnone.style.display='none';ptrip.style.display='flex';
+  document.getElementById('pdrv').textContent=AT.chofer;
+
+  // Retorno banner
+  const retBanner=document.getElementById('retorno-banner');
+  if(AT._retorno){
+    retBanner.style.display='block';
+    document.getElementById('rb-dest').textContent=AT.origen;
+    if(!retornoRouteSec) document.getElementById('rb-eta').textContent='Calculando ETA...';
+  } else {
+    retBanner.style.display='none';
+  }
+
+  // Stops list
+  const allSt=[{addr:AT.origen,client:'Origen',prio:'normal',twFrom:'',twTo:''},...AT.stops];
+  document.getElementById('pstops').innerHTML=allSt.map((s,i)=>{
+    const isOrg=i===0,si=i-1;
+    const isDone=isOrg?(AT.tsStart!=null):(AT.stopLog[si]&&AT.stopLog[si].leaveTs);
+    const isCur=!isOrg&&si===AT.curStop&&!isDone&&!AT._retorno;
+    const legSec=(AT._legData&&AT._legData[si])?AT._legData[si].sec:null;
+    const warn=(legSec!==null&&s.twTo)?getTWWarn(s,legSec):{type:'',msg:''};
+    const isRisk=warn.type==='err';
+    let dotCls=isDone?'done':isCur?(isRisk?'risk':'cur'):(AT._retorno&&isOrg?'ret':'');
+    const rowCls=[isCur?'cur':'',isDone?'don':'',isRisk&&isCur?'delay-risk':''].filter(Boolean).join(' ');
+    const showLine=i<allSt.length-1;
+    let twPill='';
+    if(!isOrg&&(s.twFrom||s.twTo)){
+      const lbl=(s.twFrom&&s.twTo)?s.twFrom+'-'+s.twTo:s.twTo?'Hasta '+s.twTo:'Desde '+s.twFrom;
+      const cls=isRisk?'risk':warn.type==='warn'?'warn':'ok';
+      twPill='<div class="ps-tw '+cls+'">&#128336; '+lbl+(isRisk?' &#9888;':'')+'</div>';
+    }
+    return'<div class="pstop '+rowCls+'">'+
+      '<div class="psdotc"><div class="psdot '+dotCls+'"></div>'+(showLine?'<div class="psline"></div>':'')+' </div>'+
+      '<div class="psinf"><div class="psnum">'+(isOrg?'ORIGEN':'PARADA '+i)+'</div>'+
+      (s.client?'<div class="pscl">'+s.client+(s.prio==='high'?'<span style="color:var(--a4);font-size:9px"> &#9888;</span>':'')+'</div>':'')+
+      '<div class="psad">'+s.addr+'</div>'+twPill+'</div></div>';
+  }).join('');
+
+  // Current stop card
+  const cc=document.getElementById('pcurcard');
+  if(AT.tsStart&&!AT._retorno&&AT.curStop<AT.stops.length){
+    const cur=AT.stops[AT.curStop];
+    const legSec=(AT._legData&&AT._legData[AT.curStop])?AT._legData[AT.curStop].sec:null;
+    const warn=(legSec!==null)?getTWWarn(cur,legSec):{type:'',msg:''};
+    const isRisk=warn.type==='err';
+    cc.style.display='block';
+    cc.className='pcurcard'+(isRisk?' risk':'');
+    document.getElementById('pcurname').textContent=cur.client||'Parada '+(AT.curStop+1);
+    document.getElementById('pcuraddr').textContent=cur.addr;
+    document.getElementById('pcurprog').textContent='Parada '+(AT.curStop+1)+' de '+AT.stops.length;
+    const twEl=document.getElementById('pcurtw');
+    if(cur.twFrom||cur.twTo){
+      const lbl=(cur.twFrom&&cur.twTo)?cur.twFrom+' - '+cur.twTo:cur.twTo?'Hasta '+cur.twTo:'Desde '+cur.twFrom;
+      twEl.style.display='inline-block';
+      twEl.className='pcurtw '+(isRisk?'risk':warn.type==='warn'?'warn':'ok');
+      twEl.innerHTML='&#128336; '+lbl+(isRisk?' &#9888; Riesgo de Demora':'');
+    } else twEl.style.display='none';
+  } else {
+    cc.style.display=AT._retorno?'block':'none';
+    if(AT._retorno){
+      cc.className='pcurcard retorno';
+      document.getElementById('pcurname').textContent='Regresando a Base';
+      document.getElementById('pcuraddr').textContent=AT.origen;
+      document.getElementById('pcurprog').textContent='Ultimo tramo del viaje';
+      document.getElementById('pcurtw').style.display='none';
+    }
+  }
+
+  // Timestamps
+  document.getElementById('ts0').textContent=AT.tsStart?fmtTS(AT.tsStart):'--';
+  document.getElementById('tsret').textContent=AT.tsRetornoInicio?fmtTS(AT.tsRetornoInicio):'--';
+  document.getElementById('tsend').textContent=AT.tsEnd?fmtTS(AT.tsEnd):'--';
+  let ex='';
+  AT.stops.forEach((s,i)=>{
+    const lg=AT.stopLog[i]||{};
+    if(lg.arriveTs)ex+='<div class="tsr"><span>P'+(i+1)+' llegada</span><span class="tsv">'+fmtTS(lg.arriveTs)+'</span></div>';
+    if(lg.leaveTs) ex+='<div class="tsr"><span>P'+(i+1)+' salida</span><span class="tsv">'+fmtTS(lg.leaveTs)+'</span></div>';
+  });
+  document.getElementById('tsextra').innerHTML=ex;
+  if(AT.waitStart)startWaitTimer();
+  renderPBtns();
+}
+
+function renderPBtns(){
+  const el=document.getElementById('pacts'); if(!AT){el.innerHTML='';return;}
+  let html='';
+  if(!AT.tsStart){
+    html='<button class="pbtn pb-st" onclick="driverBtn(\'start\')">&#9654; 1. Iniciar Viaje</button>';
+  } else if(AT._retorno){
+    html='<button class="pbtn pb-en" onclick="driverBtn(\'llegada_base\')">&#128721; Finalizar Viaje (Llegada a Base)</button>';
+  } else {
+    const cur=AT.stops[AT.curStop];
+    const lg=AT.stopLog[AT.curStop]||{};
+    const isLast=AT.curStop===AT.stops.length-1;
+    const arrived=!!lg.arriveTs;
+    if(!arrived){
+      html='<button class="pbtn pb-ar" onclick="driverBtn(\'arrive\')">&#128205; Llegue a '+(cur?cur.client||'Parada '+(AT.curStop+1):'Destino')+'</button>';
+    } else if(!isLast){
+      html='<button class="pbtn pb-nx" onclick="driverBtn(\'next\')">&#9654; Continuar a Parada '+(AT.curStop+2)+'</button>';
+    } else {
+      html='<button class="pbtn pb-ret" onclick="driverBtn(\'retorno\')">&#127937; Iniciar Retorno a Base</button>';
+    }
+  }
+  el.innerHTML=html;
+}
+
+/* ═══ PERSIST ════════════════════════════════════════════ */
+function saveAll(){
+  localStorage.setItem(SK.trips,JSON.stringify(trips));
+  localStorage.setItem(SK.nextId,String(nextId));
+  localStorage.setItem(SK.active,AT?JSON.stringify(AT):'');
+  if(hasSheets()) sheetPost({action:'saveActiveTrip',data:AT||null});
+}
+function saveCh(){localStorage.setItem(SK.choferes,JSON.stringify(choferes));localStorage.setItem(SK.nextCId,String(nextCId));}
+function restoreAT(){
+  const raw=localStorage.getItem(SK.active); if(!raw)return;
+  try{
+    AT=JSON.parse(raw); if(!AT||!AT.id){AT=null;return;}
+    if(!AT.stopLog)AT.stopLog=[]; if(typeof AT.curStop!=='number')AT.curStop=0;
+    if(!AT._legData)AT._legData=[];
+    renderPhone(); toast('Viaje #'+AT.id+' restaurado.');
+  }catch(e){AT=null;}
+}
+
+/* ═══ HISTORIAL ══════════════════════════════════════════ */
+function setFilter(chip){ document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on')); chip.classList.add('on'); filterMode=chip.dataset.f; document.getElementById('fdaterow').style.display=filterMode==='custom'?'flex':'none'; renderTable(); }
+function getFiltered(){
+  const now=new Date();let from=null,to=null;
+  if(filterMode==='week'){from=new Date(now);from.setDate(now.getDate()-7);}
+  else if(filterMode==='two'){from=new Date(now);from.setDate(now.getDate()-15);}
+  else if(filterMode==='month'){from=new Date(now);from.setMonth(now.getMonth()-1);}
+  else if(filterMode==='custom'){
+    const fv=document.getElementById('fdfrom').value,tv=document.getElementById('fdto').value;
+    if(fv)from=new Date(fv); if(tv){to=new Date(tv);to.setHours(23,59,59,999);}
+  }
+  return trips.filter(t=>{ if(!t.tsCreado)return filterMode==='all'; const d=new Date(t.tsCreado); if(from&&d<from)return false; if(to&&d>to)return false; return true; });
+}
+function renderTable(){
+  const ft=getFiltered();
+  const done=ft.filter(t=>t.estado==='completado'&&t.costoTotal!=null);
+  const total=done.reduce((a,t)=>a+t.costoTotal,0);
+  document.getElementById('htv').textContent='$'+fmtP(total);
+  document.getElementById('htsub').textContent=done.length+' viaje'+(done.length!==1?'s':'')+' completado'+(done.length!==1?'s':'')+' en el periodo';
+  const tb=document.getElementById('ttbody');
+  if(!ft.length){tb.innerHTML='<tr class="erow"><td colspan="11">Sin viajes en este periodo.</td></tr>';return;}
+  tb.innerHTML=[...ft].reverse().map(t=>{
+    const eb={pendiente:'<span class="badge bpend">PEND.</span>',en_curso:'<span class="badge bact">EN CURSO</span>',en_retorno:'<span class="badge bret">RETORNO</span>',completado:'<span class="badge bdone">OK</span>'}[t.estado]||'';
+    const db=t.discrepancia?'<span class="badge bdisc" style="margin-left:3px">DISC.</span>':'';
+    const sc='<div style="font-size:11px;color:var(--mu);max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+t.origen+'</div>'+
+      (t.stops||[]).map((s,i)=>'<div style="font-size:11px;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+
+        '<span style="color:var(--mu)">'+(i+1)+'.</span> '+(s.prio==='high'?'<span style="color:var(--a4)">&#9888;</span> ':'')+
+        (s.client?'<b>'+s.client+'</b> - ':'')+s.addr+(isOOZ(s.addr)?'<span style="color:var(--dg);font-size:9px">[ext]</span>':'')+
+        ((s.twFrom||s.twTo)?'<span style="color:var(--mu);font-size:9px"> '+(s.twFrom||'')+'-'+(s.twTo||'')+'</span>':'')+
+      '</div>').join('');
+    const ini=t.tsStart?fmtTS(t.tsStart):'--';
+    const fin=t.tsEnd?fmtTS(t.tsEnd):'--';
+    const ht=t.horasTotal!=null?fmtHs(t.horasTotal):'--';
+    const km=t.kmTotal!=null?t.kmTotal.toFixed(1)+' km':'--';
+    const mod=t.modalidad?'<span style="font-family:var(--fm);font-size:10px;color:'+(t.modalidad==='km'?'var(--a2)':'var(--a4)')+'">'+
+      (t.modalidad==='km'?'&#128648; Km':'&#128336; Hora')+'</span><br>'+
+      '<span style="font-family:var(--fm);font-size:10px;color:var(--mu)">$'+fmtP(t.tarifa)+'/'+(t.modalidad==='km'?'km':'h')+'</span>':'--';
+    let co='--';
+    if(t.costoTotal!=null){
+      const es=t.estSec?'<div style="font-family:var(--fm);font-size:9px;color:var(--mu);margin-top:2px">Est.'+fmtDur(t.estSec)+(t.estMt?'/'+(t.estMt/1000).toFixed(0)+'km':'')+'</div>':'';
+      co='<div class="cv">$'+fmtP(t.costoTotal)+'</div>'+es;
+    }
+    const db2=(t.estado==='completado'&&!t.discrepancia)?'<button class="btn bg bxs" data-id="'+t.id+'" onclick="openDisc(parseInt(this.dataset.id))">&#9873;</button>':'';
+    const del='<button class="btn bd bxs" data-id="'+t.id+'" onclick="openDel(parseInt(this.dataset.id))">&#128465;</button>';
+    return'<tr><td><span style="font-family:var(--fm);color:var(--mu);font-size:11px">#'+t.id+'</span></td>'+
+      '<td style="font-size:12px;white-space:nowrap">'+t.chofer+'</td><td>'+sc+'</td>'+
+      '<td><span style="font-family:var(--fm);font-size:11px">'+ini+'</span></td>'+
+      '<td><span style="font-family:var(--fm);font-size:11px">'+fin+'</span></td>'+
+      '<td><span style="font-family:var(--fm);font-size:11px">'+ht+'</span></td>'+
+      '<td><span style="font-family:var(--fm);font-size:11px;color:var(--a2)">'+km+'</span></td>'+
+      '<td>'+mod+'</td><td>'+co+'</td><td style="white-space:nowrap">'+eb+db+'</td>'+
+      '<td><div style="display:flex;gap:5px">'+db2+del+'</div></td></tr>';
+  }).join('');
+}
+
+/* ═══ DISC / DEL ═════════════════════════════════════════ */
+function openDisc(id){
+  discTgt=id; const t=trips.find(t=>t.id===id);if(!t)return;
+  document.getElementById('mdiscbody').innerHTML=
+    'Viaje <strong>#'+t.id+'</strong> - <strong>'+t.chofer+'</strong><br><br>'+
+    'Tiempo total: <strong>'+fmtHs(t.horasTotal)+'</strong><br>'+
+    'KM totales: <strong>'+((t.kmTotal||0).toFixed(1))+' km</strong><br>'+
+    'Modalidad: <strong>'+(t.modalidad==='km'?'Por Km':'Por Hora')+'</strong><br>'+
+    '<span style="color:var(--ac)">Total: <strong>$'+fmtP(t.costoTotal)+'</strong></span><br><br>Marcar para revision.';
+  document.getElementById('mdisc').classList.add('open');
+}
+function confirmDisc(){
+  if(discTgt===null)return;
+  const i=trips.findIndex(t=>t.id===discTgt);
+  if(i!==-1){ trips[i].discrepancia=true; saveAll(); sheetPost({action:'patchViaje',id:discTgt,fields:{discrepancia:true}}); renderTable(); updStats(); toast('Discrepancia #'+discTgt+' reportada.'); }
+  closeMdl('mdisc');
+}
+function openDel(id){
+  delTgt=id; const t=trips.find(t=>t.id===id);if(!t)return;
+  const isA=AT&&AT.id===id;
+  document.getElementById('mdelbody').innerHTML='Eliminar viaje <strong>#'+t.id+'</strong> de <strong>'+t.chofer+'</strong>?<br>'+
+    (isA?'<span style="color:var(--dg)">Este viaje esta en curso.</span><br>':'')+
+    '<span style="color:var(--mu)">No se puede deshacer.</span>';
+  document.getElementById('mdel').classList.add('open');
+}
+function confirmDel(){
+  if(delTgt===null)return;
+  if(AT&&AT.id===delTgt){AT=null;stopWaitTimer();}
+  trips=trips.filter(t=>t.id!==delTgt);
+  sheetPost({action:'deleteViaje',id:delTgt});
+  saveAll(); renderTable(); renderPhone(); updStats();
+  toast('Viaje #'+delTgt+' eliminado.'); closeMdl('mdel');
+}
+
+/* ═══ UTILS ══════════════════════════════════════════════ */
+function updStats(){
+  document.getElementById('st-act').textContent=trips.filter(t=>t.estado==='en_curso'||t.estado==='en_retorno').length;
+  document.getElementById('st-don').textContent=trips.filter(t=>t.estado==='completado').length;
+  document.getElementById('st-dis').textContent=trips.filter(t=>t.discrepancia).length;
+}
+function mlog(msg){ const el=document.getElementById('mlogc'); const ts=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); const first=el.textContent.trim()==='Sin actividad...'; el.innerHTML=(first?'':el.innerHTML+'<br>')+'<span style="color:var(--mu)">['+ts+']</span> '+msg; el.scrollTop=el.scrollHeight; }
+function closeMdl(id){document.getElementById(id).classList.remove('open');if(id==='mdisc')discTgt=null;if(id==='mdel')delTgt=null;}
+function fmtHs(h){if(h==null||isNaN(h))return'--';const hh=Math.floor(h),mm=Math.round((h-hh)*60);return hh+'h '+pad(mm)+'m';}
+function fmtP(n){if(n==null||isNaN(n))return'--';return n.toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtTS(iso){return new Date(iso).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+function fmtDur(s){const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h>0?h+'h '+m+'min':m+' min';}
+let _tt;
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('on'),3800);}
+
+/* ═══ INIT ═══════════════════════════════════════════════ */
+renderChofSel();
+addStop();
+renderTable();
+updStats();
+
+</script>
+</body>
+</html>
