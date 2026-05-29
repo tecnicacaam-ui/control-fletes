@@ -619,7 +619,7 @@ async function sheetPost(body){
   try{
     const r = await fetch(SCRIPT_URL,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'text/plain'},
       body:JSON.stringify(body)
     });
     const d = await r.json();
