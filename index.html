@@ -1096,7 +1096,7 @@ function _finish(cid,orig,tar,stops,ch,rr){
   AT._legData=_lastLegData.map(ld=>({sec:ld.sec,mt:ld.mt}));
   saveAll();
   // Sync to Sheets
-  sheetPost({action:'saveViaje', data:buildSheetViaje(trip)});
+  sheetPost({action:'crearViaje', data:buildSheetViaje(trip)});
   renderTable(); renderPhone(); updStats();
   mlog('Viaje #'+trip.id+' -> '+ch.nombre+' - '+orderedStops.length+' parada(s) [orden optimizado]'+(rr?' '+fmtDur(rr.sec):''));
   document.getElementById('fch').value='';
@@ -1197,7 +1197,7 @@ function driverBtn(action){
     if(idx!==-1)trips[idx]={...AT};
     saveAll();
     // Push to Sheets
-    sheetPost({action:'updateViaje', data:buildSheetViaje(trips[idx>=0?idx:0])});
+    sheetPost({action:'actualizarViaje', data:buildSheetViaje(trips[idx>=0?idx:0])});
     mlog('['+fmt+'] Viaje #'+AT.id+' COMPLETADO');
     mlog('  Tiempo total: '+fmtHs(AT.horasTotal));
     mlog('  KM totales: '+AT.kmTotal.toFixed(1)+' km');
