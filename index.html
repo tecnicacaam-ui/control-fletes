@@ -1212,8 +1212,14 @@ function _finish(cid,orig,tar,stops,ch,rr){
   AT={...trip, curStop:0, waitStart:null, stopLog:[], _retorno:false};
   AT._legData=_lastLegData.map(ld=>({sec:ld.sec,mt:ld.mt}));
   saveAll();
-  // Sync to Sheets
-  sheetPost({action:'crearViaje', data:buildSheetViaje(trip)});
+  // Sync to Sheets — viaje + estado activo del chofer (para que el chofer lo recupere en su dispositivo)
+  sheetPost({action:'crearViaje', data:buildSheetViaje(trip)}).then(()=>{
+    // Guardar con clave del chofer para recuperación cross-device
+    if(hasSheets() && ch && ch.nombre){
+      const claveChofer = 'fc_activo_' + ch.nombre.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
+      sheetPost({action:'guardarEstadoActivo', key: claveChofer, data: AT});
+    }
+  });
   renderTable(); renderPhone(); updStats();
   mlog('Viaje #'+trip.id+' -> '+ch.nombre+' - '+orderedStops.length+' parada(s) [orden optimizado]'+(rr?' '+fmtDur(rr.sec):''));
   document.getElementById('fch').value='';
@@ -1490,10 +1496,31 @@ function saveAll(){
   localStorage.setItem(SK.trips,JSON.stringify(trips));
   localStorage.setItem(SK.nextId,String(nextId));
   localStorage.setItem(SK.active,AT?JSON.stringify(AT):'');
-  if(hasSheets()) sheetPost({action:'saveActiveTrip',data:AT||null});
+  if(hasSheets()){
+    // Guardar estado activo global
+    sheetPost({action:'saveActiveTrip',data:AT||null});
+    // Guardar también con clave del chofer para que el chofer lo recupere
+    if(AT && AT.chofer){
+      const claveChofer = 'fc_activo_' + AT.chofer.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
+      sheetPost({action:'guardarEstadoActivo', key: claveChofer, data: AT||null});
+    }
+  }
 }
 function saveCh(){localStorage.setItem(SK.choferes,JSON.stringify(choferes));localStorage.setItem(SK.nextCId,String(nextCId));}
 function restoreAT(){
+  const rol = sessionStorage.getItem('fc_auth_rol') || 'admin';
+  const nombre = sessionStorage.getItem('fc_auth_nombre') || '';
+
+  if(rol === 'chofer' && nombre && hasSheets()){
+    // El chofer carga su viaje activo desde el Sheet, no desde localStorage
+    _restoreATFromSheet(nombre);
+  } else {
+    // Admin: restaurar desde localStorage como siempre
+    _restoreATLocal();
+  }
+}
+
+function _restoreATLocal(){
   const raw=localStorage.getItem(SK.active); if(!raw)return;
   try{
     AT=JSON.parse(raw); if(!AT||!AT.id){AT=null;return;}
@@ -1501,6 +1528,83 @@ function restoreAT(){
     if(!AT._legData)AT._legData=[];
     renderPhone(); toast('Viaje #'+AT.id+' restaurado.');
   }catch(e){AT=null;}
+}
+
+async function _restoreATFromSheet(nombreChofer){
+  try{
+    // Buscar viajes activos del chofer en el Sheet
+    const res = await sheetGet({action:'obtenerViajes'});
+    if(!res || !res.ok || !res.data) return;
+
+    // Buscar viaje en_curso o pendiente asignado a este chofer
+    const viajesActivos = res.data.filter(v=>{
+      if(!v.chofer) return false;
+      const nombreSheet = v.chofer.split(' - ')[0].trim().toLowerCase();
+      const nombreSesion = nombreChofer.trim().toLowerCase();
+      return (nombreSheet === nombreSesion || v.chofer.toLowerCase().includes(nombreSesion))
+          && (v.estado === 'en_curso' || v.estado === 'pendiente' || v.estado === 'en_retorno');
+    });
+
+    if(!viajesActivos.length){
+      // Sin viajes: mostrar pantalla vacía normal
+      renderPhone();
+      return;
+    }
+
+    // Tomar el viaje más reciente
+    const viaje = viajesActivos.sort((a,b)=> new Date(b.ts_creado||0) - new Date(a.ts_creado||0))[0];
+
+    // Reconstruir el objeto AT desde los datos del Sheet
+    AT = {
+      id:              viaje.id,
+      _choferId:       viaje.choferId || 0,
+      chofer:          viaje.chofer || nombreChofer,
+      origen:          viaje.origen || '',
+      stops:           [],
+      tarifa:          parseFloat(viaje.tarifa) || 0,
+      tarifaEspera:    0,
+      modalidad:       viaje.modalidad || 'hora',
+      estSec:          viaje.est_tiempo_seg || null,
+      estMt:           viaje.est_km ? parseFloat(viaje.est_km)*1000 : null,
+      estado:          viaje.estado || 'pendiente',
+      tsCreado:        viaje.ts_creado || '',
+      tsStart:         viaje.ts_inicio || null,
+      tsLlegadaUltima: viaje.ts_llegada_ultima || null,
+      tsRetornoInicio: viaje.ts_retorno_inicio || null,
+      tsEnd:           viaje.ts_fin || null,
+      stopLog:         [],
+      horasTotal:      viaje.horas_total || null,
+      kmTotal:         viaje.km_total || null,
+      costoTotal:      viaje.costo_total || null,
+      discrepancia:    viaje.discrepancia || false,
+      curStop:         0,
+      waitStart:       null,
+      _retorno:        viaje.estado === 'en_retorno',
+      _legData:        [],
+    };
+
+    // Parsear paradas
+    try{ AT.stops = JSON.parse(viaje.paradas_json || viaje.destino_json || '[]'); }catch(_){ AT.stops=[]; }
+
+    // Parsear stopLog y deducir curStop
+    try{
+      AT.stopLog = JSON.parse(viaje.stop_log_json || '[]');
+      // curStop = cantidad de paradas con leaveTs (ya dejadas)
+      AT.curStop = AT.stopLog.filter(s=>s&&s.leaveTs).length;
+      if(AT.curStop >= AT.stops.length) AT.curStop = Math.max(0, AT.stops.length-1);
+    }catch(_){ AT.stopLog=[]; AT.curStop=0; }
+
+    // Sincronizar en localStorage para que funcione offline
+    localStorage.setItem(SK.active, JSON.stringify(AT));
+
+    renderPhone();
+    toast('Viaje #'+AT.id+' cargado para '+nombreChofer+'.');
+
+  }catch(err){
+    console.error('Error cargando viaje del chofer:', err);
+    // Fallback a localStorage
+    _restoreATLocal();
+  }
 }
 
 /* ═══ HISTORIAL ══════════════════════════════════════════ */
