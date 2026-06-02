@@ -375,6 +375,26 @@ tr:hover td{background:var(--s2)}
 .lo-success-msg{font-family:var(--fh);font-size:16px;font-weight:700;color:var(--a2);margin-bottom:4px}
 .lo-success-sub{font-family:var(--fm);font-size:11px;color:var(--mu)}
 @keyframes loshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* Forzar vista mobile del chofer en pantallas grandes (PC) */
+body[data-role="chofer"] .mgrid {
+    grid-template-columns: 1fr !important;
+    height: 100vh !important;
+    background-color: #f4f6f9; 
+}
+
+body[data-role="chofer"] .apanel {
+    display: none !important;
+}
+
+body[data-role="chofer"] .dcol {
+    width: 100% !important;
+    max-width: 420px;
+    margin: 0 auto;
+    background: #141722;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    position: relative;
+    height: 100vh;
+}
 </style>
 </head>
 <body>
@@ -1644,6 +1664,8 @@ function loCheckSession(){
 
 /* ── Mostrar app y aplicar restricciones de rol ────────── */
 function loShowApp(rol){
+  document.body.setAttribute('data-role', rol || loGetRol());
+
   const overlay = document.getElementById('login-overlay');
   overlay.classList.add('hiding');
   setTimeout(()=>{ overlay.style.display='none'; }, 420);
