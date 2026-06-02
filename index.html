@@ -315,11 +315,108 @@ tr:hover td{background:var(--s2)}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--b1);border-radius:3px}
 @media(max-width:900px){.mgrid{grid-template-columns:1fr;height:auto}.dcol{border-top:1px solid var(--b1)}}
+
+/* ══ LOGIN OVERLAY ══════════════════════════════════════ */
+#login-overlay{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  background-image:
+    radial-gradient(ellipse at 20% 50%,rgba(62,207,178,.05) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 20%,rgba(240,192,64,.05) 0%,transparent 60%);
+  transition:opacity .4s,transform .4s;
+}
+#login-overlay.hiding{opacity:0;pointer-events:none}
+#login-overlay::before{
+  content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle,#252933 1px,transparent 1px);
+  background-size:32px 32px;opacity:.35;pointer-events:none;
+}
+.lo-wrap{position:relative;z-index:1;width:100%;max-width:400px}
+.lo-logo{text-align:center;margin-bottom:32px}
+.lo-logo-t{font-family:var(--fh);font-weight:800;font-size:30px;letter-spacing:-.5px;color:var(--tx)}
+.lo-logo-t span{color:var(--ac)}
+.lo-logo-s{font-family:var(--fm);font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:6px}
+.lo-card{background:var(--sf);border:1px solid var(--b1);border-radius:16px;padding:34px 30px;
+  box-shadow:0 24px 64px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03)}
+.lo-title{font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--mu);margin-bottom:22px;text-align:center}
+.lo-fgrp{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.lo-fgrp label{font-family:var(--fm);font-size:10px;color:var(--mu);letter-spacing:1px;text-transform:uppercase}
+.lo-fgrp input{background:var(--s2);border:1px solid var(--b1);border-radius:8px;
+  color:var(--tx);font-family:var(--fb);font-size:15px;padding:13px 14px;outline:none;
+  transition:border-color .2s,box-shadow .2s;width:100%}
+.lo-fgrp input:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(240,192,64,.1)}
+.lo-fgrp input::placeholder{color:var(--mu);font-size:14px}
+.lo-fgrp input.lo-err-inp{border-color:var(--dg)}
+.lo-pw-wrap{position:relative}
+.lo-pw-wrap input{padding-right:44px}
+.lo-pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--mu);cursor:pointer;font-size:15px;
+  padding:4px;transition:color .2s;line-height:1}
+.lo-pw-eye:hover{color:var(--tx)}
+.lo-err{background:rgba(240,80,96,.1);border:1px solid rgba(240,80,96,.3);
+  border-radius:8px;padding:10px 13px;font-size:12px;color:var(--dg);
+  font-family:var(--fm);margin-bottom:16px;display:none;align-items:center;gap:8px}
+.lo-err.show{display:flex}
+.lo-btn{width:100%;padding:14px;background:var(--ac);color:#0c0e12;border:none;
+  border-radius:10px;font-family:var(--fh);font-size:15px;font-weight:700;
+  letter-spacing:.5px;cursor:pointer;transition:opacity .15s,transform .1s;
+  display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
+.lo-btn:hover{opacity:.87}
+.lo-btn:active{transform:scale(.98)}
+.lo-btn:disabled{opacity:.38;cursor:not-allowed}
+.lo-spin{width:17px;height:17px;border:2px solid rgba(0,0,0,.2);
+  border-top-color:#0c0e12;border-radius:50%;animation:lospin .7s linear infinite;display:none}
+@keyframes lospin{to{transform:rotate(360deg)}}
+.lo-footer{text-align:center;margin-top:24px;font-family:var(--fm);font-size:10px;color:var(--mu)}
+.lo-success{text-align:center;padding:16px 0;display:none}
+.lo-success-ico{font-size:44px;margin-bottom:10px}
+.lo-success-msg{font-family:var(--fh);font-size:16px;font-weight:700;color:var(--a2);margin-bottom:4px}
+.lo-success-sub{font-family:var(--fm);font-size:11px;color:var(--mu)}
+@keyframes loshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 </style>
 </head>
 <body>
-<header class="hdr">
-  <div class="logo">Flete<span>Control</span></div>
+
+<!-- ══ LOGIN OVERLAY ══════════════════════════════════════════════════════════ -->
+<div id="login-overlay">
+  <div class="lo-wrap">
+    <div class="lo-logo">
+      <div class="lo-logo-t">Flete<span>Control</span></div>
+      <div class="lo-logo-s">Sistema de Gestión de Fletes</div>
+    </div>
+    <div class="lo-card">
+      <div class="lo-title">Acceso al Sistema</div>
+      <div class="lo-err" id="loErr"><span>&#9888;</span><span id="loErrTxt">Error.</span></div>
+      <div id="loForm">
+        <div class="lo-fgrp">
+          <label for="loEmail">Email</label>
+          <input type="email" id="loEmail" placeholder="usuario@empresa.com" autocomplete="email" autofocus>
+        </div>
+        <div class="lo-fgrp">
+          <label for="loPass">Contraseña</label>
+          <div class="lo-pw-wrap">
+            <input type="password" id="loPass" placeholder="••••••••" autocomplete="current-password">
+            <button class="lo-pw-eye" type="button" onclick="loTogglePw()" title="Mostrar/ocultar">&#128065;</button>
+          </div>
+        </div>
+        <button class="lo-btn" id="loBtn" onclick="loDoLogin()">
+          <div class="lo-spin" id="loSpin"></div>
+          <span id="loBtnTxt">&#9654; Ingresar</span>
+        </button>
+      </div>
+      <div class="lo-success" id="loSuccess">
+        <div class="lo-success-ico">&#9989;</div>
+        <div class="lo-success-msg" id="loSuccessName">Bienvenido</div>
+        <div class="lo-success-sub">Cargando el sistema...</div>
+      </div>
+    </div>
+    <div class="lo-footer">FleteControl v10.1 &nbsp;&#124;&nbsp; Acceso restringido</div>
+  </div>
+</div>
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<header class="hdr">  <div class="logo">Flete<span>Control</span></div>
   <div class="vtag">v10.1</div>
   <div class="hspc"></div>
   <div class="sync-dot" id="syncdot"><span></span><span id="synclbl">offline</span></div>
@@ -672,8 +769,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   setTmode(tmode);
   const k=localStorage.getItem(SK.apikey)||GMKEY;
   document.getElementById('apikey').value=k;
-  loadMaps(k);
-  restoreAT();
+  // ── AUTH CHECK: si hay sesión válida iniciamos directo, si no mostramos login ──
+  loCheckSession();
   if(hasSheets()) setSyncStatus('ok'); else setSyncStatus('offline');
 });
 
@@ -1495,6 +1592,229 @@ renderChofSel();
 addStop();
 renderTable();
 updStats();
+
+/* ══ AUTH v3 — Login · Roles · Sesión persistente ═══════
+   sessionStorage keys:
+     fc_auth_token   → JWT firmado (incluye rol en payload)
+     fc_auth_nombre  → nombre del usuario
+     fc_auth_rol     → 'admin' | 'chofer'
+     fc_auth_expiry  → timestamp de expiración (ms)
+
+   Roles:
+     admin  → ve toda la interfaz (sin cambios)
+     chofer → solo ve el celular del chofer; admin panel oculto
+═══════════════════════════════════════════════════════ */
+const LO_TOKEN_KEY  = 'fc_auth_token';
+const LO_NAME_KEY   = 'fc_auth_nombre';
+const LO_ROL_KEY    = 'fc_auth_rol';
+const LO_EXPIRY_KEY = 'fc_auth_expiry';
+
+/* ── Leer rol actual (útil en cualquier parte del código) ── */
+function loGetRol(){ return sessionStorage.getItem(LO_ROL_KEY) || 'chofer'; }
+function loGetNombre(){ return sessionStorage.getItem(LO_NAME_KEY) || ''; }
+function loIsAdmin(){ return loGetRol() === 'admin'; }
+
+/* ── Check de sesión al cargar ────────────────────────── */
+function loCheckSession(){
+  const token  = sessionStorage.getItem(LO_TOKEN_KEY);
+  const expiry = parseInt(sessionStorage.getItem(LO_EXPIRY_KEY)||'0');
+  // Sin Sheets: modo desarrollo sin login
+  if(!hasSheets()){ loShowApp('admin'); return; }
+  if(token && Date.now() < expiry){
+    sheetPost({action:'verificarToken', token})
+      .then(r=>{
+        if(r && r.ok && r.valid && r.payload){
+          // Refrescar rol desde el payload del token (por si cambió)
+          const rol = r.payload.rol || sessionStorage.getItem(LO_ROL_KEY) || 'chofer';
+          sessionStorage.setItem(LO_ROL_KEY, rol);
+          loShowApp(rol);
+        } else {
+          loShowForm();
+        }
+      })
+      .catch(()=>{
+        // Si falla la red, usar el rol guardado localmente
+        const rol = sessionStorage.getItem(LO_ROL_KEY) || 'chofer';
+        loShowApp(rol);
+      });
+  } else {
+    loShowForm();
+  }
+}
+
+/* ── Mostrar app y aplicar restricciones de rol ────────── */
+function loShowApp(rol){
+  const overlay = document.getElementById('login-overlay');
+  overlay.classList.add('hiding');
+  setTimeout(()=>{ overlay.style.display='none'; }, 420);
+
+  // Iniciar Maps y restaurar viaje activo
+  const k = localStorage.getItem(SK.apikey) || GMKEY;
+  document.getElementById('apikey').value = k;
+  loadMaps(k);
+  restoreAT();
+
+  // Aplicar vista según rol
+  aplicarRol(rol || loGetRol());
+}
+
+/* ── Aplicar restricciones visuales según rol ──────────── */
+function aplicarRol(rol){
+  // Guardar rol en sessionStorage por si no estaba
+  if(rol) sessionStorage.setItem(LO_ROL_KEY, rol);
+
+  if(rol === 'chofer'){
+    // ── VISTA CHOFER: ocultar todo excepto el celular ──────
+    // Ocultar tabs de administración
+    document.querySelectorAll('.tbtn').forEach(b=>b.style.display='none');
+    // Ocultar el panel admin completo (tabs + contenido)
+    const apanel = document.querySelector('.apanel');
+    if(apanel) apanel.style.display='none';
+    // Ocultar el header (no necesita API key ni sync)
+    const hdr = document.querySelector('.hdr');
+    if(hdr) hdr.style.display='none';
+    // Expandir el celular para que ocupe toda la pantalla
+    const mgrid = document.querySelector('.mgrid');
+    if(mgrid){
+      mgrid.style.gridTemplateColumns = '1fr';
+      mgrid.style.justifyItems = 'center';
+    }
+    const dcol = document.querySelector('.dcol');
+    if(dcol){
+      dcol.style.width = '100%';
+      dcol.style.maxWidth = '400px';
+      dcol.style.margin = '0 auto';
+      dcol.style.minHeight = '100vh';
+      dcol.style.paddingTop = '30px';
+    }
+    // Mini header del chofer con su nombre y botón de logout
+    const choferBar = document.createElement('div');
+    choferBar.id = 'chofer-bar';
+    choferBar.style.cssText = 'width:100%;display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--sf);border-bottom:1px solid var(--b1);position:fixed;top:0;z-index:200;';
+    choferBar.innerHTML =
+      '<div style="font-family:var(--fh);font-weight:800;font-size:16px">Flete<span style="color:var(--ac)">Control</span></div>'+
+      '<div style="display:flex;align-items:center;gap:12px">'+
+        '<span style="font-family:var(--fm);font-size:11px;color:var(--mu)">'+loGetNombre()+'</span>'+
+        '<button onclick="loLogout()" style="font-family:var(--fh);font-size:11px;font-weight:700;background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--mu);padding:5px 10px;cursor:pointer;">Salir</button>'+
+      '</div>';
+    document.body.insertBefore(choferBar, document.body.firstChild);
+    // Dar espacio al header fijo
+    const pfrEl = document.querySelector('.dcol');
+    if(pfrEl) pfrEl.style.paddingTop = '72px';
+
+  } else {
+    // ── VISTA ADMIN: interfaz completa + indicador de usuario ──
+    // Agregar botón de logout + nombre de usuario al header
+    const hdr = document.querySelector('.hdr');
+    if(hdr && !document.getElementById('admin-user-bar')){
+      const userBar = document.createElement('div');
+      userBar.id = 'admin-user-bar';
+      userBar.style.cssText = 'display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:6px 12px;flex-shrink:0';
+      userBar.innerHTML =
+        '<span style="font-family:var(--fm);font-size:10px;color:var(--mu)">&#128100;</span>'+
+        '<span style="font-family:var(--fm);font-size:11px;color:var(--tx)">'+loGetNombre()+'</span>'+
+        '<span style="font-family:var(--fm);font-size:10px;color:var(--a2);background:rgba(62,207,178,.1);border:1px solid rgba(62,207,178,.3);padding:2px 7px;border-radius:4px">ADMIN</span>'+
+        '<button onclick="loLogout()" style="font-family:var(--fh);font-size:10px;font-weight:700;background:none;border:1px solid var(--b1);border-radius:5px;color:var(--mu);padding:4px 9px;cursor:pointer;" title="Cerrar sesión">Salir</button>';
+      // Insertar antes del último elemento del header (el apik)
+      const apik = hdr.querySelector('.apik');
+      if(apik) hdr.insertBefore(userBar, apik);
+      else hdr.appendChild(userBar);
+    }
+  }
+}
+
+/* ── Mostrar formulario de login ───────────────────────── */
+function loShowForm(){
+  setTimeout(()=>{ const e=document.getElementById('loEmail'); if(e)e.focus(); }, 100);
+}
+
+/* ── Toggle password ───────────────────────────────────── */
+function loTogglePw(){
+  const inp = document.getElementById('loPass');
+  const btn = document.querySelector('.lo-pw-eye');
+  if(inp.type==='password'){ inp.type='text'; btn.innerHTML='&#128274;'; }
+  else { inp.type='password'; btn.innerHTML='&#128065;'; }
+}
+
+/* ── Enter key en el overlay ───────────────────────────── */
+document.addEventListener('keydown', e=>{
+  const overlay = document.getElementById('login-overlay');
+  if(overlay && overlay.style.display!=='none' && !overlay.classList.contains('hiding')){
+    if(e.key==='Enter') loDoLogin();
+  }
+});
+
+/* ── Login ─────────────────────────────────────────────── */
+async function loDoLogin(){
+  const email = document.getElementById('loEmail').value.trim();
+  const pass  = document.getElementById('loPass').value;
+  if(!email||!pass){ loShowErr('Completá email y contraseña.'); return; }
+  if(!email.includes('@')){ loShowErr('Ingresá un email válido.'); return; }
+  loSetLoading(true);
+  loHideErr();
+  try{
+    const result = await sheetPost({action:'login', email, password:pass});
+    loSetLoading(false);
+    if(!result||!result.ok){
+      loShowErr(result ? result.error : 'Error de conexión. Intentá de nuevo.');
+      return;
+    }
+    // ✅ Login exitoso — guardar token + rol + nombre + expiración
+    const expiry = Date.now() + 8*3600*1000;
+    sessionStorage.setItem(LO_TOKEN_KEY,  result.token);
+    sessionStorage.setItem(LO_NAME_KEY,   result.nombre || email);
+    sessionStorage.setItem(LO_ROL_KEY,    result.rol    || 'chofer');  // ← rol persistido
+    sessionStorage.setItem(LO_EXPIRY_KEY, String(expiry));
+
+    // Mostrar éxito con rol
+    document.getElementById('loForm').style.display = 'none';
+    const sw = document.getElementById('loSuccess');
+    sw.style.display = 'block';
+    const rolLabel = result.rol === 'admin' ? '(Administrador)' : '(Chofer)';
+    document.getElementById('loSuccessName').textContent =
+      '¡Bienvenido, ' + (result.nombre||email) + '! ' + rolLabel;
+
+    setTimeout(()=> loShowApp(result.rol || 'chofer'), 1100);
+
+  }catch(err){
+    loSetLoading(false);
+    loShowErr('Error de red: ' + (err.message||'intentá de nuevo.'));
+  }
+}
+
+/* ── UI helpers ────────────────────────────────────────── */
+function loSetLoading(on){
+  const btn  = document.getElementById('loBtn');
+  const spin = document.getElementById('loSpin');
+  const txt  = document.getElementById('loBtnTxt');
+  btn.disabled          = on;
+  spin.style.display    = on ? 'block' : 'none';
+  txt.textContent       = on ? 'Verificando...' : '▶ Ingresar';
+}
+function loShowErr(msg){
+  const el = document.getElementById('loErr');
+  document.getElementById('loErrTxt').textContent = msg;
+  el.classList.add('show');
+  el.style.animation = 'none'; el.offsetHeight;
+  el.style.animation = 'loshake .3s ease';
+  document.getElementById('loPass').classList.add('lo-err-inp');
+}
+function loHideErr(){
+  document.getElementById('loErr').classList.remove('show');
+  document.getElementById('loEmail').classList.remove('lo-err-inp');
+  document.getElementById('loPass').classList.remove('lo-err-inp');
+}
+
+/* ── Logout ────────────────────────────────────────────── */
+function loLogout(){
+  const token = sessionStorage.getItem(LO_TOKEN_KEY);
+  if(token && hasSheets()) sheetPost({action:'logout', token});
+  sessionStorage.removeItem(LO_TOKEN_KEY);
+  sessionStorage.removeItem(LO_NAME_KEY);
+  sessionStorage.removeItem(LO_ROL_KEY);
+  sessionStorage.removeItem(LO_EXPIRY_KEY);
+  location.reload();
+}
 
 </script>
 </body>
