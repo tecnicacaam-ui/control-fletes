@@ -211,7 +211,45 @@ tr:hover td{background:var(--s2)}
 .mlog{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:11px 13px;flex-shrink:0}
 .mlog-t{font-family:var(--fm);font-size:9px;letter-spacing:1px;color:var(--mu);text-transform:uppercase;margin-bottom:7px}
 #mlogc{font-family:var(--fm);font-size:11px;color:var(--mu);line-height:1.9;max-height:100px;overflow-y:auto}
-/* ── Driver panel — diseño libre sin carcasa ── */
+/* ── Admin live tracking panel ── */
+#admin-live{display:none;flex-direction:column;gap:10px;padding:16px 16px 0}
+#admin-live.visible{display:flex}
+.alv-header{font-family:var(--fm);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);display:flex;align-items:center;gap:8px}
+.alv-pulse{width:7px;height:7px;border-radius:50%;background:var(--a2);flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+.alv-pulse.warn{background:var(--a4)}
+.alv-pulse.off{background:var(--mu);animation:none}
+.alv-empty{text-align:center;padding:28px 0;color:var(--mu);font-family:var(--fm);font-size:12px;line-height:1.8}
+.alv-card{background:var(--sf);border:1px solid var(--b1);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.alv-card.retorno{border-left:3px solid var(--a3)}
+.alv-card.espera{border-left:3px solid var(--ac)}
+.alv-card.camino{border-left:3px solid var(--a2)}
+.alv-drv{font-family:var(--fh);font-weight:800;font-size:15px;color:var(--tx)}
+/* Estado badge */
+.alv-estado{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:10px;padding:3px 10px;border-radius:20px;font-weight:500}
+.alv-estado.camino{background:rgba(62,207,178,.12);color:var(--a2);border:1px solid rgba(62,207,178,.3)}
+.alv-estado.espera{background:rgba(240,192,64,.12);color:var(--ac);border:1px solid rgba(240,192,64,.3)}
+.alv-estado.retorno{background:rgba(139,124,246,.12);color:var(--a3);border:1px solid rgba(139,124,246,.3)}
+.alv-estado.pendiente{background:rgba(107,114,128,.12);color:var(--mu);border:1px solid rgba(107,114,128,.3)}
+/* Parada info */
+.alv-parada-lbl{font-family:var(--fm);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--mu)}
+.alv-parada-nombre{font-size:13px;font-weight:600;color:var(--tx);margin-top:2px}
+.alv-parada-addr{font-family:var(--fm);font-size:10px;color:var(--mu);margin-top:2px}
+/* Progress bar */
+.alv-progress{display:flex;flex-direction:column;gap:4px}
+.alv-progress-lbl{font-family:var(--fm);font-size:9px;color:var(--mu);display:flex;justify-content:space-between}
+.alv-bar{height:4px;background:var(--b1);border-radius:2px;overflow:hidden}
+.alv-bar-fill{height:100%;background:var(--a2);border-radius:2px;transition:width .5s ease}
+/* Timer espera */
+.alv-wait{display:flex;align-items:center;gap:8px;background:var(--s2);border-radius:8px;padding:8px 12px}
+.alv-wait-lbl{font-family:var(--fm);font-size:10px;color:var(--mu);flex:1}
+.alv-wait-val{font-family:var(--fm);font-size:16px;color:var(--ac);letter-spacing:2px;font-weight:500}
+/* Timestamps strip */
+.alv-times{display:flex;gap:8px;flex-wrap:wrap}
+.alv-time-item{background:var(--s2);border-radius:6px;padding:5px 10px;font-family:var(--fm);font-size:10px;color:var(--mu);display:flex;flex-direction:column;gap:2px;flex:1;min-width:70px}
+.alv-time-item span{color:var(--tx);font-size:11px}
+/* Last update */
+.alv-updated{font-family:var(--fm);font-size:9px;color:var(--mu);text-align:right;padding:0 2px}
 .dcol{background:var(--bg);overflow:hidden;display:flex;flex-direction:column;border-left:1px solid var(--b1)}
 .dttl{display:none}
 .pfr{width:100%;background:transparent;border:none;box-shadow:none;display:flex;flex-direction:column;flex:1;overflow:hidden;position:relative}
@@ -587,7 +625,19 @@ body[data-role="chofer"] .dcol {
         <div class="papp">Flete<span>Control</span></div>
         <div class="ptim" id="pclock">--:--</div>
       </div>
-      <div id="pnone" class="pnone">
+<!-- ADMIN LIVE TRACKING — solo visible para rol admin -->
+<div id="admin-live">
+  <div class="alv-header">
+    <div class="alv-pulse off" id="alv-pulse"></div>
+    <span>Seguimiento en tiempo real</span>
+    <span id="alv-updated" style="margin-left:auto;font-size:9px;color:var(--mu)"></span>
+  </div>
+  <div id="alv-content">
+    <div class="alv-empty">Sin viajes activos.<br>Asigná un viaje para ver el seguimiento.</div>
+  </div>
+</div>
+<!-- Separador — solo visible en admin con viaje activo -->
+<div id="admin-live-sep" style="display:none;height:1px;background:var(--b1);margin:0 16px"></div>
         <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35">
           <rect x="1" y="3" width="15" height="13" rx="1"/>
           <path d="M16 8h4l3 4v4h-7V8z"/>
@@ -1219,8 +1269,7 @@ function _finish(cid,orig,tar,stops,ch,rr){
   saveAll();
   // Sync to Sheets
   sheetPost({action:'crearViaje', data:buildSheetViaje(trip)});
-  renderTable(); renderPhone(); updStats();
-  mlog('Viaje #'+trip.id+' -> '+ch.nombre+' - '+orderedStops.length+' parada(s) [orden optimizado]'+(rr?' '+fmtDur(rr.sec):''));
+  renderTable(); renderPhone(); updStats(); renderAdminLive();
   document.getElementById('fch').value='';
   document.getElementById('for').value='';
   document.getElementById('ftar').value='50000';
@@ -1343,8 +1392,7 @@ function driverBtn(action){
 
   const idx=trips.findIndex(t=>t.id===AT.id);
   if(idx!==-1)trips[idx]={...AT};
-  saveAll(); renderTable(); renderPhone();
-  // Sync partial updates to Sheets — incluye waitStart para que sobreviva cierre de pestaña
+  saveAll(); renderTable(); renderPhone(); if(loIsAdmin()) renderAdminLive();
   sheetPost({action:'patchViaje', id:AT?AT.id:trips[idx].id, fields:{
     estado:(AT||trips[idx]).estado,
     ts_inicio:(AT||trips[idx]).tsStart||'',
@@ -1631,9 +1679,134 @@ async function _restoreATFromSheet(nombreChofer){
   }
 }
 
-/* ═══ POLLING TIEMPO REAL (admin ve estado del chofer) ═══
-   Cada 15s el admin consulta el Sheet y actualiza historial.
+/* ═══ ADMIN LIVE TRACKING ════════════════════════════════
+   Muestra en tiempo real el estado de cada viaje activo.
+   Se llama desde el polling y desde renderTable/renderPhone.
 ═══════════════════════════════════════════════════════ */
+let _adminLiveWaitTick = null;
+
+function renderAdminLive(){
+  const panel = document.getElementById('admin-live');
+  const content= document.getElementById('alv-content');
+  const sep    = document.getElementById('admin-live-sep');
+  const pulse  = document.getElementById('alv-pulse');
+  const upd    = document.getElementById('alv-updated');
+  if(!panel) return;
+
+  // Solo mostrar si es admin
+  if(loGetRol() !== 'admin'){ panel.classList.remove('visible'); return; }
+  panel.classList.add('visible');
+
+  // Viajes activos (en_curso o en_retorno)
+  const activos = trips.filter(t =>
+    t.estado === 'en_curso' || t.estado === 'en_retorno' || t.estado === 'pendiente'
+  );
+
+  upd.textContent = 'Act. ' + new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+  if(!activos.length){
+    pulse.className = 'alv-pulse off';
+    sep.style.display = 'none';
+    content.innerHTML = '<div class="alv-empty">Sin viajes activos.<br>Asigná un viaje para ver el seguimiento.</div>';
+    if(_adminLiveWaitTick){ clearInterval(_adminLiveWaitTick); _adminLiveWaitTick=null; }
+    return;
+  }
+
+  pulse.className = 'alv-pulse';
+  sep.style.display = 'block';
+
+  content.innerHTML = activos.map(t => {
+    const totalParadas = (t.stops||[]).length;
+    // Deducir curStop desde stopLog
+    const stopLog = t.stopLog || [];
+    const curStop = stopLog.filter(s=>s&&s.leaveTs).length;
+    const curStopActual = stopLog[curStop] || {};
+    const enEspera = !!(curStopActual.arriveTs && !curStopActual.leaveTs);
+    const curParada = (t.stops||[])[curStop];
+
+    // Determinar estado visual
+    let estadoClass='pendiente', estadoIco='⏳', estadoTxt='Pendiente';
+    if(t.estado === 'en_retorno'){
+      estadoClass='retorno'; estadoIco='🏁'; estadoTxt='Retornando a base';
+    } else if(enEspera){
+      estadoClass='espera'; estadoIco='⏱'; estadoTxt='Esperando en destino';
+    } else if(t.estado === 'en_curso'){
+      estadoClass='camino'; estadoIco='🚚'; estadoTxt='En camino';
+    }
+
+    // Progreso
+    const prog = totalParadas > 0 ? Math.round((curStop / totalParadas) * 100) : 0;
+
+    // Timestamps
+    const ini  = t.tsStart ? fmtTS(t.tsStart) : '--';
+    const ret  = t.tsRetornoInicio ? fmtTS(t.tsRetornoInicio) : '--';
+
+    // Parada actual info
+    let paradaHtml = '';
+    if(t.estado === 'en_retorno'){
+      paradaHtml = `
+        <div>
+          <div class="alv-parada-lbl">Destino</div>
+          <div class="alv-parada-nombre">🏠 Base / Depósito</div>
+          <div class="alv-parada-addr">${t.origen||''}</div>
+        </div>`;
+    } else if(curParada){
+      paradaHtml = `
+        <div>
+          <div class="alv-parada-lbl">Parada ${curStop+1} de ${totalParadas}</div>
+          <div class="alv-parada-nombre">${curParada.client||'Parada '+(curStop+1)}</div>
+          <div class="alv-parada-addr">${curParada.addr||''}</div>
+        </div>`;
+    }
+
+    // Timer de espera (HTML — lo actualizamos con JS aparte)
+    const waitHtml = enEspera && curStopActual.arriveTs ? `
+      <div class="alv-wait">
+        <div class="alv-wait-lbl">⏱ Tiempo en destino</div>
+        <div class="alv-wait-val" id="alv-wait-${t.id}">--:--</div>
+      </div>` : '';
+
+    return `
+      <div class="alv-card ${estadoClass}" data-id="${t.id}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <div class="alv-drv">${t.chofer||'--'}</div>
+          <div class="alv-estado ${estadoClass}">${estadoIco} ${estadoTxt}</div>
+        </div>
+        ${paradaHtml}
+        ${waitHtml}
+        <div class="alv-progress">
+          <div class="alv-progress-lbl">
+            <span>Progreso del recorrido</span>
+            <span>${curStop}/${totalParadas} paradas</span>
+          </div>
+          <div class="alv-bar"><div class="alv-bar-fill" style="width:${prog}%"></div></div>
+        </div>
+        <div class="alv-times">
+          <div class="alv-time-item">Inicio<span>${ini}</span></div>
+          <div class="alv-time-item">Retorno<span>${ret}</span></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Arrancar tick para actualizar timers de espera
+  if(_adminLiveWaitTick) clearInterval(_adminLiveWaitTick);
+  _adminLiveWaitTick = setInterval(()=>{
+    activos.forEach(t=>{
+      const stopLog = t.stopLog || [];
+      const curStop = stopLog.filter(s=>s&&s.leaveTs).length;
+      const curStopActual = stopLog[curStop] || {};
+      if(curStopActual.arriveTs && !curStopActual.leaveTs){
+        const el = document.getElementById('alv-wait-'+t.id);
+        if(el){
+          const s = Math.floor((Date.now() - new Date(curStopActual.arriveTs))/1000);
+          el.textContent = pad(Math.floor(s/60))+':'+pad(s%60);
+        }
+      }
+    });
+  }, 1000);
+}
+
+/* ═══ POLLING TIEMPO REAL ════════════════════════════════ */
 let _pollingInterval = null;
 function startAdminPolling(){
   if(_pollingInterval || !hasSheets()) return;
@@ -1673,6 +1846,7 @@ function startAdminPolling(){
         localStorage.setItem(SK.trips, JSON.stringify(trips));
         renderTable();
         updStats();
+        renderAdminLive(); // actualizar panel de seguimiento
       }
     }catch(_){}
   }, 12000);
@@ -1855,7 +2029,10 @@ function loShowApp(rol){
   restoreAT();
 
   // Admin: polling tiempo real para ver cambios del chofer
-  if((rol || loGetRol()) === 'admin') startAdminPolling();
+  if((rol || loGetRol()) === 'admin'){
+    startAdminPolling();
+    renderAdminLive(); // render inicial al entrar
+  }
 
   // Aplicar vista según rol
   aplicarRol(rol || loGetRol());
