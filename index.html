@@ -214,12 +214,14 @@ tr:hover td{background:var(--s2)}
 /* ── Driver panel — diseño libre sin carcasa ── */
 .dcol{background:var(--bg);overflow:hidden;display:flex;flex-direction:column;border-left:1px solid var(--b1)}
 .dttl{display:none}
-.pfr{width:100%;background:transparent;border:none;box-shadow:none;display:flex;flex-direction:column;flex:1;overflow:hidden}
+.pfr{width:100%;background:transparent;border:none;box-shadow:none;display:flex;flex-direction:column;flex:1;overflow:hidden;position:relative}
 .pnotch{display:none}
-.pscr{background:var(--bg);padding:16px 16px 90px;flex:1;display:flex;flex-direction:column;gap:10px;overflow-y:auto;overflow-x:hidden}
+/* pscr scrolls freely — NO padding-bottom needed, buttons are outside */
+.pscr{background:var(--bg);padding:16px 16px 0;flex:1;display:flex;flex-direction:column;gap:10px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 .pscr::-webkit-scrollbar{width:4px}
 .pscr::-webkit-scrollbar-thumb{background:var(--b1);border-radius:3px}
-/* top strip */
+/* pacts OUTSIDE pscr — always visible at bottom, never covered */
+.pacts{display:flex;flex-direction:column;gap:8px;padding:10px 16px 14px;background:var(--bg);border-top:1px solid var(--b1);flex-shrink:0;z-index:10}
 .pstat{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--b1);flex-shrink:0}
 .ptim{font-family:var(--fm);font-size:12px;color:var(--mu)}
 .papp{font-family:var(--fh);font-size:16px;font-weight:800;color:var(--tx)}
@@ -278,7 +280,7 @@ tr:hover td{background:var(--s2)}
 .wt-l{font-size:9px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
 .wt-v{font-size:32px;font-weight:500;letter-spacing:4px}
 /* action buttons — fixed bottom of panel */
-.pacts{display:flex;flex-direction:column;gap:8px;padding:12px 16px 16px;background:var(--bg);border-top:1px solid var(--b1);position:sticky;bottom:0;flex-shrink:0;z-index:10}
+/* pacts defined above */
 .pbtn{width:100%;padding:14px;border-radius:11px;border:none;font-family:var(--fh);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:8px}
 .pbtn:hover:not(:disabled){opacity:.84}
 .pbtn:active:not(:disabled){transform:scale(.97)}
@@ -617,13 +619,15 @@ body[data-role="chofer"] .dcol {
           <div class="tsr"><span>Retorno inicio</span><span class="tsv" id="tsret">--</span></div>
           <div class="tsr"><span>Llegada base</span><span class="tsv" id="tsend">--</span></div>
         </div>
+        <!-- wtimer dentro del scroll para que se vea -->
         <div class="wtimer" id="wtimer">
           <div class="wt-l">&#9203; Esperando en destino</div>
           <div class="wt-v" id="wtime">00:00</div>
         </div>
-        <div class="pacts" id="pacts"></div>
       </div>
     </div>
+    <!-- pacts FUERA del pscr — siempre visible, no se tapa con el scroll -->
+    <div class="pacts" id="pacts"></div>
   </div>
 </aside>
 </div>
@@ -1606,25 +1610,33 @@ function startAdminPolling(){
       if(!res || !res.ok || !res.data) return;
       let changed = false;
       res.data.forEach(v=>{
-        if(v.estado === 'en_curso' || v.estado === 'en_retorno' || v.estado === 'completado'){
-          const idx = trips.findIndex(t=>String(t.id)===String(v.id));
-          if(idx !== -1 && trips[idx].estado !== v.estado){
-            trips[idx].estado          = v.estado;
-            trips[idx].tsStart         = v.ts_inicio         || trips[idx].tsStart;
-            trips[idx].tsLlegadaUltima = v.ts_llegada_ultima || trips[idx].tsLlegadaUltima;
-            trips[idx].tsRetornoInicio = v.ts_retorno_inicio || trips[idx].tsRetornoInicio;
-            trips[idx].tsEnd           = v.ts_fin            || trips[idx].tsEnd;
-            trips[idx].horasTotal      = v.horas_total       || trips[idx].horasTotal;
-            trips[idx].kmTotal         = v.km_total          || trips[idx].kmTotal;
-            trips[idx].costoTotal      = v.costo_total       || trips[idx].costoTotal;
-            try{ trips[idx].stopLog = JSON.parse(v.stop_log_json||'[]'); }catch(_){}
-            changed = true;
-          }
+        const idx = trips.findIndex(t=>String(t.id)===String(v.id));
+        if(idx === -1) return;
+        const local = trips[idx];
+        // Sincronizar si el estado cambió en el Sheet
+        if(local.estado !== v.estado ||
+           (!local.tsEnd && v.ts_fin) ||
+           (!local.costoTotal && v.costo_total)){
+          trips[idx].estado          = v.estado          || local.estado;
+          trips[idx].tsStart         = v.ts_inicio        || local.tsStart;
+          trips[idx].tsLlegadaUltima = v.ts_llegada_ultima|| local.tsLlegadaUltima;
+          trips[idx].tsRetornoInicio = v.ts_retorno_inicio|| local.tsRetornoInicio;
+          trips[idx].tsEnd           = v.ts_fin           || local.tsEnd;
+          trips[idx].horasTotal      = parseFloat(v.horas_total) || local.horasTotal;
+          trips[idx].kmTotal         = parseFloat(v.km_total)    || local.kmTotal;
+          trips[idx].costoTotal      = parseFloat(v.costo_total) || local.costoTotal;
+          try{ trips[idx].stopLog = JSON.parse(v.stop_log_json||'[]'); }catch(_){}
+          changed = true;
         }
       });
-      if(changed){ localStorage.setItem(SK.trips,JSON.stringify(trips)); renderTable(); updStats(); }
+      if(changed){
+        localStorage.setItem(SK.trips, JSON.stringify(trips));
+        renderTable();
+        updStats();
+        mlog('Sync: viajes actualizados desde Sheet');
+      }
     }catch(_){}
-  }, 15000);
+  }, 12000); // cada 12 segundos
 }
 function stopAdminPolling(){ if(_pollingInterval){clearInterval(_pollingInterval);_pollingInterval=null;} }
 
@@ -1766,25 +1778,24 @@ function loIsAdmin(){ return loGetRol() === 'admin'; }
 function loCheckSession(){
   const token  = _sto.getItem(LO_TOKEN_KEY);
   const expiry = parseInt(_sto.getItem(LO_EXPIRY_KEY)||'0');
+  const rol    = _sto.getItem(LO_ROL_KEY) || 'chofer';
+
   // Sin Sheets: modo desarrollo sin login
   if(!hasSheets()){ loShowApp('admin'); return; }
+
+  // Token existe y no expiró → entrar directo sin verificar contra servidor
+  // (evita que falle en Safari/mobile por CORS o latencia)
   if(token && Date.now() < expiry){
-    sheetPost({action:'verificarToken', token})
-      .then(r=>{
-        if(r && r.ok && r.valid && r.payload){
-          // Refrescar rol desde el payload del token (por si cambió)
-          const rol = r.payload.rol || _sto.getItem(LO_ROL_KEY) || 'chofer';
-          _sto.setItem(LO_ROL_KEY, rol);
-          loShowApp(rol);
-        } else {
-          loShowForm();
-        }
-      })
-      .catch(()=>{
-        // Si falla la red, usar el rol guardado localmente
-        const rol = _sto.getItem(LO_ROL_KEY) || 'chofer';
-        loShowApp(rol);
-      });
+    loShowApp(rol);
+    // Verificar contra servidor en background (silencioso, sin bloquear)
+    sheetPost({action:'verificarToken', token}).then(r=>{
+      if(r && r.ok === false && !r.valid){
+        // Token inválido server-side: cerrar sesión
+        _sto.removeItem(LO_TOKEN_KEY);
+        _sto.removeItem(LO_EXPIRY_KEY);
+        location.reload();
+      }
+    }).catch(()=>{}); // error de red: ignorar, ya entramos
   } else {
     loShowForm();
   }
