@@ -211,76 +211,75 @@ tr:hover td{background:var(--s2)}
 .mlog{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:11px 13px;flex-shrink:0}
 .mlog-t{font-family:var(--fm);font-size:9px;letter-spacing:1px;color:var(--mu);text-transform:uppercase;margin-bottom:7px}
 #mlogc{font-family:var(--fm);font-size:11px;color:var(--mu);line-height:1.9;max-height:100px;overflow-y:auto}
-/* Phone */
-.dcol{background:var(--sf);overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:20px 15px;gap:15px}
-.dttl{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mu);align-self:flex-start}
-.pfr{width:274px;background:#080a0e;border-radius:36px;border:6px solid #1e2430;box-shadow:0 0 0 1px #2a3040,0 20px 60px rgba(0,0,0,.8),inset 0 0 0 1px #0e1118;overflow:hidden}
-.pnotch{width:80px;height:18px;background:#080a0e;border-radius:0 0 12px 12px;margin:0 auto}
-/* Fixed-height phone screen — inner content scrolls, action buttons stay visible */
-.pscr{background:linear-gradient(160deg,#0f1420 0%,#0a0c10 100%);padding:10px 13px 0;height:590px;display:flex;flex-direction:column;overflow:hidden}
-/* The active trip div scrolls independently */
-#ptrip{overflow-y:auto;overflow-x:hidden;flex:1;padding-bottom:14px}
-#ptrip::-webkit-scrollbar{width:3px}
-#ptrip::-webkit-scrollbar-track{background:transparent}
-#ptrip::-webkit-scrollbar-thumb{background:#2e3545;border-radius:3px}
-/* action buttons pinned at bottom — pull out of scroll flow */
-.pacts{display:flex;flex-direction:column;gap:7px;padding:8px 0 10px;background:linear-gradient(to bottom,transparent 0%,#0a0c10 30%);position:sticky;bottom:0;flex-shrink:0}
-.pstat{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.ptim{font-family:var(--fm);font-size:13px;font-weight:500;color:var(--tx)}
-.papp{font-family:var(--fh);font-size:15px;font-weight:800;color:var(--tx);margin-bottom:10px;text-align:center}
+/* ── Driver panel — diseño libre sin carcasa ── */
+.dcol{background:var(--bg);overflow:hidden;display:flex;flex-direction:column;border-left:1px solid var(--b1)}
+.dttl{display:none}
+.pfr{width:100%;background:transparent;border:none;box-shadow:none;display:flex;flex-direction:column;flex:1;overflow:hidden}
+.pnotch{display:none}
+.pscr{background:var(--bg);padding:16px 16px 90px;flex:1;display:flex;flex-direction:column;gap:10px;overflow-y:auto;overflow-x:hidden}
+.pscr::-webkit-scrollbar{width:4px}
+.pscr::-webkit-scrollbar-thumb{background:var(--b1);border-radius:3px}
+/* top strip */
+.pstat{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--b1);flex-shrink:0}
+.ptim{font-family:var(--fm);font-size:12px;color:var(--mu)}
+.papp{font-family:var(--fh);font-size:16px;font-weight:800;color:var(--tx)}
 .papp span{color:var(--ac)}
-.pnone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--mu);text-align:center}
-.pnone p{font-size:12px;line-height:1.6}
-/* Phone trip */
-.ptcard{background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:11px;margin-bottom:8px}
-.ptlbl{font-family:var(--fm);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--mu);margin-bottom:5px}
-.ptdrv{font-family:var(--fh);font-size:13px;font-weight:700;margin-bottom:8px;color:var(--tx)}
-/* Return status banner */
-.retorno-banner{background:linear-gradient(135deg,#1a1035 0%,#0f0a20 100%);border:1px solid var(--a3);border-radius:10px;padding:10px 12px;margin-bottom:8px;text-align:center}
-.retorno-banner .rb-lbl{font-family:var(--fm);font-size:9px;letter-spacing:1px;color:var(--a3);text-transform:uppercase;margin-bottom:3px}
-.retorno-banner .rb-val{font-family:var(--fh);font-size:16px;font-weight:800;color:var(--tx)}
-.retorno-banner .rb-eta{font-family:var(--fm);font-size:10px;color:var(--mu);margin-top:3px}
-/* Phone stops */
-.pstops{display:flex;flex-direction:column;gap:3px}
-.pstop{display:flex;align-items:flex-start;gap:7px;padding:5px 6px;border-radius:8px;transition:background .2s;border:1px solid transparent}
-.pstop.cur{background:#1a2030;border-color:var(--b2)}
-.pstop.don{opacity:.38}
+/* empty state */
+.pnone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--mu);text-align:center;padding:40px 0}
+.pnone p{font-size:13px;line-height:1.7}
+/* trip card */
+.ptcard{background:var(--sf);border:1px solid var(--b1);border-radius:var(--r);padding:14px 16px}
+.ptlbl{font-family:var(--fm);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);margin-bottom:6px}
+.ptdrv{font-family:var(--fh);font-size:16px;font-weight:800;margin-bottom:10px;color:var(--tx)}
+/* retorno banner */
+.retorno-banner{background:linear-gradient(135deg,#1a1035 0%,#0f0a20 100%);border:1px solid var(--a3);border-radius:var(--r);padding:14px 16px;text-align:center}
+.retorno-banner .rb-lbl{font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--a3);text-transform:uppercase;margin-bottom:5px}
+.retorno-banner .rb-val{font-family:var(--fh);font-size:15px;font-weight:800;color:var(--tx)}
+.retorno-banner .rb-eta{font-family:var(--fm);font-size:11px;color:var(--mu);margin-top:4px}
+/* stops */
+.pstops{display:flex;flex-direction:column;gap:4px}
+.pstop{display:flex;align-items:flex-start;gap:9px;padding:7px 8px;border-radius:8px;border:1px solid transparent;transition:background .2s}
+.pstop.cur{background:var(--s2);border-color:var(--b2)}
+.pstop.don{opacity:.35}
 .pstop.delay-risk{background:#1a0a0c!important;border-color:rgba(240,80,96,.5)!important}
-.psdotc{display:flex;flex-direction:column;align-items:center;padding-top:3px}
+.psdotc{display:flex;flex-direction:column;align-items:center;padding-top:4px}
 .psdot{width:9px;height:9px;border-radius:50%;background:var(--b1);flex-shrink:0}
 .psdot.done{background:var(--a2)}
-.psdot.cur{background:var(--ac);box-shadow:0 0 7px var(--ac)}
-.psdot.ret{background:var(--a3);box-shadow:0 0 7px var(--a3)}
-.psdot.risk{background:var(--dg);box-shadow:0 0 7px var(--dg);animation:blink 1s infinite}
-.psline{width:1px;flex:1;min-height:10px;background:var(--b1);margin:2px 0}
+.psdot.cur{background:var(--ac);box-shadow:0 0 8px var(--ac)}
+.psdot.ret{background:var(--a3);box-shadow:0 0 8px var(--a3)}
+.psdot.risk{background:var(--dg);box-shadow:0 0 8px var(--dg);animation:blink 1s infinite}
+.psline{width:1px;flex:1;min-height:12px;background:var(--b1);margin:3px 0}
 .psinf{flex:1;min-width:0}
-.psnum{font-family:var(--fm);font-size:9px;color:var(--mu)}
-.pscl{font-size:11px;font-weight:600;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.psad{font-size:10px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
-.ps-tw{font-family:var(--fm);font-size:9px;margin-top:3px;padding:2px 6px;border-radius:4px;display:inline-block;letter-spacing:.3px}
+.psnum{font-family:var(--fm);font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+.pscl{font-size:12px;font-weight:600;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.psad{font-size:11px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.ps-tw{font-family:var(--fm);font-size:9px;margin-top:3px;padding:2px 7px;border-radius:4px;display:inline-block}
 .ps-tw.ok{background:#102a24;color:var(--a2);border:1px solid #1a3a2a}
 .ps-tw.warn{background:#2a1a08;color:var(--a4);border:1px solid #3a2a10}
 .ps-tw.risk{background:#2a0808;color:var(--dg);border:1px solid #3a1010;animation:flash .8s infinite}
-/* Current stop card */
-.pcurcard{background:#111830;border:1px solid var(--b2);border-radius:10px;padding:10px 12px;margin-bottom:8px;border-left:3px solid var(--ac)}
+/* current stop card */
+.pcurcard{background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);padding:14px 16px;border-left:3px solid var(--ac)}
 .pcurcard.risk{border-left-color:var(--dg);background:#150808}
-.pcurcard.retorno{border-left-color:var(--a3);background:#110a1a}
-.pcurlbl{font-family:var(--fm);font-size:9px;letter-spacing:1px;color:var(--a2);text-transform:uppercase;margin-bottom:4px}
-.pcurname{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--tx)}
-.pcuraddr{font-size:11px;color:var(--mu);margin-top:2px}
-.pcurprog{font-family:var(--fm);font-size:10px;color:var(--mu);margin-top:4px}
-.pcurtw{font-family:var(--fm);font-size:10px;margin-top:5px;padding:3px 8px;border-radius:5px;display:inline-block}
+.pcurcard.retorno{border-left-color:var(--a3)}
+.pcurlbl{font-family:var(--fm);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--a2);margin-bottom:5px}
+.pcurname{font-family:var(--fh);font-size:17px;font-weight:800;color:var(--tx)}
+.pcuraddr{font-size:12px;color:var(--mu);margin-top:3px;line-height:1.5}
+.pcurprog{font-family:var(--fm);font-size:11px;color:var(--mu);margin-top:5px}
+.pcurtw{font-family:var(--fm);font-size:11px;margin-top:7px;padding:4px 10px;border-radius:6px;display:inline-block}
 .pcurtw.ok{background:#102a24;color:var(--a2)}
 .pcurtw.warn{background:#2a1a08;color:var(--a4)}
 .pcurtw.risk{background:#2a0808;color:var(--dg);animation:flash .8s infinite}
-.tslog{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:7px 10px;font-family:var(--fm);font-size:10px;color:var(--mu);line-height:1.8;margin-bottom:8px}
-.tsr{display:flex;justify-content:space-between;gap:6px}
-.tsv{color:var(--a2)}
-.wtimer{background:#1a1230;border:1px solid var(--a3);border-radius:7px;padding:6px 10px;font-family:var(--fm);color:var(--a3);text-align:center;display:none;margin-bottom:8px}
-.wt-l{font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase}
-.wt-v{font-size:20px;font-weight:500;letter-spacing:2px}
-/* .pacts defined above with sticky positioning */
-.pbtn{width:100%;padding:12px;border-radius:11px;border:none;font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:7px}
+/* timestamps */
+.tslog{background:var(--sf);border:1px solid var(--b1);border-radius:var(--r);padding:12px 14px;font-family:var(--fm);font-size:11px;color:var(--mu);line-height:2}
+.tsr{display:flex;justify-content:space-between;gap:8px}
+.tsv{color:var(--a2);font-weight:500}
+/* wait timer */
+.wtimer{background:var(--s2);border:1px solid var(--a3);border-radius:var(--r);padding:12px 14px;font-family:var(--fm);color:var(--a3);text-align:center;display:none}
+.wt-l{font-size:9px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.wt-v{font-size:32px;font-weight:500;letter-spacing:4px}
+/* action buttons — fixed bottom of panel */
+.pacts{display:flex;flex-direction:column;gap:8px;padding:12px 16px 16px;background:var(--bg);border-top:1px solid var(--b1);position:sticky;bottom:0;flex-shrink:0;z-index:10}
+.pbtn{width:100%;padding:14px;border-radius:11px;border:none;font-family:var(--fh);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:8px}
 .pbtn:hover:not(:disabled){opacity:.84}
 .pbtn:active:not(:disabled){transform:scale(.97)}
 .pbtn:disabled{opacity:.28;cursor:not-allowed}
@@ -420,6 +419,11 @@ body[data-role="chofer"] .dcol {
             <input type="password" id="loPass" placeholder="••••••••" autocomplete="current-password">
             <button class="lo-pw-eye" type="button" onclick="loTogglePw()" title="Mostrar/ocultar">&#128065;</button>
           </div>
+        </div>
+        <!-- Recordarme -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;cursor:pointer" onclick="document.getElementById('loRemember').click()">
+          <input type="checkbox" id="loRemember" style="width:16px;height:16px;accent-color:var(--ac);cursor:pointer;flex-shrink:0">
+          <span style="font-family:var(--fm);font-size:11px;color:var(--mu);user-select:none">Mantener sesión iniciada (30 días)</span>
         </div>
         <button class="lo-btn" id="loBtn" onclick="loDoLogin()">
           <div class="lo-spin" id="loSpin"></div>
@@ -575,15 +579,12 @@ body[data-role="chofer"] .dcol {
 </section>
 <!-- PHONE -->
 <aside class="dcol">
-  <div class="dttl">Celular del Chofer</div>
   <div class="pfr">
-    <div class="pnotch"></div>
     <div class="pscr">
       <div class="pstat">
+        <div class="papp">Flete<span>Control</span></div>
         <div class="ptim" id="pclock">--:--</div>
-        <span style="font-size:11px;color:var(--tx)">WiFi &#128267;</span>
       </div>
-      <div class="papp">Flete<span>Control</span></div>
       <div id="pnone" class="pnone">
         <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35">
           <rect x="1" y="3" width="15" height="13" rx="1"/>
@@ -1212,14 +1213,8 @@ function _finish(cid,orig,tar,stops,ch,rr){
   AT={...trip, curStop:0, waitStart:null, stopLog:[], _retorno:false};
   AT._legData=_lastLegData.map(ld=>({sec:ld.sec,mt:ld.mt}));
   saveAll();
-  // Sync to Sheets — viaje + estado activo del chofer (para que el chofer lo recupere en su dispositivo)
-  sheetPost({action:'crearViaje', data:buildSheetViaje(trip)}).then(()=>{
-    // Guardar con clave del chofer para recuperación cross-device
-    if(hasSheets() && ch && ch.nombre){
-      const claveChofer = 'fc_activo_' + ch.nombre.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
-      sheetPost({action:'guardarEstadoActivo', key: claveChofer, data: AT});
-    }
-  });
+  // Sync to Sheets
+  sheetPost({action:'crearViaje', data:buildSheetViaje(trip)});
   renderTable(); renderPhone(); updStats();
   mlog('Viaje #'+trip.id+' -> '+ch.nombre+' - '+orderedStops.length+' parada(s) [orden optimizado]'+(rr?' '+fmtDur(rr.sec):''));
   document.getElementById('fch').value='';
@@ -1233,7 +1228,7 @@ function _finish(cid,orig,tar,stops,ch,rr){
 function buildSheetViaje(t){
   return{
     id:t.id, chofer:t.chofer, camion:t.camion||'', origen:t.origen,
-    destino_json:JSON.stringify(t.stops||[]),   // ← columna exacta del Sheet
+    destino_json:JSON.stringify(t.stops||[]),   // ← nombre exacto columna del Sheet
     modalidad:t.modalidad, tarifa:t.tarifa,
     estado:t.estado,
     ts_creado:t.tsCreado||'', ts_inicio:t.tsStart||'',
@@ -1304,13 +1299,10 @@ function driverBtn(action){
     // Final step: arrived at base
     AT.tsEnd=iso; AT.estado='completado';
     stopWaitTimer();
-    // Compute totals
     const totalMs=now-new Date(AT.tsStart);
     const totalWaitSec=AT.stopLog.reduce((a,s)=>a+(s.waitSec||0),0);
-    AT.horasTotal=totalMs/3600000;  // full hours including return
-    // KM: use Google route km (estMt) + return km if available
+    AT.horasTotal=totalMs/3600000;
     AT.kmTotal = ((AT.estMt||0) + (retornoRouteMt||0)) / 1000;
-    // Cost calculation
     if(AT.modalidad==='km'){
       AT.costoTotal=AT.kmTotal*AT.tarifa;
     } else {
@@ -1318,9 +1310,18 @@ function driverBtn(action){
     }
     const idx=trips.findIndex(t=>t.id===AT.id);
     if(idx!==-1)trips[idx]={...AT};
+    // Limpiar estado activo
+    localStorage.removeItem(SK.active);
     saveAll();
-    // Push to Sheets
-    sheetPost({action:'actualizarViaje', data:buildSheetViaje(trips[idx>=0?idx:0])});
+    // Sincronizar viaje completado con el Sheet
+    const viajeCompletado = idx>=0 ? trips[idx] : AT;
+    sheetPost({action:'actualizarViaje', data:buildSheetViaje(viajeCompletado)});
+    // Borrar el estado activo del chofer en el Sheet (para que no lo vuelva a cargar)
+    if(hasSheets()){
+      sheetPost({action:'borrarEstadoActivo'});
+      const claveChofer = 'fc_activo_' + AT.chofer.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
+      sheetPost({action:'borrarEstadoActivo', key: claveChofer});
+    }
     mlog('['+fmt+'] Viaje #'+AT.id+' COMPLETADO');
     mlog('  Tiempo total: '+fmtHs(AT.horasTotal));
     mlog('  KM totales: '+AT.kmTotal.toFixed(1)+' km');
@@ -1472,31 +1473,30 @@ function renderPBtns(){
   const el=document.getElementById('pacts'); if(!AT){el.innerHTML='';return;}
   let html='';
   if(!AT.tsStart){
-    html='<button class="pbtn pb-st" onclick="driverBtn(\'start\')">&#9654; 1. Iniciar Viaje</button>';
+    html='<button class="pbtn pb-st" onclick="driverBtn(\'start\')">&#9654; Iniciar Viaje</button>';
   } else if(AT._retorno){
+    // En retorno — siempre mostrar el botón de finalizar
     html='<button class="pbtn pb-en" onclick="driverBtn(\'llegada_base\')">&#128721; Finalizar Viaje (Llegada a Base)</button>';
+  } else if(!AT.stops || AT.stops.length === 0){
+    // Sin paradas definidas — permitir finalizar igual
+    html='<button class="pbtn pb-en" onclick="driverBtn(\'llegada_base\')">&#128721; Finalizar Viaje</button>';
   } else {
-    // Guard: si stops está vacío no podemos operar
-    if(!AT.stops || AT.stops.length === 0){
-      html='<button class="pbtn pb-en" onclick="driverBtn(\'llegada_base\')" style="background:var(--dg)">&#128721; Finalizar Viaje</button>';
-      el.innerHTML=html; return;
-    }
-    // Asegurar que curStop esté dentro del rango válido
+    // Asegurar curStop dentro del rango
     if(AT.curStop >= AT.stops.length) AT.curStop = AT.stops.length - 1;
-    const cur=AT.stops[AT.curStop];
-    const lg=AT.stopLog[AT.curStop]||{};
-    const isLast=AT.curStop===AT.stops.length-1;
-    const arrived=!!lg.arriveTs;
-    const lbl=cur?(cur.client||'Parada '+(AT.curStop+1)):'Parada '+(AT.curStop+1);
+    const cur     = AT.stops[AT.curStop];
+    const lg      = AT.stopLog[AT.curStop] || {};
+    const isLast  = AT.curStop === AT.stops.length - 1;
+    const arrived = !!lg.arriveTs;
+    const lbl     = cur ? (cur.client || 'Parada ' + (AT.curStop + 1)) : 'Parada ' + (AT.curStop + 1);
     if(!arrived){
-      html='<button class="pbtn pb-ar" onclick="driverBtn(\'arrive\')">&#128205; Llegue a '+lbl+'</button>';
+      html='<button class="pbtn pb-ar" onclick="driverBtn(\'arrive\')">&#128205; Llegue a ' + lbl + '</button>';
     } else if(!isLast){
-      html='<button class="pbtn pb-nx" onclick="driverBtn(\'next\')">&#9654; Continuar a Parada '+(AT.curStop+2)+'</button>';
+      html='<button class="pbtn pb-nx" onclick="driverBtn(\'next\')">&#9654; Continuar a Parada ' + (AT.curStop + 2) + '</button>';
     } else {
       html='<button class="pbtn pb-ret" onclick="driverBtn(\'retorno\')">&#127937; Iniciar Retorno a Base</button>';
     }
   }
-  el.innerHTML=html;
+  el.innerHTML = html;
 }
 
 /* ═══ PERSIST ════════════════════════════════════════════ */
@@ -1504,26 +1504,15 @@ function saveAll(){
   localStorage.setItem(SK.trips,JSON.stringify(trips));
   localStorage.setItem(SK.nextId,String(nextId));
   localStorage.setItem(SK.active,AT?JSON.stringify(AT):'');
-  if(hasSheets()){
-    // Guardar estado activo global
-    sheetPost({action:'saveActiveTrip',data:AT||null});
-    // Guardar también con clave del chofer para que el chofer lo recupere
-    if(AT && AT.chofer){
-      const claveChofer = 'fc_activo_' + AT.chofer.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
-      sheetPost({action:'guardarEstadoActivo', key: claveChofer, data: AT||null});
-    }
-  }
+  if(hasSheets()) sheetPost({action:'saveActiveTrip',data:AT||null});
 }
 function saveCh(){localStorage.setItem(SK.choferes,JSON.stringify(choferes));localStorage.setItem(SK.nextCId,String(nextCId));}
 function restoreAT(){
-  const rol = sessionStorage.getItem('fc_auth_rol') || 'admin';
-  const nombre = sessionStorage.getItem('fc_auth_nombre') || '';
-
+  const rol    = _sto.getItem('fc_auth_rol') || 'admin';
+  const nombre = _sto.getItem('fc_auth_nombre') || '';
   if(rol === 'chofer' && nombre && hasSheets()){
-    // El chofer carga su viaje activo desde el Sheet, no desde localStorage
     _restoreATFromSheet(nombre);
   } else {
-    // Admin: restaurar desde localStorage como siempre
     _restoreATLocal();
   }
 }
@@ -1534,35 +1523,25 @@ function _restoreATLocal(){
     AT=JSON.parse(raw); if(!AT||!AT.id){AT=null;return;}
     if(!AT.stopLog)AT.stopLog=[]; if(typeof AT.curStop!=='number')AT.curStop=0;
     if(!AT._legData)AT._legData=[];
-    renderPhone(); toast('Viaje #'+AT.id+' restaurado.');
+    renderPhone();
+    if(AT.tsStart) toast('Viaje #'+AT.id+' en curso — timer activo.');
+    else toast('Viaje #'+AT.id+' restaurado.');
   }catch(e){AT=null;}
 }
 
 async function _restoreATFromSheet(nombreChofer){
   try{
-    // Buscar viajes activos del chofer en el Sheet
     const res = await sheetGet({action:'obtenerViajes'});
     if(!res || !res.ok || !res.data) return;
-
-    // Buscar viaje en_curso o pendiente asignado a este chofer
     const viajesActivos = res.data.filter(v=>{
       if(!v.chofer) return false;
-      const nombreSheet = v.chofer.split(' - ')[0].trim().toLowerCase();
+      const nombreSheet  = v.chofer.split(' - ')[0].trim().toLowerCase();
       const nombreSesion = nombreChofer.trim().toLowerCase();
       return (nombreSheet === nombreSesion || v.chofer.toLowerCase().includes(nombreSesion))
           && (v.estado === 'en_curso' || v.estado === 'pendiente' || v.estado === 'en_retorno');
     });
-
-    if(!viajesActivos.length){
-      // Sin viajes: mostrar pantalla vacía normal
-      renderPhone();
-      return;
-    }
-
-    // Tomar el viaje más reciente
-    const viaje = viajesActivos.sort((a,b)=> new Date(b.ts_creado||0) - new Date(a.ts_creado||0))[0];
-
-    // Reconstruir el objeto AT desde los datos del Sheet
+    if(!viajesActivos.length){ renderPhone(); return; }
+    const viaje = viajesActivos.sort((a,b)=>new Date(b.ts_creado||0)-new Date(a.ts_creado||0))[0];
     AT = {
       id:              viaje.id,
       _choferId:       viaje.choferId || 0,
@@ -1590,92 +1569,66 @@ async function _restoreATFromSheet(nombreChofer){
       _retorno:        viaje.estado === 'en_retorno',
       _legData:        [],
     };
-
-    // Parsear paradas — el Sheet tiene columna 'destino_json'
-    // El Apps Script también expone 'paradas' ya parseado en obtenerViajes
+    // Parsear paradas — columna del Sheet es destino_json
     try{
       const rawStops = viaje.destino_json || viaje.paradas_json || '';
       if(rawStops && typeof rawStops === 'string' && rawStops.startsWith('[')){
         AT.stops = JSON.parse(rawStops);
       } else if(Array.isArray(viaje.paradas)){
-        AT.stops = viaje.paradas;  // ya parseado por el Apps Script
-      } else {
-        AT.stops = [];
-      }
+        AT.stops = viaje.paradas;
+      } else { AT.stops = []; }
     }catch(_){ AT.stops=[]; }
-
-    console.log('[FleteControl] Stops restauradas:', AT.stops.length, AT.stops);
-
     // Parsear stopLog y deducir curStop
     try{
       AT.stopLog = JSON.parse(viaje.stop_log_json || '[]');
-      // curStop = cantidad de paradas con leaveTs (ya dejadas)
       AT.curStop = AT.stopLog.filter(s=>s&&s.leaveTs).length;
       if(AT.curStop >= AT.stops.length) AT.curStop = Math.max(0, AT.stops.length-1);
     }catch(_){ AT.stopLog=[]; AT.curStop=0; }
-
-    // Sincronizar en localStorage para que funcione offline
     localStorage.setItem(SK.active, JSON.stringify(AT));
-
     renderPhone();
-    toast('Viaje #'+AT.id+' cargado para '+nombreChofer+'.');
-
+    if(AT.tsStart) toast('Viaje #'+AT.id+' en curso — timer activo.');
+    else toast('Viaje #'+AT.id+' listo para iniciar.');
   }catch(err){
     console.error('Error cargando viaje del chofer:', err);
-    // Fallback a localStorage
     _restoreATLocal();
   }
 }
 
-/* ═══ POLLING TIEMPO REAL (admin ve el estado del chofer) ═
-   Cada 15 segundos el admin consulta el Sheet y actualiza
-   el historial y las estadísticas automáticamente.
-   El chofer no hace polling — solo envía sus acciones.
+/* ═══ POLLING TIEMPO REAL (admin ve estado del chofer) ═══
+   Cada 15s el admin consulta el Sheet y actualiza historial.
 ═══════════════════════════════════════════════════════ */
 let _pollingInterval = null;
-
 function startAdminPolling(){
-  if(_pollingInterval) return; // ya corriendo
-  if(!hasSheets()) return;
+  if(_pollingInterval || !hasSheets()) return;
   _pollingInterval = setInterval(async ()=>{
     try{
       const res = await sheetGet({action:'obtenerViajes'});
       if(!res || !res.ok || !res.data) return;
-      // Actualizar solo los viajes en_curso o en_retorno desde el Sheet
       let changed = false;
       res.data.forEach(v=>{
         if(v.estado === 'en_curso' || v.estado === 'en_retorno' || v.estado === 'completado'){
           const idx = trips.findIndex(t=>String(t.id)===String(v.id));
-          if(idx !== -1){
-            // Actualizar campos dinámicos del viaje
-            const t = trips[idx];
-            if(t.estado !== v.estado){
-              t.estado         = v.estado;
-              t.tsStart        = v.ts_inicio || t.tsStart;
-              t.tsLlegadaUltima= v.ts_llegada_ultima || t.tsLlegadaUltima;
-              t.tsRetornoInicio= v.ts_retorno_inicio || t.tsRetornoInicio;
-              t.tsEnd          = v.ts_fin || t.tsEnd;
-              t.horasTotal     = v.horas_total || t.horasTotal;
-              t.kmTotal        = v.km_total || t.kmTotal;
-              t.costoTotal     = v.costo_total || t.costoTotal;
-              try{ t.stopLog = JSON.parse(v.stop_log_json||'[]'); }catch(_){}
-              changed = true;
-            }
+          if(idx !== -1 && trips[idx].estado !== v.estado){
+            trips[idx].estado          = v.estado;
+            trips[idx].tsStart         = v.ts_inicio         || trips[idx].tsStart;
+            trips[idx].tsLlegadaUltima = v.ts_llegada_ultima || trips[idx].tsLlegadaUltima;
+            trips[idx].tsRetornoInicio = v.ts_retorno_inicio || trips[idx].tsRetornoInicio;
+            trips[idx].tsEnd           = v.ts_fin            || trips[idx].tsEnd;
+            trips[idx].horasTotal      = v.horas_total       || trips[idx].horasTotal;
+            trips[idx].kmTotal         = v.km_total          || trips[idx].kmTotal;
+            trips[idx].costoTotal      = v.costo_total       || trips[idx].costoTotal;
+            try{ trips[idx].stopLog = JSON.parse(v.stop_log_json||'[]'); }catch(_){}
+            changed = true;
           }
         }
       });
-      if(changed){
-        localStorage.setItem(SK.trips, JSON.stringify(trips));
-        renderTable();
-        updStats();
-      }
+      if(changed){ localStorage.setItem(SK.trips,JSON.stringify(trips)); renderTable(); updStats(); }
     }catch(_){}
-  }, 15000); // cada 15 segundos
+  }, 15000);
 }
+function stopAdminPolling(){ if(_pollingInterval){clearInterval(_pollingInterval);_pollingInterval=null;} }
 
-function stopAdminPolling(){
-  if(_pollingInterval){ clearInterval(_pollingInterval); _pollingInterval=null; }
-}
+/* ═══ HISTORIAL ══════════════════════════════════════════ */
 function setFilter(chip){ document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on')); chip.classList.add('on'); filterMode=chip.dataset.f; document.getElementById('fdaterow').style.display=filterMode==='custom'?'flex':'none'; renderTable(); }
 function getFiltered(){
   const now=new Date();let from=null,to=null;
@@ -1786,30 +1739,33 @@ renderTable();
 updStats();
 
 /* ══ AUTH v3 — Login · Roles · Sesión persistente ═══════
-   sessionStorage keys:
+   localStorage keys (sobreviven cierre de pestaña y recarga):
      fc_auth_token   → JWT firmado (incluye rol en payload)
      fc_auth_nombre  → nombre del usuario
      fc_auth_rol     → 'admin' | 'chofer'
      fc_auth_expiry  → timestamp de expiración (ms)
-
+     fc_auth_remember→ '1' si marcó "Mantener sesión" (30 días)
    Roles:
      admin  → ve toda la interfaz (sin cambios)
      chofer → solo ve el celular del chofer; admin panel oculto
 ═══════════════════════════════════════════════════════ */
-const LO_TOKEN_KEY  = 'fc_auth_token';
-const LO_NAME_KEY   = 'fc_auth_nombre';
-const LO_ROL_KEY    = 'fc_auth_rol';
-const LO_EXPIRY_KEY = 'fc_auth_expiry';
+const LO_TOKEN_KEY   = 'fc_auth_token';
+const LO_NAME_KEY    = 'fc_auth_nombre';
+const LO_ROL_KEY     = 'fc_auth_rol';
+const LO_EXPIRY_KEY  = 'fc_auth_expiry';
+const LO_REMEMBER_KEY= 'fc_auth_remember';
+// Usar localStorage para que la sesión sobreviva cierres de pestaña
+const _sto = localStorage;
 
-/* ── Leer rol actual (útil en cualquier parte del código) ── */
-function loGetRol(){ return sessionStorage.getItem(LO_ROL_KEY) || 'chofer'; }
-function loGetNombre(){ return sessionStorage.getItem(LO_NAME_KEY) || ''; }
+/* ── Leer rol actual ── */
+function loGetRol(){ return _sto.getItem(LO_ROL_KEY) || 'chofer'; }
+function loGetNombre(){ return _sto.getItem(LO_NAME_KEY) || ''; }
 function loIsAdmin(){ return loGetRol() === 'admin'; }
 
 /* ── Check de sesión al cargar ────────────────────────── */
 function loCheckSession(){
-  const token  = sessionStorage.getItem(LO_TOKEN_KEY);
-  const expiry = parseInt(sessionStorage.getItem(LO_EXPIRY_KEY)||'0');
+  const token  = _sto.getItem(LO_TOKEN_KEY);
+  const expiry = parseInt(_sto.getItem(LO_EXPIRY_KEY)||'0');
   // Sin Sheets: modo desarrollo sin login
   if(!hasSheets()){ loShowApp('admin'); return; }
   if(token && Date.now() < expiry){
@@ -1817,8 +1773,8 @@ function loCheckSession(){
       .then(r=>{
         if(r && r.ok && r.valid && r.payload){
           // Refrescar rol desde el payload del token (por si cambió)
-          const rol = r.payload.rol || sessionStorage.getItem(LO_ROL_KEY) || 'chofer';
-          sessionStorage.setItem(LO_ROL_KEY, rol);
+          const rol = r.payload.rol || _sto.getItem(LO_ROL_KEY) || 'chofer';
+          _sto.setItem(LO_ROL_KEY, rol);
           loShowApp(rol);
         } else {
           loShowForm();
@@ -1826,7 +1782,7 @@ function loCheckSession(){
       })
       .catch(()=>{
         // Si falla la red, usar el rol guardado localmente
-        const rol = sessionStorage.getItem(LO_ROL_KEY) || 'chofer';
+        const rol = _sto.getItem(LO_ROL_KEY) || 'chofer';
         loShowApp(rol);
       });
   } else {
@@ -1848,7 +1804,7 @@ function loShowApp(rol){
   loadMaps(k);
   restoreAT();
 
-  // Si es admin: iniciar polling para ver cambios del chofer en tiempo real
+  // Admin: polling tiempo real para ver cambios del chofer
   if((rol || loGetRol()) === 'admin') startAdminPolling();
 
   // Aplicar vista según rol
@@ -1858,7 +1814,7 @@ function loShowApp(rol){
 /* ── Aplicar restricciones visuales según rol ──────────── */
 function aplicarRol(rol){
   // Guardar rol en sessionStorage por si no estaba
-  if(rol) sessionStorage.setItem(LO_ROL_KEY, rol);
+  if(rol) _sto.setItem(LO_ROL_KEY, rol);
 
   if(rol === 'chofer'){
     // ── VISTA CHOFER: ocultar todo excepto el celular ──────
@@ -1922,7 +1878,17 @@ function aplicarRol(rol){
 
 /* ── Mostrar formulario de login ───────────────────────── */
 function loShowForm(){
-  setTimeout(()=>{ const e=document.getElementById('loEmail'); if(e)e.focus(); }, 100);
+  // Autocompletar email guardado
+  const lastEmail = _sto.getItem('fc_last_email');
+  if(lastEmail){ const el=document.getElementById('loEmail'); if(el) el.value=lastEmail; }
+  // Restaurar estado del checkbox recordarme
+  const rem = _sto.getItem(LO_REMEMBER_KEY);
+  const cb  = document.getElementById('loRemember');
+  if(cb && rem === '1') cb.checked = true;
+  setTimeout(()=>{
+    const e = document.getElementById('loEmail');
+    if(e){ if(e.value) document.getElementById('loPass').focus(); else e.focus(); }
+  }, 100);
 }
 
 /* ── Toggle password ───────────────────────────────────── */
@@ -1956,12 +1922,17 @@ async function loDoLogin(){
       loShowErr(result ? result.error : 'Error de conexión. Intentá de nuevo.');
       return;
     }
-    // ✅ Login exitoso — guardar token + rol + nombre + expiración
-    const expiry = Date.now() + 8*3600*1000;
-    sessionStorage.setItem(LO_TOKEN_KEY,  result.token);
-    sessionStorage.setItem(LO_NAME_KEY,   result.nombre || email);
-    sessionStorage.setItem(LO_ROL_KEY,    result.rol    || 'chofer');  // ← rol persistido
-    sessionStorage.setItem(LO_EXPIRY_KEY, String(expiry));
+    // ✅ Login exitoso
+    const remember = document.getElementById('loRemember').checked;
+    // Si marcó "Recordarme": 30 días. Si no: 8 horas (pero en localStorage igual persiste)
+    const expiry = Date.now() + (remember ? 30 : 1) * 24 * 3600 * 1000;
+    _sto.setItem(LO_TOKEN_KEY,   result.token);
+    _sto.setItem(LO_NAME_KEY,    result.nombre || email);
+    _sto.setItem(LO_ROL_KEY,     result.rol    || 'chofer');
+    _sto.setItem(LO_EXPIRY_KEY,  String(expiry));
+    _sto.setItem(LO_REMEMBER_KEY, remember ? '1' : '0');
+    // Guardar email para autocompletar en el próximo login
+    _sto.setItem('fc_last_email', email);
 
     // Mostrar éxito con rol
     document.getElementById('loForm').style.display = 'none';
@@ -2004,12 +1975,12 @@ function loHideErr(){
 
 /* ── Logout ────────────────────────────────────────────── */
 function loLogout(){
-  const token = sessionStorage.getItem(LO_TOKEN_KEY);
+  const token = _sto.getItem(LO_TOKEN_KEY);
   if(token && hasSheets()) sheetPost({action:'logout', token});
-  sessionStorage.removeItem(LO_TOKEN_KEY);
-  sessionStorage.removeItem(LO_NAME_KEY);
-  sessionStorage.removeItem(LO_ROL_KEY);
-  sessionStorage.removeItem(LO_EXPIRY_KEY);
+  _sto.removeItem(LO_TOKEN_KEY);
+  _sto.removeItem(LO_NAME_KEY);
+  _sto.removeItem(LO_ROL_KEY);
+  _sto.removeItem(LO_EXPIRY_KEY);
   location.reload();
 }
 
