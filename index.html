@@ -1269,9 +1269,10 @@ function _finish(cid,orig,tar,stops,ch,rr){
   const trip={
     id:nextId++, _choferId:cid,
     chofer:ch.nombre+' - '+ch.camion,
+    choferNombre:ch.nombre,           // ← nombre solo, sin camion, para match con sesión
     origen:orig,
-    stops:orderedStops,           // ← ALWAYS optimized order (v9/v10 fix)
-    modalidad:tmode,              // 'hora' | 'km'
+    stops:orderedStops,
+    modalidad:tmode,
     tarifa:tar,
     estSec:rr?rr.sec:null,
     estMt:rr?rr.mt:null,
@@ -1300,7 +1301,7 @@ function _finish(cid,orig,tar,stops,ch,rr){
 function buildSheetViaje(t){
   return{
     id:t.id, chofer:t.chofer, camion:t.camion||'', origen:t.origen,
-    destino_json:JSON.stringify(t.stops||[]),   // ← nombre exacto columna del Sheet
+    destino_json:JSON.stringify(t.stops||[]),
     modalidad:t.modalidad, tarifa:t.tarifa,
     estado:t.estado,
     ts_creado:t.tsCreado||'', ts_inicio:t.tsStart||'',
@@ -1309,7 +1310,12 @@ function buildSheetViaje(t){
     horas_total:t.horasTotal||'', km_total:t.kmTotal||'', costo_total:t.costoTotal||'',
     stop_log_json:JSON.stringify(t.stopLog||[]),
     est_tiempo_seg:t.estSec||'', est_km:t.estMt?(t.estMt/1000).toFixed(2):'',
-    discrepancia:t.discrepancia||false, notas:''
+    discrepancia:t.discrepancia||false,
+    // notas: guardamos choferNombre para match cross-device + waitStart si aplica
+    notas: [
+      t.choferNombre ? 'choferNombre:'+t.choferNombre : '',
+      t.waitStart    ? 'waitStart:'+t.waitStart : ''
+    ].filter(Boolean).join('|')
   };
 }
 
@@ -1417,8 +1423,11 @@ function driverBtn(action){
     ts_inicio:(AT||trips[idx]).tsStart||'',
     ts_retorno_inicio:(AT||trips[idx]).tsRetornoInicio||'',
     stop_log_json:JSON.stringify((AT||trips[idx]).stopLog||[]),
-    // waitStart: guardado en notas como campo extra para recuperar al volver
-    notas: AT && AT.waitStart ? 'waitStart:'+AT.waitStart : ''
+    // waitStart: guardado en notas para recuperar al volver
+    notas: [
+      AT && AT.choferNombre ? 'choferNombre:'+AT.choferNombre : '',
+      AT && AT.waitStart    ? 'waitStart:'+AT.waitStart : ''
+    ].filter(Boolean).join('|')
   }});
 }
 
@@ -1618,12 +1627,24 @@ async function _restoreATFromSheet(nombreChofer){
   try{
     const res = await sheetGet({action:'obtenerViajes'});
     if(!res || !res.ok || !res.data) return;
+    // Buscar viajes activos del chofer
     const viajesActivos = res.data.filter(v=>{
       if(!v.chofer) return false;
-      const nombreSheet  = v.chofer.split(' - ')[0].trim().toLowerCase();
-      const nombreSesion = nombreChofer.trim().toLowerCase();
-      return (nombreSheet === nombreSesion || v.chofer.toLowerCase().includes(nombreSesion))
-          && (v.estado === 'en_curso' || v.estado === 'pendiente' || v.estado === 'en_retorno');
+      const estadoOk = v.estado === 'en_curso' || v.estado === 'pendiente' || v.estado === 'en_retorno';
+      if(!estadoOk) return false;
+      const choferSheet  = v.chofer.toLowerCase().trim();
+      const sesionNombre = nombreChofer.toLowerCase().trim();
+      // Match en cualquier dirección
+      if(choferSheet.includes(sesionNombre) || sesionNombre.includes(choferSheet)) return true;
+      // Match por primera palabra del nombre (antes del " - ")
+      const primerNombre = choferSheet.split(' - ')[0].trim();
+      if(primerNombre === sesionNombre || sesionNombre.includes(primerNombre) || primerNombre.includes(sesionNombre)) return true;
+      // Match por choferNombre en notas (para viajes nuevos)
+      if(v.notas){
+        const m = String(v.notas).match(/choferNombre:([^|]+)/);
+        if(m && m[1].trim().toLowerCase() === sesionNombre) return true;
+      }
+      return false;
     });
     if(!viajesActivos.length){ renderPhone(); return; }
     const viaje = viajesActivos.sort((a,b)=>new Date(b.ts_creado||0)-new Date(a.ts_creado||0))[0];
@@ -1675,9 +1696,10 @@ async function _restoreATFromSheet(nombreChofer){
       if(stopActual && stopActual.arriveTs && !stopActual.leaveTs){
         AT.waitStart = stopActual.arriveTs; // restaurar desde cuándo está esperando
       }
-      // También intentar recuperar desde el campo notas (waitStart guardado explícitamente)
-      if(!AT.waitStart && viaje.notas && viaje.notas.startsWith('waitStart:')){
-        AT.waitStart = viaje.notas.replace('waitStart:','').trim();
+      // Recuperar waitStart desde notas si existe
+      if(!AT.waitStart && viaje.notas){
+        const matchWS = String(viaje.notas).match(/waitStart:([^|]+)/);
+        if(matchWS) AT.waitStart = matchWS[1].trim();
       }
     }catch(_){ AT.stopLog=[]; AT.curStop=0; }
 
