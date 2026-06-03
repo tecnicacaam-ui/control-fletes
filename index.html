@@ -1744,12 +1744,10 @@ function renderAdminLive(){
   const pulse  = document.getElementById('alv-pulse');
   const upd    = document.getElementById('alv-updated');
   if(!panel) return;
-
-  // Solo mostrar si es admin
   if(loGetRol() !== 'admin'){ panel.classList.remove('visible'); return; }
   panel.classList.add('visible');
 
-  // Viajes activos (en_curso o en_retorno)
+  // Viajes activos desde trips[] local
   const activos = trips.filter(t =>
     t.estado === 'en_curso' || t.estado === 'en_retorno' || t.estado === 'pendiente'
   );
@@ -1764,7 +1762,10 @@ function renderAdminLive(){
     return;
   }
 
-  pulse.className = 'alv-pulse';
+  _renderAdminLiveCards(activos, pulse, sep, content);
+}
+
+function _renderAdminLiveCards(activos, pulse, sep, content){
   sep.style.display = 'block';
 
   content.innerHTML = activos.map(t => {
@@ -1898,7 +1899,36 @@ function startAdminPolling(){
         localStorage.setItem(SK.trips, JSON.stringify(trips));
         renderTable();
         updStats();
-        renderAdminLive(); // actualizar panel de seguimiento
+        renderAdminLive();
+      }
+
+      // Importar viajes del Sheet que no existen en local (cross-device)
+      let imported = false;
+      res.data.forEach(v=>{
+        if(v.estado === 'pendiente' || v.estado === 'en_curso' || v.estado === 'en_retorno'){
+          const existe = trips.find(t=>String(t.id)===String(v.id));
+          if(!existe){
+            // Viaje en Sheet que no tenemos localmente — importarlo
+            const t = {
+              id: v.id, chofer: v.chofer || '', camion: v.camion || '',
+              origen: v.origen || '', estado: v.estado,
+              stops: [], stopLog: [],
+              tarifa: parseFloat(v.tarifa)||0, modalidad: v.modalidad||'hora',
+              tsCreado: v.ts_creado||'', tsStart: v.ts_inicio||null,
+              tsEnd: v.ts_fin||null, horasTotal: v.horas_total||null,
+              kmTotal: v.km_total||null, costoTotal: v.costo_total||null,
+              discrepancia: v.discrepancia||false,
+            };
+            try{ t.stops = JSON.parse(v.destino_json||'[]'); }catch(_){}
+            try{ t.stopLog = JSON.parse(v.stop_log_json||'[]'); }catch(_){}
+            trips.push(t);
+            imported = true;
+          }
+        }
+      });
+      if(imported){
+        localStorage.setItem(SK.trips, JSON.stringify(trips));
+        renderTable(); updStats(); renderAdminLive();
       }
     }catch(_){}
   }, 12000);
