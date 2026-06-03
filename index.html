@@ -354,7 +354,7 @@ tr:hover td{background:var(--s2)}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--b1);border-radius:3px}
 @media(max-width:900px){.mgrid{grid-template-columns:1fr;height:auto}.dcol{border-top:1px solid var(--b1)}}
-
+ 
 /* ══ LOGIN OVERLAY ══════════════════════════════════════ */
 #login-overlay{
   position:fixed;inset:0;z-index:9999;
@@ -420,11 +420,11 @@ body[data-role="chofer"] .mgrid {
     height: 100vh !important;
     background-color: #f4f6f9; 
 }
-
+ 
 body[data-role="chofer"] .apanel {
     display: none !important;
 }
-
+ 
 body[data-role="chofer"] .dcol {
     width: 100% !important;
     max-width: 420px;
@@ -437,7 +437,7 @@ body[data-role="chofer"] .dcol {
 </style>
 </head>
 <body>
-
+ 
 <!-- ══ LOGIN OVERLAY ══════════════════════════════════════════════════════════ -->
 <div id="login-overlay">
   <div class="lo-wrap">
@@ -736,21 +736,21 @@ body[data-role="chofer"] .dcol {
 <div id="toast"></div>
 <script>
 const CLIENTES_DB=[{"n":"ELECTRO-FRIG S.R.L.","a":"Av. Eva Perón 3536/40, MORON, BUENOS AIRES"},{"n":"CLIMATIZACION POLAR S.A","a":"ESQUIU 996, CORDOBA, CORDOBA"},{"n":"LOGISTICA LA SERENISIMA SA","a":"Teresa Mastellone 3367, GENERAL RODRIGUEZ, BUENOS AIRES"},{"n":"CORTES ROBERTO","a":"AV LOS QUILMES 1158, BERNAL OESTE  (TECNOSISTEN SRL.), BUENOS AIRES"},{"n":"EFIN S.R.L.","a":"AV. BRIG. GRAL. JUAN MANUEL DE ROSAS 7018, ISIDRO CASANOVA, BUENOS AIRES"},{"n":"MARTINEZ GUSTAVO PATRICIO","a":"RAMIREZ 0, CORONEL CHARLONE, BUENOS AIRES"},{"n":"HAMBURGUESAS BELTRAN SRL","a":"BV CRISTOBAL BERRITELLA 7181, BARRIO LOS BOULEVARES, CORDOBA"},{"n":"PANINO S.A","a":"PEDRAZA MANUELA 1633"},{"n":"ARNEG ARGENTINA S.A.","a":"Av. 25 de Mayo 2330"},{"n":"REFRIGERACION LOPE DE VEGA SRL","a":"ALCARAZ 5476"},{"n":"CENCOSUD S A","a":"PARANA 3617"},{"n":"ESTABLECIMIENTO LOS CALVOS SRL","a":"AV.JUAN B.ALBERDI 5401"},{"n":"EPTA ARGENTINA S.A.","a":"OVIDIO LAGOS 6753"},{"n":"OLIVA PROAZZI WALTER","a":"AV. HIPOLITO IRIGOYEN 2152"},{"n":"BLASCO ALDO OSCAR","a":"PICHIHUINCA 514 Piso:0 Dpto:0"},{"n":"GRUPO VILLA S. R. L.","a":"NUESTRA SEÑORA DE LUJAN 377"},{"n":"FRIGOTEC SRL","a":"AV. GAONA 10413"},{"n":"ARCE Y ASOCIADOS S.A.","a":"Vicente Lopez 3495, VILLA BALLESTER, BUENOS AIRES"},{"n":"MGI REFRIGERACION ZERO SA","a":"PRESIDENTE PERON 3773, EL PALOMAR, BUENOS AIRES"},{"n":"MATEOS CARLOS MARIANO RODRIGO","a":"LOBOS ELEODORO DR.371 PB.DTO:A, C.A.B.A.., BUENOS AIRES"},{"n":"HELIOTHERM SRL","a":"RANCHOS 1694, CASTELAR, BUENOS AIRES"},{"n":"USMAN EQUIPAMIENTOS SRL","a":"OVIDIO LAGOS 7402, ROSARIO SUD, SANTA FE"},{"n":"REFRIGERACION NORTE S.R.L.","a":"SANTIAGO DEL ESTERO 1203, TUCUMAN, TUCUMAN"},{"n":"MECAN S.R.L.","a":"TRES ARROYOS 5785, WILDE- AVELLANEDA, BUENOS AIRES"},{"n":"ESPINOZA DANILO ADOLFO","a":"MZ 51 C 05 BARRIO 150 VDAS 5, GOYA, CORRIENTES"},{"n":"LANZA REFRIGERACION S.R.L.","a":"RAMOS MEJIA 1720, VILLA MARIA, CORDOBA"},{"n":"LIHUE INGENIERIA S.A.","a":"JUAN ZUFRIATEGUI 4665, VILLA MARTELLI, BUENOS AIRES"},{"n":"GONZALEZ ISMAEL ALBERTO","a":"105 72, AVELLANEDA, SANTA FE"},{"n":"CASSERA LUIS ALBERTO","a":"LABARDEN 4059, CASEROS, BUENOS AIRES"},{"n":"SERVICIOS TERMOMECANICOS INTEG","a":"AVENIDA BLAS PARERA 5755, SANTA FE, SANTA FE"},{"n":"GIACONE JUAN PABLO","a":"BUENOS AIRES 39, OLIVEROS, SANTA FE"},{"n":"FIORITI GARABAN S.R.L","a":"DARREGUEIRA 666, BAHIA BLANCA, BUENOS AIRES"},{"n":"CORDERO JOSE LUIS","a":"25 DE MAYO 266, PUNTA ALTA, BUENOS AIRES"},{"n":"ICEFERAS SRL","a":"GALLARDO 741, CABA, C.A.B.A."},{"n":"DAIMAX S.A","a":"VILLARROEL 5969, VILLA BALLESTER, BUENOS AIRES"},{"n":"BOGADO MARCELO RAUL","a":"ESTRADA 2250, SANTA FE, SANTA FE"},{"n":"REFRIMIG SRL","a":"CARLOS VILLATE 4083, MUNRO, BUENOS AIRES"},{"n":"SALERNO MATIAS EZEQUIEL","a":"CORRIENTES 2843, ROSARIO SUD, SANTA FE"},{"n":"IMS S.A","a":"TRES SARGENTOS 1491, MARTINEZ, BUENOS AIRES"},{"n":"MARTINEZ ROMINA PAOLA","a":"MATHEU 142, SAN SALVADOR DE JUJU, JUJUY"},{"n":"T.D.A.  ANODIZADO S.A.","a":"DR.RICARDO BALBIN 3102, SAN MARTIN, BUENOS AIRES"},{"n":"CLIMA Y ENERGIAS","a":"GUALEGUAYCHU 1329, C.A.B.A."},{"n":"INGERPRO S.A.","a":"MCAL. SUCRE 2437 PISO 6, CAPITAL FEDERAL, C.A.B.A."},{"n":"DIAZ JAVIER ALEJANDRO","a":"73 761, LA PLATA SUDESTE CALLE 50 AMBAS VEREDAS, BUENOS AIRES"},{"n":"LACTEOS PUYEHUE S R L","a":"AVENIDA CARRANZA 357, VILLA NUEVA, CORDOBA"},{"n":"RELD S.A.C.I.F.I.A.","a":"AV. CHICLANA 3174, C.A.B.A, BUENOS AIRES"},{"n":"RUVAC S.R.L","a":"TERRADA 2562, C.A.B.A., C.A.B.A."},{"n":"LA CATALINA S.R.L.","a":"HUMAHUACA 2514, LANUS, BUENOS AIRES"},{"n":"REACOM S.A.","a":"MIRANDA 4033, Capital Federal, C.A.B.A."},{"n":"LUCCIARINI ADRIAN HUGO","a":"ALMAFUERTE 5157, REMEDIOS DE ESCALADA, BUENOS AIRES"},{"n":"ALVIDOS S.R.L.","a":"SARMIENTO 211 Piso:1 Dpto:B, AVELLANEDA, BUENOS AIRES"},{"n":"DISTRIBUIDORA DE INSUMOS Y MAT","a":"893 4223, SAN FRANCISCO SOLANO, BUENOS AIRES"},{"n":"GARCIA LUCAS DANIEL","a":"AVDA ALMAFUERTE 3634, PARANA, PARANA-ENTRE RI"},{"n":"COIAZZET LUIS MATIAS","a":"RUTA 26 KM.5 0, SAN JOSE, ENTRE RIOS"},{"n":"SUPERMERCADOS EL ABASTECEDOR S","a":"BRANDSEN 2242, ITUZAINGO, BUENOS AIRES"},{"n":"FADEL  SA","a":"SARMIENTO 27, COLON, SANTA FE"},{"n":"HETZER REFRIGERACION S.A.","a":"Av.25 de Mayo 3775, SANTA FE, SANTA FE"},{"n":"CORREA THOMAS AXEL","a":"AV MOSCONI 949, LOMAS DEL MIRADOR, BUENOS AIRES"},{"n":"LATTE S.R.L","a":"MONSEÑOR BUFANO 736, SAN JUSTO, BUENOS AIRES"},{"n":"LA BOUTIQUE DEL MAR SA","a":"JULIAN ALVAREZ 2507, CABA, C.A.B.A."},{"n":"COMERCIAL DASDASUR SRL","a":"OLAZABAL 3738, LANUS, BUENOS AIRES"},{"n":"DISTRIBUIDORA FLORIDA S.R.L.","a":"ESMERALDA 4646, MUNRO, BUENOS AIRES"},{"n":"SANTA RITA S.R.L","a":"JUNIN 2107, SAN FERNANDO, BUENOS AIRES"},{"n":"RAFU LUIS ADRIAN","a":"110 4960, SAN MARTIN, BUENOS AIRES"},{"n":"AGRELO CARLOS ALBERTO","a":"FLORENCIO VARELA 1060, AVELLANEDA, BUENOS AIRES"},{"n":"LOPEZ LUIS ORLANDO","a":"SUIPACHA 210, SAN MIGUEL DE TUCUMA, TUCUMAN"},{"n":"FRIGORIFICO DANMAT S.R.L.","a":"MISTRAL GABRIELA 3433 Piso:2 D, C.A.B.A."},{"n":"MARTINI DARIO OSCAR","a":"CHARCAS 3837 Piso:3 Dpto:A, C.A.B.A."},{"n":"LABADIE REFRIGERACION S.R.L","a":"OCAMPO 1225, ENTRE RIOS Y MITRE, SANTA FE"},{"n":"VALENTI Y CIA S.R.L","a":"AV. GALES 74 PISO:6, PUERTO MADRYN, CHUBUT"},{"n":"GARCIA SERGIO","a":"JOSE MARIA PAZ 3364, SAN MIGUEL, BUENOS AIRES"},{"n":"ARSAMA S.A","a":"MARTIN MIGUENZ 7534, VILLA BOSCH, BUENOS AIRES"},{"n":"DOSAN INVERSIONES SRL","a":"JUJUY 999 ESQ. ZABALA, SALTA, SALTA"},{"n":"ALGAÑARAZ NELLY FERNANDA","a":"GDOR BUITRAGO 235, PALPALA, BUENOS AIRES"},{"n":"MAPUESA S.R.L.","a":"PARAGUAY 610 Piso:10 Dpto:1, CABA, C.A.B.A."},{"n":"HELADOS LOS LEONES S.R.L.","a":"LOS TULIPANES 240, CIUDAD EVITA, BUENOS AIRES"},{"n":"GELATIERI S.A.","a":"ANCHORENA TOMAS MANU 672 P.3 A, C.A.B.A., BUENOS AIRES"},{"n":"QUESOS REGIONALES S R L","a":"ZONA RURAL 0, POZO DEL MOLLE, CORDOBA"},{"n":"FRIGORIFICO PELAYO S.R.L","a":"CARHUE 2668, CABA, C.A.B.A."},{"n":"JUAN MANUEL MUSSO","a":"SUCRE 1931, LOMAS DE ZAMORA, BUENOS AIRES"},{"n":"ACQUA COMERCIAL S.A","a":"CHASCOMUS 6031, C.A.B.A., BUENOS AIRES"},{"n":"RABETINI FACUNDO GASTON","a":"SAN JOSE 997, MUÑIZ, BUENOS AIRES"},{"n":"NORRY HIJOS S.R.L.","a":"LOS CEIBOS 1085, YERBA BUENA, TUCUMAN"},{"n":"ORLANDO ALFREDO RUBEN","a":"CARABOBO 1046, CAPITAL FEDERAL, BUENOS AIRES"},{"n":"CAGNOLI S.A","a":"SECCION CHACRAS 43, TANDIL, BUENOS AIRES"},{"n":"CORREA LUCAS IVAN","a":"AV. MOSCONI 949, LOMAS DEL MIRADOR, BUENOS AIRES"},{"n":"MELERO ROBERTO LEANDRO CARLOS","a":"CLUB EL PASO S/N 0 -Bº, SANTO TOME, SANTA FE"},{"n":"STEFANELLI JOSE","a":"H. Yrigoyen 5672, Ezpeleta, BUENOS AIRES"},{"n":"GALLARDO RIVAS JULIO CESAR","a":"Ecuador 367 piso 10 dpto b, Capital Federal, BUENOS AIRES"},{"n":"RIO ARRIBA INDUSTRIAL S. R. L.","a":"SANTA FE 1357, ROSARIO NORTE, SANTA FE"},{"n":"INDUSTRIAS FRIGORIFICAS NORTE","a":"RN 34 KM 1134 PQUE.INDUSTRIAL, SALTA, SALTA"},{"n":"RANDO-MAZZETTI SRL","a":"BOSCH 1344, MAR DEL PLATA SUR, BUENOS AIRES"},{"n":"M DODERO CIA GRAL DE SERVICIOS","a":"PALACIOS ALFREDO 1339, CIUDAD AUTONOMA BS A, BUENOS AIRES"},{"n":"MAZZOCCA DUILIO ALEJANDRO","a":"AVENIDA HIPOLITO YRIGOYEN 2062, TRELEW, CHUBUT"},{"n":"GEMLAC S.A.","a":"DONATO ALAVAREZ 1654, QUILMES, BUENOS AIRES"},{"n":"FRIGORIFICO CARDENAS S.R.L","a":"AV. CORONEL CARDENAS 1918, C.A.B.A., BUENOS AIRES"},{"n":"LACTEOS DE POBLET S.A","a":"RUTA PROVINCIAL 36 Y 630, LA PLATA, BUENOS AIRES"},{"n":"ENCINA PABLO FABIAN","a":"ALBARELLOS 3615, ISIDRO CASANOVA, BUENOS AIRES"},{"n":"CARNAT S.A.","a":"ZAMUDIO 4686 Piso:5 Dpto:C, C.A.B.A."},{"n":"LABORATORIOS RICHET S A","a":"TERRERO 1251, C.A.B.A."},{"n":"ACP GROUP S.A.","a":"PICO 3090, CABA, C.A.B.A."},{"n":"BALBOA JUAN","a":"CNO VILLA POSE KM 1-1/2 0, CIUDAD DE CORDOBA SU, CORDOBA"},{"n":"DE MARCO JUAN CARLOS","a":"ACEVEDO 3420, LOMAS DEL MIRADOR, BUENOS AIRES"},{"n":"MKM DISTRIBUIDORA S.R.L.","a":"jose valentin gomez 151, MORON, BUENOS AIRES"},{"n":"MANTENIMIENTO ABSOLUTO S.R.L.","a":"O' HIGGINS 1069, HURLINGHAM, BUENOS AIRES"},{"n":"MATTIEVICH S A","a":"RUTA NACIONAL N 33 KM 740 0, CASILDA, SANTA FE"},{"n":"AVILOPZAN S.R.L.","a":"CHASSAING 2565, GREGORIO DE LAFERRERE, BUENOS AIRES"},{"n":"EL SOL DE BELLA VISTA S.R.L.","a":"Quirno 198, BELLA VISTA, BUENOS AIRES"},{"n":"SUCCI HERNAN RAUL","a":"MALDONADO 634 PISO:1 DPTO:a, BAHIA BLANCA, BUENOS AIRES"},{"n":"KUWA CEOS SA","a":"RUFINO FAL 3413, OLAVARRIA, BUENOS AIRES"},{"n":"TROPICAL ARGENTINA SRL","a":"DEL MAR  0 ESQ: DE LA PALA, MERCADO CENTRAL BS A, BUENOS AIRES"},{"n":"PROBANZA ESTEBAN MARTIN","a":"BURGOS 763, AZUL, BUENOS AIRES"},{"n":"CASTELLI MIRIAM ROSANA","a":"VICENTE LOPEZ 3064, OLAVARRIA, BUENOS AIRES"},{"n":"COOPERATIVA TELEFONICA DE VIVI","a":"BERUTI 1381, DEL VISO, BUENOS AIRES"},{"n":"RUBIO GERARDO AGUSTIN","a":"CHASCOMUS 1224, MONTE CHINGOLO, BUENOS AIRES"},{"n":"SOCIEDAD CARNICA S.A.","a":"AV. BOCAYA 1019 PISO 1 DPTO:A, CABA, C.A.B.A."},{"n":"FRIG. RICARDO BOVAY E HIJOS SA","a":"DIRECTORIO 6028, CAPITAL FEDERAL, C.A.B.A."},{"n":"MIRANDA RICARDO EDUARDO","a":"INDEPENDENCIA 518  Dpto:2, SAN SALVADOR DE JUJU, JUJUY"},{"n":"VILLALBA PABLO","a":"ZEQUEIRA 4280, GREGORIO DE LAFERRER, BUENOS AIRES"},{"n":"COOPERATIVA OBRERA LIMITADA DE","a":"PARAGUAY 445, BAHIA BLANCA, BUENOS AIRES"},{"n":"REFRIGERACION PERRI  Y ASOCIAD","a":"CASEROS 2678, SAN ANDRES, BUENOS AIRES"},{"n":"QUALITY MATTERS","a":"SEGADE 253, CORONEL BRANDSEN, BUENOS AIRES"},{"n":"EL RODEO S.A.S.","a":"AV. ALMIRANTE BROWN 267, SAN SALVADOR DE JUJUY, JUJUY"},{"n":"CABLES DE ACERO RESIFLEX S.A.","a":"OLAVARRIA 1123, C.A.B.A."},{"n":"MEATEX S. A.","a":"RUTA NACIONAL N 33 KM 740 0, CASILDA, SANTA FE"},{"n":"SABORES DE CAÑUELAS S.R.L.","a":"FREIRE 2028, CAÑUELAS, BUENOS AIRES"},{"n":"CARRERA JULIO CESAR","a":"LAS DELICIAS 1127, RIO CUARTO, CORDOBA"},{"n":"FLEXAR SOCIEDAD DE RESPONSABIL","a":"SANTA MARTA 1456, VILLA MAIPU, BUENOS AIRES"},{"n":"PERONE LEANDRO","a":"CALIXTO CALDERON 321, CHIVILCOY, BUENOS AIRES- INT"},{"n":"CLIMIDEA SRL","a":"H. IRIGOYEN 8028, BANFIELD - SUC 183, BUENOS AIRES"},{"n":"BO MARIA ALEJANDRA","a":"PEDRO LEON GALLO 735, SAN MIGUEL DEL TUCUM, TUCUMAN"},{"n":"RESILIX S.R.L","a":"AVENIDA ITALIA 1405, FORMOSA CAPITAL, FORMOSA"},{"n":"TICIEM S.A.","a":"EL NENE 1890, CAPITAL FEDERAL, C.A.B.A."},{"n":"FRALI S.A","a":"LAVALLE 1118 PISO:2 DPTO:D, CABA, C.A.B.A."},{"n":"SCHLEGEL MANUEL","a":"LIBERTAD 510, GENERAL GUEMES, SALTA"},{"n":"ABC S.A","a":"AV.JUJUY 570, C.A.B.A., C.A.B.A."},{"n":"ERNESTO RODRIGUEZ E HIJOS S.A","a":"PIERES 1635, CIUDAD AUTONOMA, C.A.B.A."},{"n":"SUCESION DE TAVAUT JOSE GERMAN","a":"belgrano 3299, C.A.B.A."},{"n":"SALVATIERRA JUAN ALEJANDRO","a":"AV ATAHUALPA 1827, LA REJA, BUENOS AIRES"},{"n":"UNIVERSIDAD DE BUENOS AIRES","a":"VIAMONTE 444, C.A.B.A."},{"n":"RAUL HORACIO DELETRAZ S A","a":"SARMIENTO 1413, SAN MIGUEL, BUENOS AIRES"},{"n":"BIANFRAN S.R.L.","a":"CROVARA 3540, TABLADA, BUENOS AIRES"},{"n":"PFOH GUILLERMO FRANCISCO","a":"CHARLONE 615, BAHIA BLANCA, BUENOS AIRES"},{"n":"G. H.- S.R.L.","a":"RUTA PROV 2. KM 24 1/2 PARAJE LA TOMA, SAN ANTONIO, JUJUY"},{"n":"C.H.L. DISTRIBUCIONES S.R.L.","a":"AVENIDA KIRCHNER 7435 Piso:0 D, FORMOSA, FORMOSA"},{"n":"WILHELEM MARCOS RODOLFO","a":"Av. José P. Casella 1460, Pigüé, BUENOS AIRES"},{"n":"RODRIGUEZ MARIA VALENTINA","a":"ENTRE RIOS 143 ESQ TUCUMÁN, PICHANAL, SALTA"},{"n":"I-FLOW S.A","a":"LAVOISIER 494, Ingeniero Pablo Nogués, BUENOS AIRES"},{"n":"INGENIERIA MG-ZERO S.R.L","a":"LA PLATA 701, EL PALOMAR, BUENOS AIRES"},{"n":"FRIGORIFICO SAN FRANCISCO SA","a":"RUTA NACIONAL 158 KM 8 1/2, MONTE REDONDO, CORDOBA"},{"n":"SCHEINER MARTIN","a":"AV.ALMAFUERTE 450, PARANA, ENTRE RIOS"},{"n":"DITAS S.A","a":"DEAN FUNES 1535, VILLA MADERO, BUENOS AIRES"},{"n":"REDONA S.A.","a":"JOVELLANOS MELCHOR G 276, CABA, C.A.B.A."},{"n":"SCHVINDT HORACIO GERMAN","a":"ASTURIAS 5468, TABLADA, BUENOS AIRES"},{"n":"YEMI YAIR MATIAS","a":"SAN JOSE 1044  Dpto:A, MUÑIZ, BUENOS AIRES"},{"n":"RYC  S R L","a":"ARENAL CONCEPCION 2978 Piso:PB, CABA, BUENOS AIRES"},{"n":"ALMACEN DE FRIO S.R.L.","a":"San Salvador de Jujuy 1405, BUENOS AIRES"},{"n":"VARGAS CASTRO SILVIA SUSANA","a":"PJE VALLEJO 4467, SAN MIGUEL DE TUCUMAN, TUCUMAN"},{"n":"OPERACION BROTHERS S.R.L.","a":"AV. TRIUNVIRATO 3819, CABA, C.A.B.A."},{"n":"COLD SRL","a":"AV JUAN PERON 1280, Bº VILLA LOURDES, FORMOSA"},{"n":"SANCHEZ HERRERA RICARDO JAVIER","a":"CAMACUA 3222 Piso:PH, VILLA LUZURIAGA, BUENOS AIRES"},{"n":"GIUFFO OMAR ALBERTO","a":"FRENCH 187, CORONEL BRANDSEN, BUENOS AIRES"},{"n":"LOMBARDI MAURICIO JOAQUIN","a":"Vicente Mendieta 626, Monte Caseros, CORRIENTES"},{"n":"CASSISI JOSE HUMBERTO","a":"Calle 513 1733 e/12 y 13, LA PLATA RINGUE, BUENOS AIRES"},{"n":"BURINI JORGE ALESIO","a":"DR FERNANDO RUIZ 3333, ROSARIO SUD, SANTA FE"},{"n":"FRIGORIFICO EL BIERZO S.A.","a":"Bragado 6759, Capital Federal, BUENOS AIRES"},{"n":"CRUZ DANIEL EDUARDO","a":"GORRITI 915     M:8, SAN SALVADOR DE JUJUY, JUJUY"},{"n":"TISOCCO RUBEN DARIO","a":"BV SAN LORENZO OESTE 740, ENTRE RIOS, ENTRE RIOS"},{"n":"GONZALEZ VIRGINIA NELLY","a":"AV. MAIPU 2957, OLIVOS, BUENOS AIRES"},{"n":"BACCARINI S. R. L.","a":"RUTA 16 0, LAGO PUELO, CHUBUT"},{"n":"COMESTIBLES BUENOS AIRES","a":"EVA PERON 9263, LOMA HERMOSA, BUENOS AIRES"},{"n":"CORDOBA EDUARDO","a":"SENGUEL 6376, GONZALEZ CATAN, BUENOS AIRES"},{"n":"LUCCIARINI ADRIAN","a":"Almafuerte 5157, R. De Escalada Óeste, BUENOS AIRES"},{"n":"CRESPO JULIO","a":"Groussag 880, El Talar, BUENOS AIRES"},{"n":"LARDAPIDE RODOLFO","a":"Lavalle 3842, Olavarría, BUENOS AIRES"},{"n":"RANDO-MAZZETTI SRL EN FORMACIO","a":"BOSCH 1344, MAR DEL PLATA, BUENOS AIRES"},{"n":"FRIMAQ SRL","a":"OBRIEN 1879, PASO DEL REY, BUENOS AIRES"},{"n":"ARIAS WALTER","a":"Moreno 543, LOBOS, BUENOS AIRES"},{"n":"FARRASANO","a":"Constituyentes 1508, Villa Madero, BUENOS AIRES"},{"n":"GEIST RAUL","a":"SAN LUIS 2640, BENAVIDEZ, BUENOS AIRES"},{"n":"AIMONE","a":"JOSE E. RODO 6105, CABA, CAPITAL FEDERAL"},{"n":"TEMPING / NEOMAX SRL","a":"CALLE 198 Nº1676, JOSE LEON SUAREZ, BUENOS AIRES"},{"n":"XARDO SA","a":"RODO JOSE ENRIQUE 6044, CABA, CAPITAL FEDERAL"},{"n":"COMERCIAL EL MORO SRL","a":"ZUVIRIA 2036, SALTA"},{"n":"REFRIGERACION ALPA S.A","a":"Sinclair nº5681, ISIDRO CASANOVA, BUENOS AIRES"},{"n":"REDONDO SOLARI FERNANDO","a":"AV HIPOLITO YRIGOYEN 19272, LONGCHAMPS, BUENOS AIRES"},{"n":"EFIN S.R.L","a":"CONDARCO 6073, ISIDRO CASANOVA, BUENOS AIRES"},{"n":"JOSE LUIZ MAGAÑA SIERRA","a":"HERTZ 1242, RAFAEL CASTILLO, BUENOS AIRES"}];
-
+ 
 /* ═══ CONFIG ════════════════════════════════════════════ */
 const GMKEY  = 'AIzaSyAnJX-gQMv0RErEXTQH2ZWHSXwJtiH_a1Q';
 const REGION = 'AR';
 const CENTER = {lat:-34.6037,lng:-58.3816};
 // ↓ Replace with your deployed Apps Script URL
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjPXBqZn7EFL39d0Ujc5-rD_dcrsjIvy2tUUQr04EbFVWsm0ar7xSCGqkwqMGLoQsz/exec';
-
+ 
 const SK = {
   trips:'fc10_trips', nextId:'fc10_nid',
   choferes:'fc10_chof', nextCId:'fc10_ncid',
   custom:'fc10_cust', active:'fc10_active', apikey:'fc10_apikey',
   tmode:'fc10_tmode',
 };
-
+ 
 /* ═══ OOZ KEYWORDS ══════════════════════════════════════ */
 const OOZ_KW = ['CORDOBA','SANTA FE','TUCUMAN','MENDOZA','SALTA','JUJUY',
   'ENTRE RIOS','CORRIENTES','MISIONES','CHACO','FORMOSA','SANTIAGO DEL ESTERO',
@@ -761,7 +761,7 @@ const OOZ_KW = ['CORDOBA','SANTA FE','TUCUMAN','MENDOZA','SALTA','JUJUY',
   'PICHANAL','GENERAL GUEMES','MONTE CASEROS','GOYA','LAGO PUELO',
   'YERBA BUENA','SAN SALVADOR DE JUJUY','SAN MIGUEL DE TUCUMAN','EXTERIOR'];
 function isOOZ(a){ if(!a)return false; const u=a.toUpperCase(); return OOZ_KW.some(k=>u.includes(k)); }
-
+ 
 /* ═══ STATE ═════════════════════════════════════════════ */
 let trips    = JSON.parse(localStorage.getItem(SK.trips)    || '[]');
 let nextId   = parseInt(localStorage.getItem(SK.nextId)     || '1');
@@ -777,20 +777,20 @@ let gmap=null, gdirs=null, gdirR=null, gGeoc=null;
 let origAC=null, stopACs={}, oozACs={};
 let waitTick=null, retornoRouteSec=null, retornoRouteMt=null;
 let _lastLegData=[];
-
+ 
 /* ═══ SYNC / SHEETS ══════════════════════════════════════
    Every write goes to localStorage immediately (offline-first),
    then async to Google Sheets. Reads always from localStorage.
 ═══════════════════════════════════════════════════════ */
 const hasSheets = () => SCRIPT_URL && SCRIPT_URL !== 'AQUI_VA_TU_LINK_DE_DEPLOY';
-
+ 
 function setSyncStatus(s){ // 'ok'|'saving'|'err'|'offline'
   const el=document.getElementById('syncdot');
   const lbl=document.getElementById('synclbl');
   el.className='sync-dot '+(s==='ok'?'ok':s==='saving'?'saving':s==='err'?'err':'');
   lbl.textContent=s==='ok'?'sincronizado':s==='saving'?'guardando...':s==='err'?'error sync':'local';
 }
-
+ 
 async function sheetPost(body){
   if(!hasSheets()){ setSyncStatus('offline'); return null; }
   setSyncStatus('saving');
@@ -805,7 +805,7 @@ async function sheetPost(body){
     return d;
   }catch(e){ setSyncStatus('err'); return null; }
 }
-
+ 
 async function sheetGet(params){
   if(!hasSheets()) return null;
   const qs = new URLSearchParams(params).toString();
@@ -814,11 +814,11 @@ async function sheetGet(params){
     return await r.json();
   }catch(e){ return null; }
 }
-
+ 
 /* ═══ CLOCK ═════════════════════════════════════════════ */
 function tick(){ document.getElementById('pclock').textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); }
 setInterval(tick,1000); tick();
-
+ 
 /* ═══ TABS ══════════════════════════════════════════════ */
 function swTab(id,btn){
   document.querySelectorAll('.tpane').forEach(p=>p.classList.remove('on'));
@@ -828,7 +828,7 @@ function swTab(id,btn){
   if(id==='tc') renderClients();
   if(id==='th') renderTable();
 }
-
+ 
 /* ═══ TARIFF MODE ════════════════════════════════════════ */
 function setTmode(mode){
   tmode=mode;
@@ -854,7 +854,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   loCheckSession();
   if(hasSheets()) setSyncStatus('ok'); else setSyncStatus('offline');
 });
-
+ 
 /* ═══ MAPS ═══════════════════════════════════════════════ */
 function saveApiKey(){
   const k=document.getElementById('apikey').value.trim();
@@ -899,7 +899,7 @@ function loadMaps(key){
   s.async=true;s.defer=true;s.onerror=window._merr;
   document.head.appendChild(s);
 }
-
+ 
 /* ═══ AUTOCOMPLETE ═══════════════════════════════════════ */
 const AC_OPTS={componentRestrictions:{country:REGION},fields:['formatted_address','geometry','name']};
 function attachAC(inputId,existing,setRef){
@@ -923,7 +923,7 @@ function attachOOZac(idx){
   ac.addListener('place_changed',()=>{ const p=ac.getPlace(); inp.value=p.formatted_address||p.name||''; });
   oozACs[idx]=ac;
 }
-
+ 
 /* ═══ OOZ ════════════════════════════════════════════════ */
 function checkOOZ(idx,addr){
   const row=document.querySelector('.srow[data-idx="'+idx+'"]'); if(!row)return;
@@ -943,10 +943,10 @@ function applyOOZ(idx){
   toast('Destino cambiado a transporte local.');
   updCalcBtn();
 }
-
+ 
 /* ═══ PRIORITY ═══════════════════════════════════════════ */
 function onPrioChange(sel){ const row=sel.closest('.srow'); if(sel.value==='high'){row.classList.add('prio-high');sel.classList.add('high');}else{row.classList.remove('prio-high');sel.classList.remove('high');} }
-
+ 
 /* ═══ CLIENT DROPDOWN ═══════════════════════════════════ */
 function allCl(){return[...CLIENTES_DB,...customCl];}
 function buildCOpts(q,ddId,tgt){
@@ -972,7 +972,7 @@ function pickCl(ev){
 function openCD(iid,did,tgt){ const dd=document.getElementById(did);if(!dd)return;dd.innerHTML=buildCOpts(document.getElementById(iid).value,did,tgt);dd.classList.add('open'); }
 function closeCD(did){ setTimeout(()=>{const d=document.getElementById(did);if(d)d.classList.remove('open');},220); }
 function filterCD(iid,did,tgt){ const dd=document.getElementById(did);if(!dd)return;dd.innerHTML=buildCOpts(document.getElementById(iid).value,did,tgt);if(dd.innerHTML)dd.classList.add('open'); }
-
+ 
 /* ═══ CLIENTS TAB ════════════════════════════════════════ */
 function renderClients(){
   const q=(document.getElementById('csrch').value||'').toLowerCase().trim();
@@ -1008,7 +1008,7 @@ function delCust(btn){
   sheetPost({action:'deleteCliente',id:c._id||c.n});
   renderClients(); toast('Cliente eliminado.');
 }
-
+ 
 /* ═══ SMART SORT ═════════════════════════════════════════ */
 function parseTW(t){ if(!t)return Infinity; const p=t.split(':'); return parseInt(p[0])*60+parseInt(p[1]); }
 function smartSort(stops){
@@ -1017,7 +1017,7 @@ function smartSort(stops){
   const byTW=a=>a.slice().sort((x,y)=>{ const tx=parseTW(x.twTo),ty=parseTW(y.twTo); return tx!==ty?tx-ty:parseTW(x.twFrom)-parseTW(y.twFrom); });
   return [...byTW(high),...byTW(norm)];
 }
-
+ 
 /* ═══ STOPS ══════════════════════════════════════════════ */
 function addStop(defName,defAddr){
   const idx=stopCtr++; const c=document.getElementById('scon');
@@ -1064,7 +1064,7 @@ function addStop(defName,defAddr){
   if(!defName)setTimeout(()=>{const el=document.getElementById('sc-'+idx);if(el)el.focus();},50);
 }
 function removeStop(btn){btn.closest('.srow').remove();renumStops();updateArrowStates();clearRte();updCalcBtn();}
-
+ 
 /* Move a stop row up (-1) or down (+1), then redraw route if Maps available */
 function moveStop(btn, dir){
   const row = btn.closest('.srow');
@@ -1092,7 +1092,7 @@ function moveStop(btn, dir){
     }
   }
 }
-
+ 
 /* Disable ▲ on first row and ▼ on last row */
 function updateArrowStates(){
   const rows = Array.from(document.querySelectorAll('#scon .srow'));
@@ -1114,7 +1114,7 @@ function getStops(){
   });
 }
 function updCalcBtn(){ const b=document.getElementById('bcalc');if(!gdirs){b.style.display='none';return;} const o=document.getElementById('for').value.trim(); b.style.display=(o&&getStops().some(s=>s.addr))?'':'none'; }
-
+ 
 /* ═══ ROUTE CALCULATION ══════════════════════════════════ */
 function calcRoute(cb){
   if(!gdirs){toast('Activa la API Key.');return;}
@@ -1170,7 +1170,7 @@ function calcRoute(cb){
     if(cb) cb({sec:cumSec,mt:cumMt,ord:finalStops,opt:canOpt2});
   });
 }
-
+ 
 /* ═══ ETA + TIME WINDOW ══════════════════════════════════ */
 function getTWWarn(stop,cumSec){
   if(!stop)return{type:'',msg:''};
@@ -1200,7 +1200,7 @@ function clearRte(){
   document.getElementById('etalist').innerHTML='';
   window._rSec=null;window._rMt=null;_lastLegData=[];
 }
-
+ 
 /* ═══ CHOFERES ═══════════════════════════════════════════ */
 function renderChofSel(){
   const s=document.getElementById('fch'),cv=s.value;
@@ -1230,7 +1230,7 @@ function delChofer(id){
   sheetPost({action:'deleteChofer',id});
   toast('Chofer eliminado.');
 }
-
+ 
 /* ═══ TRIP CREATION ══════════════════════════════════════ */
 function crearViaje(){
   const cid=parseInt(document.getElementById('fch').value);
@@ -1259,13 +1259,13 @@ function crearViaje(){
   if(gdirs){toast('Calculando ruta...');calcRoute(r=>_finish(cid,orig,tar,stops,ch,r));}
   else _finish(cid,orig,tar,stops,ch,null);
 }
-
+ 
 function _finish(cid,orig,tar,stops,ch,rr){
   // ── SYNC ORDER: use smartSort+Google optimized order ──────────────
   const orderedStops=(rr&&rr.ord&&rr.ord.length>1)
     ? rr.ord.slice(1).filter(s=>s.addr)
     : smartSort(stops.filter(s=>s.addr));
-
+ 
   const trip={
     id:nextId++, _choferId:cid,
     chofer:ch.nombre+' - '+ch.camion,
@@ -1297,7 +1297,7 @@ function _finish(cid,orig,tar,stops,ch,rr){
   stopCtr=0; stopACs={}; oozACs={}; clearRte();
   toast('Viaje #'+trip.id+' asignado'+(rr?' - ruta dibujada':'')+'.'); 
 }
-
+ 
 function buildSheetViaje(t){
   return{
     id:t.id, chofer:t.chofer, camion:t.camion||'', origen:t.origen,
@@ -1318,14 +1318,14 @@ function buildSheetViaje(t){
     ].filter(Boolean).join('|')
   };
 }
-
+ 
 /* ═══ DRIVER ACTIONS — with return-to-base flow ══════════ */
 /*
   Estado flow:
   pendiente → en_curso → [all stops] → (last stop arrived)
     → en_retorno (timer keeps running)
     → completado (llegada a base)
-
+ 
   Buttons:
   [Iniciar Viaje]
   [Llegue a Parada N] → wait timer starts
@@ -1337,18 +1337,18 @@ function driverBtn(action){
   if(!AT)return;
   const now=new Date(),iso=now.toISOString();
   const fmt=now.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
+ 
   if(action==='start'){
     AT.tsStart=iso; AT.estado='en_curso';
     mlog('['+fmt+'] Inicio viaje desde "'+AT.origen+'"'); toast('Viaje iniciado.');
-
+ 
   } else if(action==='arrive'){
     if(!AT.stopLog[AT.curStop])AT.stopLog[AT.curStop]={};
     AT.stopLog[AT.curStop].arriveTs=iso; AT.waitStart=iso;
     const cur=AT.stops[AT.curStop];
     mlog('['+fmt+'] Llego a parada '+(AT.curStop+1)+': "'+(cur.client||cur.addr)+'"');
     toast('Llegada registrada - cronometrando espera...'); startWaitTimer();
-
+ 
   } else if(action==='next'){
     if(!AT.stopLog[AT.curStop])AT.stopLog[AT.curStop]={};
     AT.stopLog[AT.curStop].leaveTs=iso;
@@ -1357,7 +1357,7 @@ function driverBtn(action){
     const cur=AT.stops[AT.curStop];
     mlog('['+fmt+'] Rumbo a parada '+(AT.curStop+1)+': "'+(cur.client||cur.addr)+'"');
     toast('Rumbo a parada '+(AT.curStop+1)+'...');
-
+ 
   } else if(action==='retorno'){
     // Close last stop wait, start return journey
     if(!AT.stopLog[AT.curStop])AT.stopLog[AT.curStop]={};
@@ -1372,7 +1372,7 @@ function driverBtn(action){
     toast('Retorno a base iniciado. Timer sigue corriendo.');
     // Draw return route on map
     drawRetornoRoute(AT.stops[AT.curStop].addr, AT.origen);
-
+ 
   } else if(action==='llegada_base'){
     // Final step: arrived at base
     AT.tsEnd=iso; AT.estado='completado';
@@ -1414,7 +1414,7 @@ function driverBtn(action){
     renderTable(); renderPhone(); updStats();
     return;
   }
-
+ 
   const idx=trips.findIndex(t=>t.id===AT.id);
   if(idx!==-1)trips[idx]={...AT};
   saveAll(); renderTable(); renderPhone(); if(loIsAdmin()) renderAdminLive();
@@ -1430,7 +1430,7 @@ function driverBtn(action){
     ].filter(Boolean).join('|')
   }});
 }
-
+ 
 /* ═══ DRAW RETORNO ROUTE ═════════════════════════════════ */
 function drawRetornoRoute(fromAddr, toAddr){
   if(!gdirs) return;
@@ -1457,7 +1457,7 @@ function drawRetornoRoute(fromAddr, toAddr){
     swTab('tm',document.getElementById('tbmapa'));
   });
 }
-
+ 
 /* ═══ WAIT TIMER ═════════════════════════════════════════ */
 function startWaitTimer(){
   document.getElementById('wtimer').style.display='block';
@@ -1467,7 +1467,7 @@ function startWaitTimer(){
 }
 function stopWaitTimer(){ clearInterval(waitTick);waitTick=null;document.getElementById('wtimer').style.display='none';document.getElementById('wtime').textContent='00:00'; }
 function pad(n){return String(n).padStart(2,'0');}
-
+ 
 /* ═══ PHONE RENDER ═══════════════════════════════════════ */
 function renderPhone(){
   const pnone=document.getElementById('pnone'),ptrip=document.getElementById('ptrip');
@@ -1482,7 +1482,7 @@ function renderPhone(){
   }
   pnone.style.display='none';ptrip.style.display='flex';
   document.getElementById('pdrv').textContent=AT.chofer;
-
+ 
   // Retorno banner
   const retBanner=document.getElementById('retorno-banner');
   if(AT._retorno){
@@ -1492,7 +1492,7 @@ function renderPhone(){
   } else {
     retBanner.style.display='none';
   }
-
+ 
   // Stops list
   const allSt=[{addr:AT.origen,client:'Origen',prio:'normal',twFrom:'',twTo:''},...AT.stops];
   document.getElementById('pstops').innerHTML=allSt.map((s,i)=>{
@@ -1517,7 +1517,7 @@ function renderPhone(){
       (s.client?'<div class="pscl">'+s.client+(s.prio==='high'?'<span style="color:var(--a4);font-size:9px"> &#9888;</span>':'')+'</div>':'')+
       '<div class="psad">'+s.addr+'</div>'+twPill+'</div></div>';
   }).join('');
-
+ 
   // Current stop card
   const cc=document.getElementById('pcurcard');
   if(AT.tsStart&&!AT._retorno&&AT.curStop<AT.stops.length){
@@ -1547,7 +1547,7 @@ function renderPhone(){
       document.getElementById('pcurtw').style.display='none';
     }
   }
-
+ 
   // Timestamps
   document.getElementById('ts0').textContent=AT.tsStart?fmtTS(AT.tsStart):'--';
   document.getElementById('tsret').textContent=AT.tsRetornoInicio?fmtTS(AT.tsRetornoInicio):'--';
@@ -1562,7 +1562,7 @@ function renderPhone(){
   if(AT.waitStart)startWaitTimer();
   renderPBtns();
 }
-
+ 
 function renderPBtns(){
   const el=document.getElementById('pacts'); if(!AT){el.innerHTML='';return;}
   let html='';
@@ -1592,7 +1592,7 @@ function renderPBtns(){
   }
   el.innerHTML = html;
 }
-
+ 
 /* ═══ PERSIST ════════════════════════════════════════════ */
 function saveAll(){
   localStorage.setItem(SK.trips,JSON.stringify(trips));
@@ -1610,7 +1610,7 @@ function restoreAT(){
     _restoreATLocal();
   }
 }
-
+ 
 function _restoreATLocal(){
   const raw=localStorage.getItem(SK.active); if(!raw)return;
   try{
@@ -1622,7 +1622,7 @@ function _restoreATLocal(){
     else toast('Viaje #'+AT.id+' restaurado.');
   }catch(e){AT=null;}
 }
-
+ 
 async function _restoreATFromSheet(nombreChofer){
   try{
     const res = await sheetGet({action:'obtenerViajes'});
@@ -1689,7 +1689,7 @@ async function _restoreATFromSheet(nombreChofer){
       AT.stopLog = JSON.parse(viaje.stop_log_json || '[]');
       AT.curStop = AT.stopLog.filter(s=>s&&s.leaveTs).length;
       if(AT.curStop >= AT.stops.length) AT.curStop = Math.max(0, AT.stops.length-1);
-
+ 
       // ── RECUPERAR WAIT TIMER si cerró la pestaña mientras esperaba ──────
       // Si el stop actual tiene arriveTs pero NO leaveTs → todavía está esperando
       const stopActual = AT.stopLog[AT.curStop];
@@ -1702,10 +1702,10 @@ async function _restoreATFromSheet(nombreChofer){
         if(matchWS) AT.waitStart = matchWS[1].trim();
       }
     }catch(_){ AT.stopLog=[]; AT.curStop=0; }
-
+ 
     localStorage.setItem(SK.active, JSON.stringify(AT));
     renderPhone();
-
+ 
     if(AT.waitStart){
       startWaitTimer();
       toast('Viaje #'+AT.id+' — esperando en parada '+(AT.curStop+1)+'. Timer restaurado.');
@@ -1719,13 +1719,13 @@ async function _restoreATFromSheet(nombreChofer){
     _restoreATLocal();
   }
 }
-
+ 
 /* ═══ ADMIN LIVE TRACKING ════════════════════════════════
    Muestra en tiempo real el estado de cada viaje activo.
    Se llama desde el polling y desde renderTable/renderPhone.
 ═══════════════════════════════════════════════════════ */
 let _adminLiveWaitTick = null;
-
+ 
 function renderAdminLive(){
   const panel = document.getElementById('admin-live');
   const content= document.getElementById('alv-content');
@@ -1733,18 +1733,18 @@ function renderAdminLive(){
   const pulse  = document.getElementById('alv-pulse');
   const upd    = document.getElementById('alv-updated');
   if(!panel) return;
-
+ 
   // Solo mostrar si es admin
   if(loGetRol() !== 'admin'){ panel.classList.remove('visible'); return; }
   panel.classList.add('visible');
-
+ 
   // Viajes activos (en_curso o en_retorno)
   const activos = trips.filter(t =>
     t.estado === 'en_curso' || t.estado === 'en_retorno' || t.estado === 'pendiente'
   );
-
+ 
   upd.textContent = 'Act. ' + new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
+ 
   if(!activos.length){
     pulse.className = 'alv-pulse off';
     sep.style.display = 'none';
@@ -1752,10 +1752,10 @@ function renderAdminLive(){
     if(_adminLiveWaitTick){ clearInterval(_adminLiveWaitTick); _adminLiveWaitTick=null; }
     return;
   }
-
+ 
   pulse.className = 'alv-pulse';
   sep.style.display = 'block';
-
+ 
   content.innerHTML = activos.map(t => {
     const totalParadas = (t.stops||[]).length;
     // Deducir curStop desde stopLog
@@ -1764,7 +1764,7 @@ function renderAdminLive(){
     const curStopActual = stopLog[curStop] || {};
     const enEspera = !!(curStopActual.arriveTs && !curStopActual.leaveTs);
     const curParada = (t.stops||[])[curStop];
-
+ 
     // Determinar estado visual
     let estadoClass='pendiente', estadoIco='⏳', estadoTxt='Pendiente';
     if(t.estado === 'en_retorno'){
@@ -1774,14 +1774,14 @@ function renderAdminLive(){
     } else if(t.estado === 'en_curso'){
       estadoClass='camino'; estadoIco='🚚'; estadoTxt='En camino';
     }
-
+ 
     // Progreso
     const prog = totalParadas > 0 ? Math.round((curStop / totalParadas) * 100) : 0;
-
+ 
     // Timestamps
     const ini  = t.tsStart ? fmtTS(t.tsStart) : '--';
     const ret  = t.tsRetornoInicio ? fmtTS(t.tsRetornoInicio) : '--';
-
+ 
     // Parada actual info
     let paradaHtml = '';
     if(t.estado === 'en_retorno'){
@@ -1799,14 +1799,14 @@ function renderAdminLive(){
           <div class="alv-parada-addr">${curParada.addr||''}</div>
         </div>`;
     }
-
+ 
     // Timer de espera (HTML — lo actualizamos con JS aparte)
     const waitHtml = enEspera && curStopActual.arriveTs ? `
       <div class="alv-wait">
         <div class="alv-wait-lbl">⏱ Tiempo en destino</div>
         <div class="alv-wait-val" id="alv-wait-${t.id}">--:--</div>
       </div>` : '';
-
+ 
     return `
       <div class="alv-card ${estadoClass}" data-id="${t.id}">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
@@ -1828,7 +1828,7 @@ function renderAdminLive(){
         </div>
       </div>`;
   }).join('');
-
+ 
   // Arrancar tick para actualizar timers de espera
   if(_adminLiveWaitTick) clearInterval(_adminLiveWaitTick);
   _adminLiveWaitTick = setInterval(()=>{
@@ -1846,7 +1846,7 @@ function renderAdminLive(){
     });
   }, 1000);
 }
-
+ 
 /* ═══ POLLING TIEMPO REAL ════════════════════════════════ */
 let _pollingInterval = null;
 function startAdminPolling(){
@@ -1893,7 +1893,7 @@ function startAdminPolling(){
   }, 12000);
 }
 function stopAdminPolling(){ if(_pollingInterval){clearInterval(_pollingInterval);_pollingInterval=null;} }
-
+ 
 /* ═══ HISTORIAL ══════════════════════════════════════════ */
 function setFilter(chip){ document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on')); chip.classList.add('on'); filterMode=chip.dataset.f; document.getElementById('fdaterow').style.display=filterMode==='custom'?'flex':'none'; renderTable(); }
 function getFiltered(){
@@ -1948,7 +1948,7 @@ function renderTable(){
       '<td><div style="display:flex;gap:5px">'+db2+del+'</div></td></tr>';
   }).join('');
 }
-
+ 
 /* ═══ DISC / DEL ═════════════════════════════════════════ */
 function openDisc(id){
   discTgt=id; const t=trips.find(t=>t.id===id);if(!t)return;
@@ -1982,7 +1982,7 @@ function confirmDel(){
   saveAll(); renderTable(); renderPhone(); updStats();
   toast('Viaje #'+delTgt+' eliminado.'); closeMdl('mdel');
 }
-
+ 
 /* ═══ UTILS ══════════════════════════════════════════════ */
 function updStats(){
   document.getElementById('st-act').textContent=trips.filter(t=>t.estado==='en_curso'||t.estado==='en_retorno').length;
@@ -1995,7 +1995,7 @@ function updStats(){
     btnReset.style.display = (AT && atObsoleto) ? 'block' : 'none';
   }
 }
-
+ 
 /* Limpiar AT bloqueado de emergencia */
 function resetATEmergencia(){
   if(!AT) return;
@@ -2014,13 +2014,13 @@ function fmtTS(iso){return new Date(iso).toLocaleTimeString('es-AR',{hour:'2-dig
 function fmtDur(s){const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h>0?h+'h '+m+'min':m+' min';}
 let _tt;
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('on'),3800);}
-
+ 
 /* ═══ INIT ═══════════════════════════════════════════════ */
 renderChofSel();
 addStop();
 renderTable();
 updStats();
-
+ 
 /* ══ AUTH v3 — Login · Roles · Sesión persistente ═══════
    localStorage keys (sobreviven cierre de pestaña y recarga):
      fc_auth_token   → JWT firmado (incluye rol en payload)
@@ -2039,21 +2039,21 @@ const LO_EXPIRY_KEY  = 'fc_auth_expiry';
 const LO_REMEMBER_KEY= 'fc_auth_remember';
 // Usar localStorage para que la sesión sobreviva cierres de pestaña
 const _sto = localStorage;
-
+ 
 /* ── Leer rol actual ── */
 function loGetRol(){ return _sto.getItem(LO_ROL_KEY) || 'chofer'; }
 function loGetNombre(){ return _sto.getItem(LO_NAME_KEY) || ''; }
 function loIsAdmin(){ return loGetRol() === 'admin'; }
-
+ 
 /* ── Check de sesión al cargar ────────────────────────── */
 function loCheckSession(){
   const token  = _sto.getItem(LO_TOKEN_KEY);
   const expiry = parseInt(_sto.getItem(LO_EXPIRY_KEY)||'0');
   const rol    = _sto.getItem(LO_ROL_KEY) || 'chofer';
-
+ 
   // Sin Sheets: modo desarrollo sin login
   if(!hasSheets()){ loShowApp('admin'); return; }
-
+ 
   // Token existe y no expiró → entrar directo sin verificar contra servidor
   // (evita que falle en Safari/mobile por CORS o latencia)
   if(token && Date.now() < expiry){
@@ -2071,36 +2071,36 @@ function loCheckSession(){
     loShowForm();
   }
 }
-
+ 
 /* ── Mostrar app y aplicar restricciones de rol ────────── */
 function loShowApp(rol){
   document.body.setAttribute('data-role', rol || loGetRol());
-
+ 
   const overlay = document.getElementById('login-overlay');
   overlay.classList.add('hiding');
   setTimeout(()=>{ overlay.style.display='none'; }, 420);
-
+ 
   // Iniciar Maps y restaurar viaje activo
   const k = localStorage.getItem(SK.apikey) || GMKEY;
   document.getElementById('apikey').value = k;
   loadMaps(k);
   restoreAT();
-
+ 
   // Admin: polling tiempo real para ver cambios del chofer
   if((rol || loGetRol()) === 'admin'){
     startAdminPolling();
     renderAdminLive(); // render inicial al entrar
   }
-
+ 
   // Aplicar vista según rol
   aplicarRol(rol || loGetRol());
 }
-
+ 
 /* ── Aplicar restricciones visuales según rol ──────────── */
 function aplicarRol(rol){
   // Guardar rol en sessionStorage por si no estaba
   if(rol) _sto.setItem(LO_ROL_KEY, rol);
-
+ 
   if(rol === 'chofer'){
     // ── VISTA CHOFER: ocultar todo excepto el celular ──────
     // Ocultar tabs de administración
@@ -2139,7 +2139,7 @@ function aplicarRol(rol){
     // Dar espacio al header fijo
     const pfrEl = document.querySelector('.dcol');
     if(pfrEl) pfrEl.style.paddingTop = '72px';
-
+ 
   } else {
     // ── VISTA ADMIN: interfaz completa + indicador de usuario ──
     // Agregar botón de logout + nombre de usuario al header
@@ -2160,7 +2160,7 @@ function aplicarRol(rol){
     }
   }
 }
-
+ 
 /* ── Mostrar formulario de login ───────────────────────── */
 function loShowForm(){
   // Autocompletar email guardado
@@ -2175,7 +2175,7 @@ function loShowForm(){
     if(e){ if(e.value) document.getElementById('loPass').focus(); else e.focus(); }
   }, 100);
 }
-
+ 
 /* ── Toggle password ───────────────────────────────────── */
 function loTogglePw(){
   const inp = document.getElementById('loPass');
@@ -2183,7 +2183,7 @@ function loTogglePw(){
   if(inp.type==='password'){ inp.type='text'; btn.innerHTML='&#128274;'; }
   else { inp.type='password'; btn.innerHTML='&#128065;'; }
 }
-
+ 
 /* ── Enter key en el overlay ───────────────────────────── */
 document.addEventListener('keydown', e=>{
   const overlay = document.getElementById('login-overlay');
@@ -2191,7 +2191,7 @@ document.addEventListener('keydown', e=>{
     if(e.key==='Enter') loDoLogin();
   }
 });
-
+ 
 /* ── Login ─────────────────────────────────────────────── */
 async function loDoLogin(){
   const email = document.getElementById('loEmail').value.trim();
@@ -2218,7 +2218,7 @@ async function loDoLogin(){
     _sto.setItem(LO_REMEMBER_KEY, remember ? '1' : '0');
     // Guardar email para autocompletar en el próximo login
     _sto.setItem('fc_last_email', email);
-
+ 
     // Mostrar éxito con rol
     document.getElementById('loForm').style.display = 'none';
     const sw = document.getElementById('loSuccess');
@@ -2226,15 +2226,15 @@ async function loDoLogin(){
     const rolLabel = result.rol === 'admin' ? '(Administrador)' : '(Chofer)';
     document.getElementById('loSuccessName').textContent =
       '¡Bienvenido, ' + (result.nombre||email) + '! ' + rolLabel;
-
+ 
     setTimeout(()=> loShowApp(result.rol || 'chofer'), 1100);
-
+ 
   }catch(err){
     loSetLoading(false);
     loShowErr('Error de red: ' + (err.message||'intentá de nuevo.'));
   }
 }
-
+ 
 /* ── UI helpers ────────────────────────────────────────── */
 function loSetLoading(on){
   const btn  = document.getElementById('loBtn');
@@ -2257,7 +2257,7 @@ function loHideErr(){
   document.getElementById('loEmail').classList.remove('lo-err-inp');
   document.getElementById('loPass').classList.remove('lo-err-inp');
 }
-
+ 
 /* ── Logout ────────────────────────────────────────────── */
 function loLogout(){
   const token = _sto.getItem(LO_TOKEN_KEY);
@@ -2268,7 +2268,7 @@ function loLogout(){
   _sto.removeItem(LO_EXPIRY_KEY);
   location.reload();
 }
-
+ 
 </script>
 </body>
 </html>
