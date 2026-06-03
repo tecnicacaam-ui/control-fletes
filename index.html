@@ -1287,8 +1287,19 @@ function _finish(cid,orig,tar,stops,ch,rr){
   AT={...trip, curStop:0, waitStart:null, stopLog:[], _retorno:false};
   AT._legData=_lastLegData.map(ld=>({sec:ld.sec,mt:ld.mt}));
   saveAll();
-  // Sync to Sheets
-  sheetPost({action:'crearViaje', data:buildSheetViaje(trip)});
+  // Sync to Sheets — viaje + estado activo por nombre del chofer (cross-device)
+  sheetPost({action:'crearViaje', data:buildSheetViaje(trip)}).then(()=>{
+    if(hasSheets() && ch && ch.nombre){
+      const claveChofer = 'fc_activo_' + ch.nombre.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
+      sheetPost({action:'guardarEstadoActivo', key: claveChofer, data: AT});
+    }
+  }).catch(()=>{
+    // Si falla el then, igual intentar guardar el estado
+    if(hasSheets() && ch && ch.nombre){
+      const claveChofer = 'fc_activo_' + ch.nombre.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
+      sheetPost({action:'guardarEstadoActivo', key: claveChofer, data: AT});
+    }
+  });
   renderTable(); renderPhone(); updStats(); renderAdminLive();
   document.getElementById('fch').value='';
   document.getElementById('for').value='';
