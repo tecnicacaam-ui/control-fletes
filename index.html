@@ -1232,16 +1232,16 @@ function _finish(cid,orig,tar,stops,ch,rr){
 
 function buildSheetViaje(t){
   return{
-    id:t.id, chofer:t.chofer, choferId:t._choferId, origen:t.origen,
-    paradas_json:JSON.stringify(t.stops||[]),
+    id:t.id, chofer:t.chofer, camion:t.camion||'', origen:t.origen,
+    destino_json:JSON.stringify(t.stops||[]),   // ← columna exacta del Sheet
     modalidad:t.modalidad, tarifa:t.tarifa,
     estado:t.estado,
-    ts_creado:t.tsCreado, ts_inicio:t.tsStart||'',
+    ts_creado:t.tsCreado||'', ts_inicio:t.tsStart||'',
     ts_llegada_ultima:t.tsLlegadaUltima||'', ts_retorno_inicio:t.tsRetornoInicio||'',
     ts_fin:t.tsEnd||'',
     horas_total:t.horasTotal||'', km_total:t.kmTotal||'', costo_total:t.costoTotal||'',
     stop_log_json:JSON.stringify(t.stopLog||[]),
-    est_seg:t.estSec||'', est_km:t.estMt?(t.estMt/1000).toFixed(2):'',
+    est_tiempo_seg:t.estSec||'', est_km:t.estMt?(t.estMt/1000).toFixed(2):'',
     discrepancia:t.discrepancia||false, notas:''
   };
 }
@@ -1476,12 +1476,20 @@ function renderPBtns(){
   } else if(AT._retorno){
     html='<button class="pbtn pb-en" onclick="driverBtn(\'llegada_base\')">&#128721; Finalizar Viaje (Llegada a Base)</button>';
   } else {
+    // Guard: si stops está vacío no podemos operar
+    if(!AT.stops || AT.stops.length === 0){
+      html='<button class="pbtn pb-en" onclick="driverBtn(\'llegada_base\')" style="background:var(--dg)">&#128721; Finalizar Viaje</button>';
+      el.innerHTML=html; return;
+    }
+    // Asegurar que curStop esté dentro del rango válido
+    if(AT.curStop >= AT.stops.length) AT.curStop = AT.stops.length - 1;
     const cur=AT.stops[AT.curStop];
     const lg=AT.stopLog[AT.curStop]||{};
     const isLast=AT.curStop===AT.stops.length-1;
     const arrived=!!lg.arriveTs;
+    const lbl=cur?(cur.client||'Parada '+(AT.curStop+1)):'Parada '+(AT.curStop+1);
     if(!arrived){
-      html='<button class="pbtn pb-ar" onclick="driverBtn(\'arrive\')">&#128205; Llegue a '+(cur?cur.client||'Parada '+(AT.curStop+1):'Destino')+'</button>';
+      html='<button class="pbtn pb-ar" onclick="driverBtn(\'arrive\')">&#128205; Llegue a '+lbl+'</button>';
     } else if(!isLast){
       html='<button class="pbtn pb-nx" onclick="driverBtn(\'next\')">&#9654; Continuar a Parada '+(AT.curStop+2)+'</button>';
     } else {
@@ -1583,8 +1591,20 @@ async function _restoreATFromSheet(nombreChofer){
       _legData:        [],
     };
 
-    // Parsear paradas
-    try{ AT.stops = JSON.parse(viaje.paradas_json || viaje.destino_json || '[]'); }catch(_){ AT.stops=[]; }
+    // Parsear paradas — el Sheet tiene columna 'destino_json'
+    // El Apps Script también expone 'paradas' ya parseado en obtenerViajes
+    try{
+      const rawStops = viaje.destino_json || viaje.paradas_json || '';
+      if(rawStops && typeof rawStops === 'string' && rawStops.startsWith('[')){
+        AT.stops = JSON.parse(rawStops);
+      } else if(Array.isArray(viaje.paradas)){
+        AT.stops = viaje.paradas;  // ya parseado por el Apps Script
+      } else {
+        AT.stops = [];
+      }
+    }catch(_){ AT.stops=[]; }
+
+    console.log('[FleteControl] Stops restauradas:', AT.stops.length, AT.stops);
 
     // Parsear stopLog y deducir curStop
     try{
@@ -1607,7 +1627,55 @@ async function _restoreATFromSheet(nombreChofer){
   }
 }
 
-/* ═══ HISTORIAL ══════════════════════════════════════════ */
+/* ═══ POLLING TIEMPO REAL (admin ve el estado del chofer) ═
+   Cada 15 segundos el admin consulta el Sheet y actualiza
+   el historial y las estadísticas automáticamente.
+   El chofer no hace polling — solo envía sus acciones.
+═══════════════════════════════════════════════════════ */
+let _pollingInterval = null;
+
+function startAdminPolling(){
+  if(_pollingInterval) return; // ya corriendo
+  if(!hasSheets()) return;
+  _pollingInterval = setInterval(async ()=>{
+    try{
+      const res = await sheetGet({action:'obtenerViajes'});
+      if(!res || !res.ok || !res.data) return;
+      // Actualizar solo los viajes en_curso o en_retorno desde el Sheet
+      let changed = false;
+      res.data.forEach(v=>{
+        if(v.estado === 'en_curso' || v.estado === 'en_retorno' || v.estado === 'completado'){
+          const idx = trips.findIndex(t=>String(t.id)===String(v.id));
+          if(idx !== -1){
+            // Actualizar campos dinámicos del viaje
+            const t = trips[idx];
+            if(t.estado !== v.estado){
+              t.estado         = v.estado;
+              t.tsStart        = v.ts_inicio || t.tsStart;
+              t.tsLlegadaUltima= v.ts_llegada_ultima || t.tsLlegadaUltima;
+              t.tsRetornoInicio= v.ts_retorno_inicio || t.tsRetornoInicio;
+              t.tsEnd          = v.ts_fin || t.tsEnd;
+              t.horasTotal     = v.horas_total || t.horasTotal;
+              t.kmTotal        = v.km_total || t.kmTotal;
+              t.costoTotal     = v.costo_total || t.costoTotal;
+              try{ t.stopLog = JSON.parse(v.stop_log_json||'[]'); }catch(_){}
+              changed = true;
+            }
+          }
+        }
+      });
+      if(changed){
+        localStorage.setItem(SK.trips, JSON.stringify(trips));
+        renderTable();
+        updStats();
+      }
+    }catch(_){}
+  }, 15000); // cada 15 segundos
+}
+
+function stopAdminPolling(){
+  if(_pollingInterval){ clearInterval(_pollingInterval); _pollingInterval=null; }
+}
 function setFilter(chip){ document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on')); chip.classList.add('on'); filterMode=chip.dataset.f; document.getElementById('fdaterow').style.display=filterMode==='custom'?'flex':'none'; renderTable(); }
 function getFiltered(){
   const now=new Date();let from=null,to=null;
@@ -1779,6 +1847,9 @@ function loShowApp(rol){
   document.getElementById('apikey').value = k;
   loadMaps(k);
   restoreAT();
+
+  // Si es admin: iniciar polling para ver cambios del chofer en tiempo real
+  if((rol || loGetRol()) === 'admin') startAdminPolling();
 
   // Aplicar vista según rol
   aplicarRol(rol || loGetRol());
