@@ -559,6 +559,12 @@ body[data-role="chofer"] .dcol {
       <div class="scard"><div class="scl">COMPLETADOS</div><div class="scv" id="st-don" style="color:#7090e0">0</div></div>
       <div class="scard"><div class="scl">DISCREPANCIAS</div><div class="scv" id="st-dis" style="color:var(--dg)">0</div></div>
     </div>
+    <!-- Botón de emergencia: limpiar viaje activo trabado -->
+    <div id="btn-reset-at" style="display:none;margin-top:2px">
+      <button onclick="resetATEmergencia()" class="btn bd bsm" style="width:100%;justify-content:center">
+        &#9888; Limpiar viaje activo bloqueado
+      </button>
+    </div>
   </div>
   <!-- HISTORIAL -->
   <div id="th" class="tpane">
@@ -1236,7 +1242,20 @@ function crearViaje(){
   if(!orig){toast('Ingresa el origen.');return;}
   if(!stops.length||!stops[0].addr){toast('Agrega al menos una parada.');return;}
   if(isNaN(tar)||tar<=0){toast('Tarifa invalida.');return;}
-  if(AT){toast('Hay un viaje activo. Finalizalo primero.');return;}
+  // El admin puede crear múltiples viajes.
+  // Solo bloquear si el chofer seleccionado ya tiene un viaje activo en curso.
+  if(AT && AT._choferId === cid && AT.estado !== 'completado'){
+    toast('Ese chofer ya tiene un viaje en curso. Finalizalo primero.');
+    return;
+  }
+  // Si hay un AT de otro chofer o completado, limpiarlo silenciosamente
+  if(AT){
+    const viajeEnTrips = trips.find(t=>t.id===AT.id);
+    if(!viajeEnTrips || viajeEnTrips.estado === 'completado'){
+      AT=null;
+      localStorage.removeItem(SK.active);
+    }
+  }
   if(gdirs){toast('Calculando ruta...');calcRoute(r=>_finish(cid,orig,tar,stops,ch,r));}
   else _finish(cid,orig,tar,stops,ch,null);
 }
@@ -1947,6 +1966,23 @@ function updStats(){
   document.getElementById('st-act').textContent=trips.filter(t=>t.estado==='en_curso'||t.estado==='en_retorno').length;
   document.getElementById('st-don').textContent=trips.filter(t=>t.estado==='completado').length;
   document.getElementById('st-dis').textContent=trips.filter(t=>t.discrepancia).length;
+  // Mostrar botón de emergencia si AT está en memoria pero el viaje ya completó
+  const btnReset = document.getElementById('btn-reset-at');
+  if(btnReset){
+    const atObsoleto = AT && trips.find(t=>t.id===AT.id && t.estado==='completado');
+    btnReset.style.display = (AT && atObsoleto) ? 'block' : 'none';
+  }
+}
+
+/* Limpiar AT bloqueado de emergencia */
+function resetATEmergencia(){
+  if(!AT) return;
+  AT=null;
+  localStorage.removeItem(SK.active);
+  renderPhone();
+  updStats();
+  renderAdminLive();
+  toast('Viaje activo limpiado. Podés asignar uno nuevo.');
 }
 function mlog(msg){ const el=document.getElementById('mlogc'); const ts=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); const first=el.textContent.trim()==='Sin actividad...'; el.innerHTML=(first?'':el.innerHTML+'<br>')+'<span style="color:var(--mu)">['+ts+']</span> '+msg; el.scrollTop=el.scrollHeight; }
 function closeMdl(id){document.getElementById(id).classList.remove('open');if(id==='mdisc')discTgt=null;if(id==='mdel')delTgt=null;}
