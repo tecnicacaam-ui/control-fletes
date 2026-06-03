@@ -1332,8 +1332,12 @@ function driverBtn(action){
     mlog('  Modalidad: '+AT.modalidad+' | Tarifa: $'+AT.tarifa);
     mlog('  TOTAL: $'+fmtP(AT.costoTotal));
     toast('Viaje finalizado. Total: $'+fmtP(AT.costoTotal));
+    // Limpiar AT ANTES de renderizar para que los botones desaparezcan
     AT=null; retornoRouteSec=null; retornoRouteMt=null;
-    saveAll(); renderTable(); renderPhone(); updStats();
+    localStorage.removeItem(SK.active);
+    localStorage.setItem(SK.trips,JSON.stringify(trips));
+    localStorage.setItem(SK.nextId,String(nextId));
+    renderTable(); renderPhone(); updStats();
     return;
   }
 
@@ -1389,7 +1393,15 @@ function pad(n){return String(n).padStart(2,'0');}
 /* ═══ PHONE RENDER ═══════════════════════════════════════ */
 function renderPhone(){
   const pnone=document.getElementById('pnone'),ptrip=document.getElementById('ptrip');
-  if(!AT){pnone.style.display='flex';ptrip.style.display='none';stopWaitTimer();return;}
+  if(!AT){
+    pnone.style.display='flex';
+    ptrip.style.display='none';
+    stopWaitTimer();
+    // Limpiar botones aunque AT sea null
+    const pactsEl=document.getElementById('pacts');
+    if(pactsEl) pactsEl.innerHTML='';
+    return;
+  }
   pnone.style.display='none';ptrip.style.display='flex';
   document.getElementById('pdrv').textContent=AT.chofer;
 
@@ -1613,11 +1625,10 @@ function startAdminPolling(){
         const idx = trips.findIndex(t=>String(t.id)===String(v.id));
         if(idx === -1) return;
         const local = trips[idx];
-        // Sincronizar si el estado cambió en el Sheet
         if(local.estado !== v.estado ||
            (!local.tsEnd && v.ts_fin) ||
            (!local.costoTotal && v.costo_total)){
-          trips[idx].estado          = v.estado          || local.estado;
+          trips[idx].estado          = v.estado           || local.estado;
           trips[idx].tsStart         = v.ts_inicio        || local.tsStart;
           trips[idx].tsLlegadaUltima = v.ts_llegada_ultima|| local.tsLlegadaUltima;
           trips[idx].tsRetornoInicio = v.ts_retorno_inicio|| local.tsRetornoInicio;
@@ -1626,6 +1637,14 @@ function startAdminPolling(){
           trips[idx].kmTotal         = parseFloat(v.km_total)    || local.kmTotal;
           trips[idx].costoTotal      = parseFloat(v.costo_total) || local.costoTotal;
           try{ trips[idx].stopLog = JSON.parse(v.stop_log_json||'[]'); }catch(_){}
+          // ── KEY FIX: si el viaje activo fue finalizado por el chofer, limpiarlo ──
+          if(v.estado === 'completado' && AT && String(AT.id) === String(v.id)){
+            AT = null;
+            localStorage.removeItem(SK.active);
+            stopWaitTimer();
+            renderPhone();
+            toast('Viaje #'+v.id+' finalizado por el chofer.');
+          }
           changed = true;
         }
       });
@@ -1633,10 +1652,9 @@ function startAdminPolling(){
         localStorage.setItem(SK.trips, JSON.stringify(trips));
         renderTable();
         updStats();
-        mlog('Sync: viajes actualizados desde Sheet');
       }
     }catch(_){}
-  }, 12000); // cada 12 segundos
+  }, 12000);
 }
 function stopAdminPolling(){ if(_pollingInterval){clearInterval(_pollingInterval);_pollingInterval=null;} }
 
