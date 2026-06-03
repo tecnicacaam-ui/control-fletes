@@ -1344,12 +1344,14 @@ function driverBtn(action){
   const idx=trips.findIndex(t=>t.id===AT.id);
   if(idx!==-1)trips[idx]={...AT};
   saveAll(); renderTable(); renderPhone();
-  // Sync partial updates to Sheets
+  // Sync partial updates to Sheets — incluye waitStart para que sobreviva cierre de pestaña
   sheetPost({action:'patchViaje', id:AT?AT.id:trips[idx].id, fields:{
     estado:(AT||trips[idx]).estado,
     ts_inicio:(AT||trips[idx]).tsStart||'',
     ts_retorno_inicio:(AT||trips[idx]).tsRetornoInicio||'',
-    stop_log_json:JSON.stringify((AT||trips[idx]).stopLog||[])
+    stop_log_json:JSON.stringify((AT||trips[idx]).stopLog||[]),
+    // waitStart: guardado en notas como campo extra para recuperar al volver
+    notas: AT && AT.waitStart ? 'waitStart:'+AT.waitStart : ''
   }});
 }
 
@@ -1599,11 +1601,30 @@ async function _restoreATFromSheet(nombreChofer){
       AT.stopLog = JSON.parse(viaje.stop_log_json || '[]');
       AT.curStop = AT.stopLog.filter(s=>s&&s.leaveTs).length;
       if(AT.curStop >= AT.stops.length) AT.curStop = Math.max(0, AT.stops.length-1);
+
+      // ── RECUPERAR WAIT TIMER si cerró la pestaña mientras esperaba ──────
+      // Si el stop actual tiene arriveTs pero NO leaveTs → todavía está esperando
+      const stopActual = AT.stopLog[AT.curStop];
+      if(stopActual && stopActual.arriveTs && !stopActual.leaveTs){
+        AT.waitStart = stopActual.arriveTs; // restaurar desde cuándo está esperando
+      }
+      // También intentar recuperar desde el campo notas (waitStart guardado explícitamente)
+      if(!AT.waitStart && viaje.notas && viaje.notas.startsWith('waitStart:')){
+        AT.waitStart = viaje.notas.replace('waitStart:','').trim();
+      }
     }catch(_){ AT.stopLog=[]; AT.curStop=0; }
+
     localStorage.setItem(SK.active, JSON.stringify(AT));
     renderPhone();
-    if(AT.tsStart) toast('Viaje #'+AT.id+' en curso — timer activo.');
-    else toast('Viaje #'+AT.id+' listo para iniciar.');
+
+    if(AT.waitStart){
+      startWaitTimer();
+      toast('Viaje #'+AT.id+' — esperando en parada '+(AT.curStop+1)+'. Timer restaurado.');
+    } else if(AT.tsStart){
+      toast('Viaje #'+AT.id+' en curso — timer activo.');
+    } else {
+      toast('Viaje #'+AT.id+' listo para iniciar.');
+    }
   }catch(err){
     console.error('Error cargando viaje del chofer:', err);
     _restoreATLocal();
