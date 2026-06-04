@@ -644,6 +644,7 @@ body[data-role="chofer"] .dcol {
 </div>
 <!-- Separador — solo visible en admin con viaje activo -->
 <div id="admin-live-sep" style="display:none;height:1px;background:var(--b1);margin:0 16px"></div>
+      <div class="pnone" id="pnone">
         <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".35">
           <rect x="1" y="3" width="15" height="13" rx="1"/>
           <path d="M16 8h4l3 4v4h-7V8z"/>
@@ -1475,7 +1476,6 @@ function pad(n){return String(n).padStart(2,'0');}
 /* ═══ PHONE RENDER ═══════════════════════════════════════ */
 function renderPhone(){
   const pnone=document.getElementById('pnone'),ptrip=document.getElementById('ptrip');
-  if(!pnone||!ptrip) return; // no estamos en vista chofer
   if(!AT){
     pnone.style.display='flex';
     ptrip.style.display='none';
