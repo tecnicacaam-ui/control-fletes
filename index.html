@@ -1242,18 +1242,16 @@ function crearViaje(){
   if(!orig){toast('Ingresa el origen.');return;}
   if(!stops.length||!stops[0].addr){toast('Agrega al menos una parada.');return;}
   if(isNaN(tar)||tar<=0){toast('Tarifa invalida.');return;}
-  // El admin puede crear múltiples viajes.
-  // Solo bloquear si el chofer seleccionado ya tiene un viaje activo en curso.
-  if(AT && AT._choferId === cid && AT.estado !== 'completado'){
-    toast('Ese chofer ya tiene un viaje en curso. Finalizalo primero.');
-    return;
-  }
-  // Si hay un AT de otro chofer o completado, limpiarlo silenciosamente
+  // Limpiar cualquier AT obsoleto (pendiente sin iniciar o de otro chofer)
   if(AT){
     const viajeEnTrips = trips.find(t=>t.id===AT.id);
-    if(!viajeEnTrips || viajeEnTrips.estado === 'completado'){
+    const esObsoleto = !viajeEnTrips || viajeEnTrips.estado === 'completado' || AT.estado === 'pendiente';
+    if(esObsoleto){
       AT=null;
       localStorage.removeItem(SK.active);
+    } else if(AT._choferId === cid && AT.estado !== 'completado'){
+      toast('Ese chofer ya tiene un viaje en curso. Finalizalo primero.');
+      return;
     }
   }
   if(gdirs){toast('Calculando ruta...');calcRoute(r=>_finish(cid,orig,tar,stops,ch,r));}
