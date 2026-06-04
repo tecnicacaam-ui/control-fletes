@@ -1475,6 +1475,7 @@ function pad(n){return String(n).padStart(2,'0');}
 /* ═══ PHONE RENDER ═══════════════════════════════════════ */
 function renderPhone(){
   const pnone=document.getElementById('pnone'),ptrip=document.getElementById('ptrip');
+  if(!pnone||!ptrip) return; // no estamos en vista chofer
   if(!AT){
     pnone.style.display='flex';
     ptrip.style.display='none';
