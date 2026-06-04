@@ -1866,9 +1866,15 @@ function startAdminPolling(){
         const idx = trips.findIndex(t=>String(t.id)===String(v.id));
         if(idx === -1) return;
         const local = trips[idx];
+        const localStopLogLen = (local.stopLog||[]).length;
+        const sheetStopLog = (() => { try{ return JSON.parse(v.stop_log_json||'[]'); }catch(_){ return []; } })();
+        const sheetStopLogLen = sheetStopLog.length;
+        const sheetStopLogStr = JSON.stringify(sheetStopLog);
+        const localStopLogStr = JSON.stringify(local.stopLog||[]);
         if(local.estado !== v.estado ||
            (!local.tsEnd && v.ts_fin) ||
-           (!local.costoTotal && v.costo_total)){
+           (!local.costoTotal && v.costo_total) ||
+           sheetStopLogStr !== localStopLogStr){
           trips[idx].estado          = v.estado           || local.estado;
           trips[idx].tsStart         = v.ts_inicio        || local.tsStart;
           trips[idx].tsLlegadaUltima = v.ts_llegada_ultima|| local.tsLlegadaUltima;
@@ -1925,7 +1931,7 @@ function startAdminPolling(){
         renderTable(); updStats(); renderAdminLive();
       }
     }catch(_){}
-  }, 12000);
+  }, 5000);
 }
 function stopAdminPolling(){ if(_pollingInterval){clearInterval(_pollingInterval);_pollingInterval=null;} }
 
