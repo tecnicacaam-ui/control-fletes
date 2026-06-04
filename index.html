@@ -1287,19 +1287,14 @@ function _finish(cid,orig,tar,stops,ch,rr){
   AT={...trip, curStop:0, waitStart:null, stopLog:[], _retorno:false};
   AT._legData=_lastLegData.map(ld=>({sec:ld.sec,mt:ld.mt}));
   saveAll();
-  // Sync to Sheets — viaje + estado activo por nombre del chofer (cross-device)
-  sheetPost({action:'crearViaje', data:buildSheetViaje(trip)}).then(()=>{
-    if(hasSheets() && ch && ch.nombre){
+  // Sync to Sheets — ambas llamadas en paralelo, no secuencial
+  if(hasSheets()){
+    sheetPost({action:'crearViaje', data:buildSheetViaje(trip)});
+    if(ch && ch.nombre){
       const claveChofer = 'fc_activo_' + ch.nombre.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
       sheetPost({action:'guardarEstadoActivo', key: claveChofer, data: AT});
     }
-  }).catch(()=>{
-    // Si falla el then, igual intentar guardar el estado
-    if(hasSheets() && ch && ch.nombre){
-      const claveChofer = 'fc_activo_' + ch.nombre.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
-      sheetPost({action:'guardarEstadoActivo', key: claveChofer, data: AT});
-    }
-  });
+  }
   renderTable(); renderPhone(); updStats(); renderAdminLive();
   document.getElementById('fch').value='';
   document.getElementById('for').value='';
@@ -2082,7 +2077,7 @@ const LO_REMEMBER_KEY= 'fc_auth_remember';
 const _sto = localStorage;
 
 /* ── Leer rol actual ── */
-function loGetRol(){ return _sto.getItem(LO_ROL_KEY) || 'chofer'; }
+function loGetRol(){ return _sto.getItem(LO_ROL_KEY) || 'admin'; }
 function loGetNombre(){ return _sto.getItem(LO_NAME_KEY) || ''; }
 function loIsAdmin(){ return loGetRol() === 'admin'; }
 
